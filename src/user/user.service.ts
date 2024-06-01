@@ -22,8 +22,7 @@ import { CreateUserDto, UpdateUserDto } from "./user.dto"
 export class UserService {
 	constructor(
 		@InjectModel(User.name) private readonly User: Model<UserDocument>,
-		@InjectModel(Review.name)
-		private readonly Review: Model<ReviewDocument>,
+		@InjectModel(Review.name) private readonly Review: Model<ReviewDocument>,
 	) {}
 
 	async getUsers() {

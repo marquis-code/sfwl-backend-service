@@ -50,10 +50,25 @@ __decorate([
     (0, mongoose_1.Prop)({ default: Date.now }),
     __metadata("design:type", Date)
 ], User.prototype, "createdAt", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({
+        type: {
+            type: String,
+            enum: ['Point'],
+            required: true,
+        },
+        coordinates: {
+            type: [Number],
+            required: true,
+        },
+    }),
+    __metadata("design:type", Object)
+], User.prototype, "location", void 0);
 exports.User = User = __decorate([
     (0, mongoose_1.Schema)()
 ], User);
 exports.UserSchema = mongoose_1.SchemaFactory.createForClass(User);
+exports.UserSchema.index({ location: '2dsphere' });
 exports.UserSchema.pre("save", async function (next) {
     if (!this.isModified("password"))
         return next();

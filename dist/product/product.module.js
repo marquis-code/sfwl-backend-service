@@ -14,6 +14,8 @@ const product_schema_1 = require("./product.schema");
 const product_service_1 = require("./product.service");
 const user_module_1 = require("../user/user.module");
 const review_module_1 = require("../review/review.module");
+const cloudinary_module_1 = require("../cloudinary/cloudinary.module");
+const orders_module_1 = require("../order/orders.module");
 let ProductModule = class ProductModule {
 };
 exports.ProductModule = ProductModule;
@@ -25,6 +27,8 @@ exports.ProductModule = ProductModule = __decorate([
             mongoose_1.MongooseModule.forFeature([
                 { name: product_schema_1.Product.name, schema: product_schema_1.ProductSchema },
             ]),
+            cloudinary_module_1.CloudinaryModule,
+            orders_module_1.OrderModule
         ],
         exports: [
             mongoose_1.MongooseModule.forFeature([

@@ -37,6 +37,10 @@ export declare class User {
     getSignedJwtToken: Function;
     matchPassword: Function;
     getResetPasswordToken: Function;
+    location: {
+        type: string;
+        coordinates: number[];
+    };
 }
 export declare const UserSchema: import("mongoose").Schema<User, import("mongoose").Model<User, any, any, any, import("mongoose").Document<unknown, any, User> & User & {
     _id: import("mongoose").Types.ObjectId;

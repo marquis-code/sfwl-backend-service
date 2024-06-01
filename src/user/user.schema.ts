@@ -39,9 +39,27 @@ export class User {
 	getSignedJwtToken: Function
 	matchPassword: Function
 	getResetPasswordToken: Function
+
+
+	@Prop({
+		type: {
+		  type: String,
+		  enum: ['Point'],
+		  required: true,
+		},
+		coordinates: {
+		  type: [Number],
+		  required: true,
+		},
+	  })
+	  location: {
+		type: string;
+        coordinates: number[];
+	  };
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
+UserSchema.index({ location: '2dsphere' });
 
 UserSchema.pre("save", async function (next) {
 	if (!this.isModified("password")) return next()

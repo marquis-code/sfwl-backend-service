@@ -7,12 +7,9 @@ import { CorsOptions } from "@nestjs/common/interfaces/external/cors-options.int
 import { AppModule } from "./app.module";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
 
-  app.setGlobalPrefix("/api/v1").useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-    })
+  app.setGlobalPrefix("/api/v1").useGlobalPipes(new ValidationPipe()
   );
   const options = new DocumentBuilder()
     .setTitle("API")
@@ -32,11 +29,11 @@ async function bootstrap() {
     allowedHeaders: 'Content-Type, Accept, Authorization',
     credentials: true,
   }
-  
+
   app.enableCors(corsOptions);
 
   const PORT = process.env.PORT;
-
+  console.log('Application is running on: http://localhost:3000');
   await app.listen(PORT);
 }
 

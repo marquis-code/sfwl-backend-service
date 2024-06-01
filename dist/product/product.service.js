@@ -18,10 +18,14 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const product_schema_1 = require("./product.schema");
 const review_schema_1 = require("../review/review.schema");
+const cloudinary_service_1 = require("../cloudinary/cloudinary.service");
+const user_schema_1 = require("../user/user.schema");
 let ProductService = class ProductService {
-    constructor(Product, Review) {
+    constructor(Product, Review, cloudinary, userModel) {
         this.Product = Product;
         this.Review = Review;
+        this.cloudinary = cloudinary;
+        this.userModel = userModel;
     }
     async getProducts() {
         const products = await this.Product.find();
@@ -30,34 +34,58 @@ let ProductService = class ProductService {
     async getProduct(id) {
         const product = await this.Product.findById(id).populate("reviews");
         if (!product)
-            throw new common_1.NotFoundException([
-                "No product found with the entered ID",
-            ]);
+            throw new common_1.NotFoundException(["No product found with the entered ID"]);
         return { product };
     }
-    async createProduct(dto) {
-        const product = await this.Product.create(dto);
+    async createProduct(dto, user, file) {
+        const cloudinaryResponse = await this.cloudinary.uploadImage(file);
+        const productPayload = Object.assign(Object.assign({}, dto), { createdBy: user._id, cloudinary_id: cloudinaryResponse.public_id, image: cloudinaryResponse.url });
+        const product = await this.Product.create(productPayload);
         return { product };
     }
-    async updateProduct(id, dto) {
-        const product = await this.Product.findByIdAndUpdate(id, dto, {
+    async updateProduct(id, dto, userId, file) {
+        let updateData = Object.assign({}, dto);
+        if (file) {
+            const product = await this.Product.findById(id);
+            if (!product)
+                throw new common_1.NotFoundException(["No product found with the entered ID"]);
+            if (product.createdBy.toString() !== userId) {
+                throw new common_1.ForbiddenException('You can only edit your own products');
+            }
+            if (product.cloudinary_id) {
+                await this.cloudinary.deleteImage(product.cloudinary_id);
+            }
+            const cloudinaryResponse = await this.cloudinary.uploadImage(file);
+            updateData = Object.assign(Object.assign({}, updateData), { cloudinary_id: cloudinaryResponse.public_id, image: cloudinaryResponse.url });
+        }
+        const updatedProduct = await this.Product.findByIdAndUpdate(id, updateData, {
             runValidators: true,
             new: true,
         });
-        if (!product)
-            throw new common_1.NotFoundException([
-                "No product found with the entered ID",
-            ]);
-        return { product };
+        if (!updatedProduct)
+            throw new common_1.NotFoundException(["No product found with the entered ID"]);
+        return { product: updatedProduct };
     }
-    async deleteProduct(id) {
+    async deleteProduct(id, userId) {
         const product = await this.Product.findByIdAndDelete(id);
         if (!product)
-            throw new common_1.NotFoundException([
-                "No product found with the entered ID",
-            ]);
+            throw new common_1.NotFoundException(["No product found with the entered ID"]);
+        const user = await this.userModel.findById(userId);
+        if (!user || (user.role !== 'vendor' && user.role !== 'admin')) {
+            throw new common_1.ForbiddenException('Only vendors and admins can delete products');
+        }
+        if (user.role === 'vendor' && product.createdBy.toString() !== userId) {
+            throw new common_1.ForbiddenException('Vendors can only delete their own products');
+        }
+        if (product.cloudinary_id) {
+            await this.cloudinary.deleteImage(product.cloudinary_id);
+        }
         await this.Review.deleteMany({ product: product._id });
         return {};
+    }
+    async getVendorProducts(vendorId) {
+        const objectId = new mongoose_2.Types.ObjectId(vendorId);
+        return this.Product.find({ createdBy: objectId }).exec();
     }
 };
 exports.ProductService = ProductService;
@@ -65,7 +93,10 @@ exports.ProductService = ProductService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(product_schema_1.Product.name)),
     __param(1, (0, mongoose_1.InjectModel)(review_schema_1.Review.name)),
+    __param(3, (0, mongoose_1.InjectModel)(user_schema_1.User.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model,
+        cloudinary_service_1.CloudinaryService,
         mongoose_2.Model])
 ], ProductService);
 //# sourceMappingURL=product.service.js.map

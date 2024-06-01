@@ -7,6 +7,8 @@ import { ProductService } from "./product.service"
 
 import { UserModule } from "../user/user.module"
 import { ReviewModule } from "../review/review.module"
+import { CloudinaryModule } from '../cloudinary/cloudinary.module';
+import { OrderModule } from "../order/orders.module"
 
 @Module({
 	imports: [
@@ -15,6 +17,8 @@ import { ReviewModule } from "../review/review.module"
 		MongooseModule.forFeature([
 			{ name: Product.name, schema: ProductSchema },
 		]),
+		CloudinaryModule,
+		OrderModule
 	],
 	exports: [
 		MongooseModule.forFeature([

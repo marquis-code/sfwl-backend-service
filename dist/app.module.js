@@ -18,7 +18,16 @@ const product_module_1 = require("./product/product.module");
 const review_module_1 = require("./review/review.module");
 const user_module_1 = require("./user/user.module");
 const image_module_1 = require("./image/image.module");
+const platform_express_1 = require("@nestjs/platform-express");
+const cloudinary_service_1 = require("./cloudinary/cloudinary.service");
+const cloudinary_config_1 = require("./cloudinary.config");
+const cloudinary_module_1 = require("./cloudinary/cloudinary.module");
+const multer = require("multer");
 const path_1 = require("path");
+const orders_module_1 = require("./order/orders.module");
+const notification_gateway_1 = require("./notification/notification.gateway");
+const notification_service_1 = require("./notification/notification.service");
+const notification_module_1 = require("./notification/notification.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -26,6 +35,10 @@ exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             config_1.ConfigModule.forRoot(),
+            platform_express_1.MulterModule.register({
+                storage: multer.memoryStorage(),
+            }),
+            cloudinary_module_1.CloudinaryModule,
             mongoose_1.MongooseModule.forRoot(process.env.MONGO_URI),
             throttler_1.ThrottlerModule.forRoot([
                 {
@@ -43,8 +56,19 @@ exports.AppModule = AppModule = __decorate([
             auth_module_1.AuthMoudle,
             product_module_1.ProductModule,
             review_module_1.ReviewModule,
+            orders_module_1.OrderModule,
+            notification_module_1.NotificationModule,
         ],
-        providers: [{ provide: core_1.APP_GUARD, useClass: throttler_1.ThrottlerGuard }],
+        providers: [
+            { provide: core_1.APP_GUARD, useClass: throttler_1.ThrottlerGuard },
+            cloudinary_service_1.CloudinaryService,
+            {
+                provide: "Cloudinary",
+                useFactory: cloudinary_config_1.configureCloudinary,
+                inject: [config_1.ConfigService],
+            },
+            notification_gateway_1.NotificationGateway, notification_service_1.NotificationService
+        ],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

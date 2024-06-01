@@ -1,74 +1,116 @@
-// nest.js modules
-import { Injectable, NotFoundException } from "@nestjs/common"
-import { InjectModel } from "@nestjs/mongoose"
-
-// types
-import { Model } from "mongoose"
-
-// schema
-import { Product, ProductDocument } from "./product.schema"
-import { Review, ReviewDocument } from "../review/review.schema"
-
-// DTOs
-import { ProductDto } from "./product.dto"
+import { Injectable, NotFoundException, ForbiddenException } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model, Types } from 'mongoose'; 
+import { Product, ProductDocument } from "./product.schema";
+import { Review, ReviewDocument } from "../review/review.schema";
+import { CloudinaryService } from "../cloudinary/cloudinary.service";
+import { ProductDto, UpdateProductDto } from "./product.dto";
+import { User, UserDocument } from '../user/user.schema';
 
 @Injectable()
 export class ProductService {
-	constructor(
-		@InjectModel(Product.name)
-		private readonly Product: Model<ProductDocument>,
+  constructor(
+    @InjectModel(Product.name)
+    private readonly Product: Model<ProductDocument>,
 
-		@InjectModel(Review.name)
-		private readonly Review: Model<ReviewDocument>,
-	) {}
+    @InjectModel(Review.name)
+    private readonly Review: Model<ReviewDocument>,
+	  private readonly cloudinary: CloudinaryService,
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+  ) {}
 
-	async getProducts() {
-		const products = await this.Product.find()
+  async getProducts() {
+    const products = await this.Product.find();
 
-		return { products }
+    return { products };
+  }
+
+  async getProduct(id: string) {
+    const product = await this.Product.findById(id).populate("reviews");
+
+    if (!product)
+      throw new NotFoundException(["No product found with the entered ID"]);
+
+    return { product };
+  }
+
+  async createProduct(dto: ProductDto, user: any, file: any) {
+	const cloudinaryResponse = await this.cloudinary.uploadImage(file)
+	const productPayload = {
+		...dto,
+		createdBy: user._id,
+    cloudinary_id: cloudinaryResponse.public_id,
+    image: cloudinaryResponse.url
 	}
+    const product = await this.Product.create(productPayload);
+    return { product };
+  }
+  
+  async updateProduct(id: string, dto: UpdateProductDto, userId: string, file?: any) {
+    let updateData = { ...dto };
 
-	async getProduct(id: string) {
-		const product = await this.Product.findById(id).populate("reviews")
+    if (file) {
+      const product = await this.Product.findById(id);
 
-		if (!product)
-			throw new NotFoundException([
-				"No product found with the entered ID",
-			])
+      if (!product)
+        throw new NotFoundException(["No product found with the entered ID"]);
 
-		return { product }
-	}
+      if (product.createdBy.toString() !== userId) {
+        throw new ForbiddenException('You can only edit your own products');
+      }
 
-	async createProduct(dto: ProductDto) {
-		const product = await this.Product.create(dto)
+      // Delete old image from Cloudinary
+      if (product.cloudinary_id) {
+        await this.cloudinary.deleteImage(product.cloudinary_id);
+      }
 
-		return { product }
-	}
+      // Upload new image to Cloudinary
+      const cloudinaryResponse = await this.cloudinary.uploadImage(file);
+      updateData = {
+        ...updateData,
+        cloudinary_id: cloudinaryResponse.public_id,
+        image: cloudinaryResponse.url
+      };
+    }
 
-	async updateProduct(id: string, dto: ProductDto) {
-		const product = await this.Product.findByIdAndUpdate(id, dto, {
-			runValidators: true,
-			new: true,
-		})
+    const updatedProduct = await this.Product.findByIdAndUpdate(id, updateData, {
+      runValidators: true,
+      new: true,
+    });
 
-		if (!product)
-			throw new NotFoundException([
-				"No product found with the entered ID",
-			])
+    if (!updatedProduct)
+      throw new NotFoundException(["No product found with the entered ID"]);
 
-		return { product }
-	}
+    return { product: updatedProduct };
+  }
 
-	async deleteProduct(id: string) {
-		const product = await this.Product.findByIdAndDelete(id)
+  async deleteProduct(id: string, userId: string) {
+    const product = await this.Product.findByIdAndDelete(id);
 
-		if (!product)
-			throw new NotFoundException([
-				"No product found with the entered ID",
-			])
+    if (!product)
+      throw new NotFoundException(["No product found with the entered ID"]);
 
-		await this.Review.deleteMany({ product: product._id })
+    const user = await this.userModel.findById(userId);
+    if (!user || (user.role !== 'vendor' && user.role !== 'admin')) {
+      throw new ForbiddenException('Only vendors and admins can delete products');
+    }
+    if (user.role === 'vendor' && product.createdBy.toString() !== userId) {
+      throw new ForbiddenException('Vendors can only delete their own products');
+    }
 
-		return {}
-	}
+    // Delete product image from Cloudinary
+    if (product.cloudinary_id) {
+      await this.cloudinary.deleteImage(product.cloudinary_id);
+    }
+
+    await this.Review.deleteMany({ product: product._id });
+
+    return {};
+  }
+
+  async getVendorProducts(vendorId: string): Promise<Product[]> {
+    const objectId = new Types.ObjectId(vendorId);
+    return this.Product.find({ createdBy: objectId }).exec();
+  }
+
 }

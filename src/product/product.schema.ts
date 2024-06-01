@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
 import { HydratedDocument } from "mongoose"
+import { Document, Types } from 'mongoose';
 
 export type ProductDocument = HydratedDocument<Product>
 
@@ -12,6 +13,8 @@ export enum Category {
 	"printers and scanners",
 	"networking and wifi",
 	"gaming",
+	"snacks",
+	"groceries",
 	"storage and memory",
 }
 
@@ -39,11 +42,17 @@ export class Product {
 	@Prop({ default: 0 })
 	averageRating: number
 
-	@Prop()
+	@Prop({required: true})
 	image: string
+
+	@Prop({ required: true })
+	cloudinary_id: string
 
 	@Prop({ default: Date.now })
 	createdAt: Date
+
+	@Prop({ type: Types.ObjectId, ref: 'User', required: true })
+	createdBy: Types.ObjectId;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product)

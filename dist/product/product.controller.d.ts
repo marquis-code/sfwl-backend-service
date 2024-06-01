@@ -1,3 +1,4 @@
+/// <reference types="multer" />
 /// <reference types="mongoose/types/aggregate" />
 /// <reference types="mongoose/types/callback" />
 /// <reference types="mongoose/types/collection" />
@@ -24,7 +25,7 @@
 /// <reference types="mongoose" />
 /// <reference types="mongoose/types/inferschematype" />
 import { ProductService } from "./product.service";
-import { ProductDto } from "./product.dto";
+import { ProductDto, UpdateProductDto } from "./product.dto";
 export declare class ProductController {
     private productService;
     constructor(productService: ProductService);
@@ -37,7 +38,7 @@ export declare class ProductController {
             _id: import("mongoose").Types.ObjectId;
         }>)[];
     }>;
-    createProduct(dto: ProductDto): Promise<{
+    createProduct(req: any, productDto: ProductDto, file: Express.Multer.File): Promise<{
         product: import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./product.schema").Product> & import("./product.schema").Product & {
             _id: import("mongoose").Types.ObjectId;
         }> & import("mongoose").Document<unknown, {}, import("./product.schema").Product> & import("./product.schema").Product & {
@@ -55,7 +56,7 @@ export declare class ProductController {
             _id: import("mongoose").Types.ObjectId;
         }>;
     }>;
-    updateProduct(id: string, dto: ProductDto): Promise<{
+    updateProduct(id: string, updateProductDto: UpdateProductDto, req: any, file?: Express.Multer.File): Promise<{
         product: import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./product.schema").Product> & import("./product.schema").Product & {
             _id: import("mongoose").Types.ObjectId;
         }> & import("mongoose").Document<unknown, {}, import("./product.schema").Product> & import("./product.schema").Product & {
@@ -64,5 +65,6 @@ export declare class ProductController {
             _id: import("mongoose").Types.ObjectId;
         }>;
     }>;
-    deleteProduct(id: string): Promise<{}>;
+    deleteProduct(id: string, req: any): Promise<{}>;
+    getProductsByVendor(vendorId: string): Promise<import("./product.schema").Product[]>;
 }

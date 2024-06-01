@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductSchema = exports.Product = exports.Category = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
+const mongoose_2 = require("mongoose");
 var Category;
 (function (Category) {
     Category[Category["desktops"] = 0] = "desktops";
@@ -21,7 +22,9 @@ var Category;
     Category[Category["printers and scanners"] = 5] = "printers and scanners";
     Category[Category["networking and wifi"] = 6] = "networking and wifi";
     Category[Category["gaming"] = 7] = "gaming";
-    Category[Category["storage and memory"] = 8] = "storage and memory";
+    Category[Category["snacks"] = 8] = "snacks";
+    Category[Category["groceries"] = 9] = "groceries";
+    Category[Category["storage and memory"] = 10] = "storage and memory";
 })(Category || (exports.Category = Category = {}));
 let Product = class Product {
 };
@@ -51,13 +54,21 @@ __decorate([
     __metadata("design:type", Number)
 ], Product.prototype, "averageRating", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
+    (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
 ], Product.prototype, "image", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", String)
+], Product.prototype, "cloudinary_id", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: Date.now }),
     __metadata("design:type", Date)
 ], Product.prototype, "createdAt", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: 'User', required: true }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
+], Product.prototype, "createdBy", void 0);
 exports.Product = Product = __decorate([
     (0, mongoose_1.Schema)({
         toJSON: { virtuals: true },

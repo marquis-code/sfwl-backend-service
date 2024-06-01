@@ -1,53 +1,88 @@
 // nest.js modules
-import { Controller, Get, Param, Post, Body, Delete, Put } from "@nestjs/common"
-
-// types
-import { Role } from "../role/role.enum"
-
-// decorators
-import { Auth } from "../auth/auth.decorator"
-
-// services
-import { ProductService } from "./product.service"
-
-// DTOs
-import { ProductDto } from "./product.dto"
-
-// utils
-import { ValidateMongoId } from "../utils/validate-mongoId"
-
+import {
+  Controller,
+  Get,
+  Param,
+  Post,
+  Body,
+  Delete,
+  Put,
+  Req,
+  UseInterceptors,
+  NotFoundException,
+  UploadedFile,
+  Request,
+  UseFilters,
+  ForbiddenException
+} from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { Role } from "../role/role.enum";
+import { Auth } from "../auth/auth.decorator";
+import { ProductService } from "./product.service";
+import { ProductDto, UpdateProductDto } from "./product.dto";
+import { ValidateMongoId } from "../utils/validate-mongoId";
+import { FileSizeExceptionFilter } from '../filters/file-size-exception.filter';
 @Controller("products")
+@UseFilters(FileSizeExceptionFilter)
 export class ProductController {
-	constructor(private productService: ProductService) {}
+  constructor(
+    private productService: ProductService
+  ) {}
 
-	@Get()
-	getProducts() {
-		return this.productService.getProducts()
-	}
+  @Get()
+  getProducts() {
+    return this.productService.getProducts();
+  }
 
-	@Post()
-	@Auth(Role.Admin)
-	createProduct(@Body() dto: ProductDto) {
-		return this.productService.createProduct(dto)
-	}
+  @Post()
+  @Auth(Role.Vendor, Role.Admin)
+  @UseInterceptors(FileInterceptor("file"))
+  async createProduct(
+    @Req() req,
+    @Body() productDto: ProductDto,
+    @UploadedFile() file: Express.Multer.File
+  ) {
+    const user = req.user;
+    if (!file) {
+      throw new NotFoundException('File is required');
+    }
+    return this.productService.createProduct(productDto, user, file);
+  }
 
-	@Get("/:id")
-	getProduct(@Param("id", ValidateMongoId) id: string) {
-		return this.productService.getProduct(id)
-	}
+  @Get("/:id")
+  getProduct(@Param("id", ValidateMongoId) id: string) {
+    return this.productService.getProduct(id);
+  }
 
-	@Put("/:id")
-	@Auth(Role.Admin)
-	updateProduct(
-		@Param("id", ValidateMongoId) id: string,
-		@Body() dto: ProductDto,
-	) {
-		return this.productService.updateProduct(id, dto)
-	}
+  @Put("/:id")
+  @Auth(Role.Vendor, Role.Admin)
+  @UseInterceptors(FileInterceptor("file"))
+  updateProduct(
+    @Param("id", ValidateMongoId) id: string,
+    @Body() updateProductDto: UpdateProductDto,
+    @Req() req,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    const user = req.user as any;
+    // if (user.role !== 'vendor' || user.role !== 'admin') {
+    //   throw new ForbiddenException('Only vendors or admin can edit products');
+    // }
+    console.log(id, 'product id')
+    console.log(updateProductDto, 'product id')
+    console.log(file, 'product id')
+    return this.productService.updateProduct(id, updateProductDto, user._id, file);
+  }
 
-	@Delete("/:id")
-	@Auth(Role.Admin)
-	deleteProduct(@Param("id", ValidateMongoId) id: string) {
-		return this.productService.deleteProduct(id)
-	}
+  @Delete("/:id")
+  @Auth(Role.Vendor, Role.Admin)
+  deleteProduct(@Param("id", ValidateMongoId) id: string, @Req() req) {
+    const user = req.user as any;
+    return this.productService.deleteProduct(id, user._id);
+  }
+
+  @Get('/vendor/:vendorId')
+  // @Auth(Role.Vendor, Role.Admin)
+  async getProductsByVendor(@Param('vendorId') vendorId: string) {
+    return this.productService.getVendorProducts(vendorId);
+  }
 }

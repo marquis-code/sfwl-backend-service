@@ -1,4 +1,5 @@
-import { IsEnum, MaxLength, IsPositive, IsNotEmpty } from "class-validator"
+import { IsEnum, MaxLength, IsPositive, IsNotEmpty, MinLength, IsNumber  } from "class-validator"
+import { Transform } from 'class-transformer';
 
 import { Category } from "./product.schema"
 
@@ -15,20 +16,30 @@ export class ProductDto {
 	})
 	description: string
 
-	@IsPositive({
-		message: "Enter a valid price",
-	})
-	price: number
+	@IsNumber({}, { message: "Price should be a number" })
+	@IsNotEmpty({ message: "Price should not be empty" })
+	@Transform(({ value }) => parseFloat(value))
+	readonly price: number;
 
-	@IsPositive({
-		message: "Enter a valid current number of stocks",
-	})
-	currentInStock: number
+	@IsNumber({}, { message: "Product in stock should be a number" })
+	@IsNotEmpty({ message: "Product in stock should not be empty" })
+	@Transform(({ value }) => parseInt(value, 10))
+	readonly currentInStock: number;
 
 	@IsNotEmpty({ message: "Category should not be empty" })
 	@IsEnum(Category, { message: "Enter a valid category" })
 	category: string
 
-	@IsNotEmpty()
-	image: string = "default.png"
+	cloudinary_id?: string;
+	image?: string;
+}
+
+export class UpdateProductDto {
+	name?: string;
+	description?: string;
+	price?: number;
+	currentInStock?: number;
+	category?: string;
+	cloudinary_id?: string;
+	image?: string;
 }

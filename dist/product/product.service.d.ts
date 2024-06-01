@@ -22,49 +22,54 @@
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
-import { Model } from "mongoose";
+import { Model, Types } from 'mongoose';
 import { Product, ProductDocument } from "./product.schema";
 import { ReviewDocument } from "../review/review.schema";
-import { ProductDto } from "./product.dto";
+import { CloudinaryService } from "../cloudinary/cloudinary.service";
+import { ProductDto, UpdateProductDto } from "./product.dto";
+import { UserDocument } from '../user/user.schema';
 export declare class ProductService {
     private readonly Product;
     private readonly Review;
-    constructor(Product: Model<ProductDocument>, Review: Model<ReviewDocument>);
+    private readonly cloudinary;
+    private readonly userModel;
+    constructor(Product: Model<ProductDocument>, Review: Model<ReviewDocument>, cloudinary: CloudinaryService, userModel: Model<UserDocument>);
     getProducts(): Promise<{
         products: (import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Product> & Product & {
-            _id: import("mongoose").Types.ObjectId;
+            _id: Types.ObjectId;
         }> & import("mongoose").Document<unknown, {}, Product> & Product & {
-            _id: import("mongoose").Types.ObjectId;
+            _id: Types.ObjectId;
         } & Required<{
-            _id: import("mongoose").Types.ObjectId;
+            _id: Types.ObjectId;
         }>)[];
     }>;
     getProduct(id: string): Promise<{
         product: import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Product> & Product & {
-            _id: import("mongoose").Types.ObjectId;
+            _id: Types.ObjectId;
         }> & import("mongoose").Document<unknown, {}, Product> & Product & {
-            _id: import("mongoose").Types.ObjectId;
+            _id: Types.ObjectId;
         } & Required<{
-            _id: import("mongoose").Types.ObjectId;
+            _id: Types.ObjectId;
         }>;
     }>;
-    createProduct(dto: ProductDto): Promise<{
+    createProduct(dto: ProductDto, user: any, file: any): Promise<{
         product: import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Product> & Product & {
-            _id: import("mongoose").Types.ObjectId;
+            _id: Types.ObjectId;
         }> & import("mongoose").Document<unknown, {}, Product> & Product & {
-            _id: import("mongoose").Types.ObjectId;
+            _id: Types.ObjectId;
         } & Required<{
-            _id: import("mongoose").Types.ObjectId;
+            _id: Types.ObjectId;
         }>;
     }>;
-    updateProduct(id: string, dto: ProductDto): Promise<{
+    updateProduct(id: string, dto: UpdateProductDto, userId: string, file?: any): Promise<{
         product: import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Product> & Product & {
-            _id: import("mongoose").Types.ObjectId;
+            _id: Types.ObjectId;
         }> & import("mongoose").Document<unknown, {}, Product> & Product & {
-            _id: import("mongoose").Types.ObjectId;
+            _id: Types.ObjectId;
         } & Required<{
-            _id: import("mongoose").Types.ObjectId;
+            _id: Types.ObjectId;
         }>;
     }>;
-    deleteProduct(id: string): Promise<{}>;
+    deleteProduct(id: string, userId: string): Promise<{}>;
+    getVendorProducts(vendorId: string): Promise<Product[]>;
 }

@@ -9,13 +9,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ProductDto = void 0;
+exports.UpdateProductDto = exports.ProductDto = void 0;
 const class_validator_1 = require("class-validator");
+const class_transformer_1 = require("class-transformer");
 const product_schema_1 = require("./product.schema");
 class ProductDto {
-    constructor() {
-        this.image = "default.png";
-    }
 }
 exports.ProductDto = ProductDto;
 __decorate([
@@ -33,15 +31,15 @@ __decorate([
     __metadata("design:type", String)
 ], ProductDto.prototype, "description", void 0);
 __decorate([
-    (0, class_validator_1.IsPositive)({
-        message: "Enter a valid price",
-    }),
+    (0, class_validator_1.IsNumber)({}, { message: "Price should be a number" }),
+    (0, class_validator_1.IsNotEmpty)({ message: "Price should not be empty" }),
+    (0, class_transformer_1.Transform)(({ value }) => parseFloat(value)),
     __metadata("design:type", Number)
 ], ProductDto.prototype, "price", void 0);
 __decorate([
-    (0, class_validator_1.IsPositive)({
-        message: "Enter a valid current number of stocks",
-    }),
+    (0, class_validator_1.IsNumber)({}, { message: "Product in stock should be a number" }),
+    (0, class_validator_1.IsNotEmpty)({ message: "Product in stock should not be empty" }),
+    (0, class_transformer_1.Transform)(({ value }) => parseInt(value, 10)),
     __metadata("design:type", Number)
 ], ProductDto.prototype, "currentInStock", void 0);
 __decorate([
@@ -49,8 +47,7 @@ __decorate([
     (0, class_validator_1.IsEnum)(product_schema_1.Category, { message: "Enter a valid category" }),
     __metadata("design:type", String)
 ], ProductDto.prototype, "category", void 0);
-__decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", String)
-], ProductDto.prototype, "image", void 0);
+class UpdateProductDto {
+}
+exports.UpdateProductDto = UpdateProductDto;
 //# sourceMappingURL=product.dto.js.map
