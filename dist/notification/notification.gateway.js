@@ -20,7 +20,6 @@ let NotificationGateway = class NotificationGateway {
         console.log('WebSocket Gateway Initialized');
     }
     handleConnection(client, ...args) {
-        console.log(`Client connected: ${client.id}`);
         const userId = client.handshake.query.userId;
         if (userId) {
             this.connectedClients.set(userId, client);
@@ -28,7 +27,6 @@ let NotificationGateway = class NotificationGateway {
     }
     handleDisconnect(client) {
         var _a;
-        console.log(`Client disconnected: ${client.id}`);
         const userId = (_a = [...this.connectedClients.entries()].find(([_, socket]) => socket.id === client.id)) === null || _a === void 0 ? void 0 : _a[0];
         if (userId) {
             this.connectedClients.delete(userId);
@@ -36,7 +34,6 @@ let NotificationGateway = class NotificationGateway {
     }
     sendNotification(userId, title, message, data) {
         const client = this.connectedClients.get(userId);
-        console.log(client, 'client here');
         if (client) {
             client.emit('notification', { title, message, data });
         }

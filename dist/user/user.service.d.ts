@@ -26,10 +26,12 @@ import { Model } from "mongoose";
 import { User, UserDocument } from "./user.schema";
 import { ReviewDocument } from "../review/review.schema";
 import { CreateUserDto, UpdateUserDto } from "./user.dto";
+import { WalletService } from "../wallet/wallet.service";
 export declare class UserService {
     private readonly User;
     private readonly Review;
-    constructor(User: Model<UserDocument>, Review: Model<ReviewDocument>);
+    private walletService;
+    constructor(User: Model<UserDocument>, Review: Model<ReviewDocument>, walletService: WalletService);
     getUsers(): Promise<{
         users: (import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, User> & User & {
             _id: import("mongoose").Types.ObjectId;

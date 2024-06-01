@@ -3,8 +3,6 @@ export declare class SignupDto {
     email: string;
     phone: string;
     password: string;
-    address: string;
-    city: string;
 }
 export declare class LoginDto {
     email: string;

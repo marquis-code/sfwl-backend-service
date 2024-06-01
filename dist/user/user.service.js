@@ -19,10 +19,12 @@ const mongoose_2 = require("mongoose");
 const role_enum_1 = require("../role/role.enum");
 const user_schema_1 = require("./user.schema");
 const review_schema_1 = require("../review/review.schema");
+const wallet_service_1 = require("../wallet/wallet.service");
 let UserService = class UserService {
-    constructor(User, Review) {
+    constructor(User, Review, walletService) {
         this.User = User;
         this.Review = Review;
+        this.walletService = walletService;
     }
     async getUsers() {
         const users = await this.User.find();
@@ -79,6 +81,7 @@ exports.UserService = UserService = __decorate([
     __param(0, (0, mongoose_1.InjectModel)(user_schema_1.User.name)),
     __param(1, (0, mongoose_1.InjectModel)(review_schema_1.Review.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
-        mongoose_2.Model])
+        mongoose_2.Model,
+        wallet_service_1.WalletService])
 ], UserService);
 //# sourceMappingURL=user.service.js.map

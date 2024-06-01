@@ -16,6 +16,7 @@ const user_module_1 = require("../user/user.module");
 const review_module_1 = require("../review/review.module");
 const product_module_1 = require("../product/product.module");
 const notification_module_1 = require("../notification/notification.module");
+const wallet_module_1 = require("../wallet/wallet.module");
 let OrderModule = class OrderModule {
 };
 exports.OrderModule = OrderModule;
@@ -26,6 +27,7 @@ exports.OrderModule = OrderModule = __decorate([
             (0, common_1.forwardRef)(() => user_module_1.UserModule),
             (0, common_1.forwardRef)(() => review_module_1.ReviewModule),
             (0, common_1.forwardRef)(() => notification_module_1.NotificationModule),
+            (0, common_1.forwardRef)(() => wallet_module_1.WalletModule),
             mongoose_1.MongooseModule.forFeature([
                 { name: order_schema_1.Order.name, schema: order_schema_1.OrderSchema },
             ])

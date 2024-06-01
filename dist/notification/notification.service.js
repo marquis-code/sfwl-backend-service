@@ -17,7 +17,6 @@ let NotificationService = class NotificationService {
         this.notificationGateway = notificationGateway;
     }
     async sendNotification(userId, title, message, data) {
-        console.log(userId, title, message, data, 'notification info here');
         this.notificationGateway.sendNotification(userId, title, message, data);
     }
 };

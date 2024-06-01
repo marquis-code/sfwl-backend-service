@@ -13,15 +13,17 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
-const common_1 = require("@nestjs/common");
-const mongoose_1 = require("@nestjs/mongoose");
 const crypto_1 = require("crypto");
+const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-const user_schema_1 = require("../user/user.schema");
 const sendEmail_1 = require("../utils/sendEmail");
+const user_schema_1 = require("../user/user.schema");
+const wallet_service_1 = require("../wallet/wallet.service");
+const common_1 = require("@nestjs/common");
 let AuthService = class AuthService {
-    constructor(User) {
+    constructor(User, walletService) {
         this.User = User;
+        this.walletService = walletService;
     }
     async signup(dto) {
         let user = await this.User.findOne({
@@ -31,7 +33,11 @@ let AuthService = class AuthService {
             throw new common_1.ConflictException([
                 "A user already exists with the entered email",
             ]);
-        user = await this.User.create(dto);
+        user = new this.User(dto);
+        const savedUser = await user.save();
+        const walletId = await this.walletService.createWallet(savedUser._id.toString());
+        user.walletId = walletId;
+        await user.save();
         user.password = undefined;
         return { user };
     }
@@ -40,9 +46,7 @@ let AuthService = class AuthService {
             email: dto.email,
         }).select("+password");
         if (!user)
-            throw new common_1.NotFoundException([
-                "No user exists with the entered email",
-            ]);
+            throw new common_1.NotFoundException(["No user exists with the entered email"]);
         const isMatch = await user.matchPassword(dto.password);
         if (!isMatch)
             throw new common_1.BadRequestException(["Invalid password"]);
@@ -61,9 +65,7 @@ let AuthService = class AuthService {
     async forgotPassword(req, email) {
         const user = await this.User.findOne({ email });
         if (!user)
-            throw new common_1.NotFoundException([
-                "No user exists with the entered email",
-            ]);
+            throw new common_1.NotFoundException(["No user exists with the entered email"]);
         const token = user.getResetPasswordToken();
         await user.save();
         const resetURL = `${req.protocol}://${req.get("host")}/api/v1/auth/reset-password?token=${token}`;
@@ -119,6 +121,7 @@ exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(user_schema_1.User.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        wallet_service_1.WalletService])
 ], AuthService);
 //# sourceMappingURL=auth.sevice.js.map

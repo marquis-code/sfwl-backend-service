@@ -56,7 +56,6 @@ let OrderService = class OrderService {
     }
     async notifyNearbyErranders(order) {
         var _a;
-        console.log(order, "order is here ooo");
         if (!order.location || !order.location.coordinates) {
             throw new common_1.BadRequestException("Order location is required.");
         }
@@ -72,7 +71,6 @@ let OrderService = class OrderService {
                 },
             },
         });
-        console.log(erranders, "available erranders");
         if (erranders.length === 0) {
             erranders = await this.userModel.find({
                 role: 'errander',

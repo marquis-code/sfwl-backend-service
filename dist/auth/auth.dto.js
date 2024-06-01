@@ -32,18 +32,6 @@ __decorate([
     (0, class_validator_1.MinLength)(6, { message: "Enter a password at least 6 characters long" }),
     __metadata("design:type", String)
 ], SignupDto.prototype, "password", void 0);
-__decorate([
-    (0, class_validator_1.IsString)({
-        message: "Enter home address",
-    }),
-    __metadata("design:type", String)
-], SignupDto.prototype, "address", void 0);
-__decorate([
-    (0, class_validator_1.IsString)({
-        message: "Enter city of residence",
-    }),
-    __metadata("design:type", String)
-], SignupDto.prototype, "city", void 0);
 class LoginDto {
 }
 exports.LoginDto = LoginDto;

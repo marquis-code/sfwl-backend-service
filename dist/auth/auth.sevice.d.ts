@@ -22,13 +22,15 @@
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
-import { Model } from "mongoose";
-import { Request } from "express";
-import { User, UserDocument } from "../user/user.schema";
+import { Model } from 'mongoose';
+import { Request } from 'express';
+import { User, UserDocument } from '../user/user.schema';
+import { WalletService } from '../wallet/wallet.service';
 import { SignupDto, LoginDto, UpdatePasswordDto, ResetPasswordDto } from "./auth.dto";
 export declare class AuthService {
     private readonly User;
-    constructor(User: Model<UserDocument>);
+    private readonly walletService;
+    constructor(User: Model<UserDocument>, walletService: WalletService);
     signup(dto: SignupDto): Promise<{
         user: import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, User> & User & {
             _id: import("mongoose").Types.ObjectId;

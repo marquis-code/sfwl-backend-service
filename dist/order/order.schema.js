@@ -25,6 +25,10 @@ __decorate([
 ], OrderItem.prototype, "quantity", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", String)
+], OrderItem.prototype, "vendorId", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Number)
 ], OrderItem.prototype, "price", void 0);
 OrderItem = __decorate([
@@ -42,6 +46,14 @@ __decorate([
     (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "User", required: true }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], Order.prototype, "user", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", String)
+], Order.prototype, "erranderId", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: true, enum: ['pending', 'accepted', 'delivered'], default: 'pending' }),
+    __metadata("design:type", String)
+], Order.prototype, "status", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Number)

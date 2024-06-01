@@ -10,7 +10,10 @@ class OrderItem {
   product: Product;
 
   @Prop({ required: true })
-  quantity: number;
+  quantity: number
+  
+  @Prop({ required: true })
+  vendorId: string;
 
   @Prop({ required: true })
   price: number;
@@ -25,6 +28,12 @@ export class Order {
 
   @Prop({ type: Types.ObjectId, ref: "User", required: true })
   user: Types.ObjectId;
+
+  @Prop({ required: true })
+  erranderId: string;
+
+  @Prop({ required: true, enum: ['pending', 'accepted', 'delivered'], default: 'pending' })
+  status: string;
 
   @Prop({ required: true })
   totalPrice: number;

@@ -5,6 +5,8 @@ import { HydratedDocument } from "mongoose"
 import { sign } from "jsonwebtoken"
 import { genSalt, hash, compare } from "bcryptjs"
 import { randomBytes, createHash } from "crypto"
+import { Types } from "mongoose";
+import { Wallet } from '../wallet/wallet.schema'
 
 import { Role } from "../role/role.enum"
 
@@ -29,6 +31,11 @@ export class User {
 
 	@Prop({ select: false })
 	resetPasswordToken: string
+
+	@Prop({ required: false })
+	walletId: string;
+	// @Prop({ type: Types.ObjectId, ref: "Wallet" })
+	// walletId: Wallet;
 
 	@Prop({ select: false })
 	resetPasswordExpire: number

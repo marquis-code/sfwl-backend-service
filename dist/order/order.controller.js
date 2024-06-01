@@ -18,9 +18,11 @@ const order_service_1 = require("./order.service");
 const auth_decorator_1 = require("../auth/auth.decorator");
 const role_enum_1 = require("../role/role.enum");
 const order_dto_1 = require("./order.dto");
+const wallet_service_1 = require("../wallet/wallet.service");
 let OrderController = class OrderController {
-    constructor(orderService) {
+    constructor(orderService, walletService) {
         this.orderService = orderService;
+        this.walletService = walletService;
     }
     async getOrders() {
         return this.orderService.getOrders();
@@ -34,12 +36,27 @@ let OrderController = class OrderController {
     }
     async getUserOrders(req) {
         const userId = req.user._id;
-        console.log(userId, 'user id here');
         return this.orderService.getUserOrders(userId);
     }
-    async acceptOrder(orderId, req) {
+    async acceptOrder(orderId, req, erranderId) {
         const user = req.user;
+        await this.walletService.acceptOrder(orderId, erranderId);
         await this.orderService.acceptOrder(orderId, user._id);
+        return { message: 'Order accepted by errander.' };
+    }
+    async completeOrder(id) {
+        await this.walletService.handleOrderCompletion(id);
+        return { message: 'Order completed and wallets credited.' };
+    }
+    async deliverOrder(id) {
+        await this.walletService.markOrderAsDelivered(id);
+        return { message: 'Order marked as delivered and wallets credited.' };
+    }
+    async getTransactionsForVendor(vendorId) {
+        return this.walletService.getTransactionsForVendor(vendorId);
+    }
+    async getOrdersForErrander(erranderId) {
+        return this.walletService.getOrdersForErrander(erranderId);
     }
 };
 exports.OrderController = OrderController;
@@ -66,7 +83,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], OrderController.prototype, "deleteOrder", null);
 __decorate([
-    (0, common_1.Get)('/user-orders'),
+    (0, common_1.Get)("/user-orders"),
     (0, auth_decorator_1.Auth)(role_enum_1.Role.Admin, role_enum_1.Role.Vendor),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
@@ -74,16 +91,46 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], OrderController.prototype, "getUserOrders", null);
 __decorate([
-    (0, common_1.Post)(':id/accept'),
+    (0, common_1.Post)(":id/accept"),
     (0, auth_decorator_1.Auth)(role_enum_1.Role.Admin, role_enum_1.Role.Errander),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)("id")),
     __param(1, (0, common_1.Req)()),
+    __param(2, (0, common_1.Body)('erranderId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:paramtypes", [String, Object, String]),
     __metadata("design:returntype", Promise)
 ], OrderController.prototype, "acceptOrder", null);
+__decorate([
+    (0, common_1.Post)(':id/complete'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], OrderController.prototype, "completeOrder", null);
+__decorate([
+    (0, common_1.Patch)(':id/deliver'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], OrderController.prototype, "deliverOrder", null);
+__decorate([
+    (0, common_1.Get)('vendor/:vendorId/transactions'),
+    __param(0, (0, common_1.Param)('vendorId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], OrderController.prototype, "getTransactionsForVendor", null);
+__decorate([
+    (0, common_1.Get)('errander/:erranderId/orders'),
+    __param(0, (0, common_1.Param)('erranderId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], OrderController.prototype, "getOrdersForErrander", null);
 exports.OrderController = OrderController = __decorate([
     (0, common_1.Controller)("orders"),
-    __metadata("design:paramtypes", [order_service_1.OrderService])
+    __metadata("design:paramtypes", [order_service_1.OrderService,
+        wallet_service_1.WalletService])
 ], OrderController);
 //# sourceMappingURL=order.controller.js.map

@@ -40,9 +40,6 @@ let ProductController = class ProductController {
     }
     updateProduct(id, updateProductDto, req, file) {
         const user = req.user;
-        console.log(id, 'product id');
-        console.log(updateProductDto, 'product id');
-        console.log(file, 'product id');
         return this.productService.updateProduct(id, updateProductDto, user._id, file);
     }
     deleteProduct(id, req) {

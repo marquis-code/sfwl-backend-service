@@ -22,6 +22,8 @@ import { OrderModule } from "./order/orders.module";
 import { NotificationGateway } from './notification/notification.gateway';
 import { NotificationService } from './notification/notification.service';
 import { NotificationModule } from './notification/notification.module';
+import { WalletModule } from "./wallet/wallet.module";
+import { WalletService } from "./wallet/wallet.service";
 
 @Module({
   imports: [
@@ -49,6 +51,7 @@ import { NotificationModule } from './notification/notification.module';
     ReviewModule,
     OrderModule,
     NotificationModule,
+    WalletModule
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

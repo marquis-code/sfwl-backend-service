@@ -43,6 +43,10 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "resetPasswordToken", void 0);
 __decorate([
+    (0, mongoose_1.Prop)({ required: false }),
+    __metadata("design:type", String)
+], User.prototype, "walletId", void 0);
+__decorate([
     (0, mongoose_1.Prop)({ select: false }),
     __metadata("design:type", Number)
 ], User.prototype, "resetPasswordExpire", void 0);

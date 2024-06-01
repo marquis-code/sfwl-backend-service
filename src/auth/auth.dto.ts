@@ -20,16 +20,6 @@ export class SignupDto {
 
 	@MinLength(6, { message: "Enter a password at least 6 characters long" })
 	password: string
-
-	@IsString({
-		message: "Enter home address",
-	})
-	address: string
-
-	@IsString({
-		message: "Enter city of residence",
-	})
-	city: string
 }
 
 export class LoginDto {
