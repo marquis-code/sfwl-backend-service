@@ -40,7 +40,6 @@ export class OrderController {
   @Auth(Role.Admin, Role.Vendor)
   async getUserOrders(@Req() req) {
     const userId = req.user._id
-    console.log(userId, 'user id here')
     return this.orderService.getUserOrders(userId);
   }
 

@@ -19,7 +19,6 @@ import {
     }
   
     handleConnection(client: Socket, ...args: any[]) {
-      console.log(`Client connected: ${client.id}`);
       // Associate the client with the userId (assumes userId is passed as query param)
       const userId = client.handshake.query.userId as string;
       if (userId) {
@@ -28,7 +27,6 @@ import {
     }
   
     handleDisconnect(client: Socket) {
-      console.log(`Client disconnected: ${client.id}`);
       // Remove the client from the connected clients map
       const userId = [...this.connectedClients.entries()].find(([_, socket]) => socket.id === client.id)?.[0];
       if (userId) {
@@ -38,7 +36,6 @@ import {
   
     sendNotification(userId: string, title: string, message: string, data: any) {
       const client = this.connectedClients.get(userId);
-      console.log(client, 'client here')
       if (client) {
         client.emit('notification', { title, message, data });
       }

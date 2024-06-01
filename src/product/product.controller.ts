@@ -64,12 +64,6 @@ export class ProductController {
     @UploadedFile() file?: Express.Multer.File,
   ) {
     const user = req.user as any;
-    // if (user.role !== 'vendor' || user.role !== 'admin') {
-    //   throw new ForbiddenException('Only vendors or admin can edit products');
-    // }
-    console.log(id, 'product id')
-    console.log(updateProductDto, 'product id')
-    console.log(file, 'product id')
     return this.productService.updateProduct(id, updateProductDto, user._id, file);
   }
 
@@ -81,7 +75,6 @@ export class ProductController {
   }
 
   @Get('/vendor/:vendorId')
-  // @Auth(Role.Vendor, Role.Admin)
   async getProductsByVendor(@Param('vendorId') vendorId: string) {
     return this.productService.getVendorProducts(vendorId);
   }

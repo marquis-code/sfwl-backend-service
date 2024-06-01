@@ -65,7 +65,6 @@ export class OrderService {
   }
 
   async notifyNearbyErranders(order: any) {
-    console.log(order, "order is here ooo");
     if (!order.location || !order.location.coordinates) {
       throw new BadRequestException("Order location is required.");
     }
@@ -81,8 +80,6 @@ export class OrderService {
         },
       },
     });
-
-    console.log(erranders, "available erranders");
 
     if (erranders.length === 0) {
       // If no erranders found nearby, notify all erranders
