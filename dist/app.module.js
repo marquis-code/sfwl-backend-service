@@ -29,6 +29,7 @@ const notification_gateway_1 = require("./notification/notification.gateway");
 const notification_service_1 = require("./notification/notification.service");
 const notification_module_1 = require("./notification/notification.module");
 const wallet_module_1 = require("./wallet/wallet.module");
+const transaction_module_1 = require("./transaction/transaction.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -59,7 +60,8 @@ exports.AppModule = AppModule = __decorate([
             review_module_1.ReviewModule,
             orders_module_1.OrderModule,
             notification_module_1.NotificationModule,
-            wallet_module_1.WalletModule
+            wallet_module_1.WalletModule,
+            transaction_module_1.TransactionModule,
         ],
         providers: [
             { provide: core_1.APP_GUARD, useClass: throttler_1.ThrottlerGuard },

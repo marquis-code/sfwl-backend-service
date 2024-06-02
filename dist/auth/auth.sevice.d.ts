@@ -22,10 +22,10 @@
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
-import { Model } from 'mongoose';
-import { Request } from 'express';
-import { User, UserDocument } from '../user/user.schema';
-import { WalletService } from '../wallet/wallet.service';
+import { Model } from "mongoose";
+import { Request } from "express";
+import { User, UserDocument } from "../user/user.schema";
+import { WalletService } from "../wallet/wallet.service";
 import { SignupDto, LoginDto, UpdatePasswordDto, ResetPasswordDto } from "./auth.dto";
 export declare class AuthService {
     private readonly User;

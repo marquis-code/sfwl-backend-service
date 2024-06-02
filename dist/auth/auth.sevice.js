@@ -26,6 +26,9 @@ let AuthService = class AuthService {
         this.walletService = walletService;
     }
     async signup(dto) {
+        if (!dto.location) {
+            throw new common_1.BadRequestException('Location is required! Please turn on your location to signup.');
+        }
         let user = await this.User.findOne({
             email: dto.email,
         });

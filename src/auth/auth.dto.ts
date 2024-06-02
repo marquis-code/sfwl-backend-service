@@ -1,18 +1,33 @@
-import {
-	IsEmail,
-	IsNotEmpty,
-	IsString,
-	MinLength,
-	IsMobilePhone,
-} from "class-validator"
+import { IsString, IsNotEmpty, IsEmail, IsMobilePhone, MinLength, IsEnum, IsArray, ArrayMinSize, IsNumber, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+
+// DTO for the coordinates array
+class LocationCoordinatesDto {
+	@IsArray()
+	@ArrayMinSize(2, { message: 'Coordinates must have at least 2 numbers' })
+	@IsNumber({}, { each: true, message: 'Each coordinate must be a number' })
+	coordinates: number[];
+  }
+  
+  // DTO for the location object
+  class LocationDto {
+	@IsString()
+	@IsEnum(['Point'], { message: 'Type must be "Point"' })
+	type: string;
+  
+	@IsArray()
+	@ArrayMinSize(2, { message: 'Coordinates must have at least 2 numbers' })
+	@IsNumber({}, { each: true, message: 'Each coordinate must be a number' })
+	coordinates: number[];
+  }
 
 export class SignupDto {
 	@IsString({
-		message: "Enter a name",
+		message: "Enter your full name",
 	})
 	name: string
 
-	@IsEmail({}, { message: "Enter a valid email" })
+	@IsEmail({}, { message: "Enter a valid email address" })
 	email: string
 
 	@IsMobilePhone(null, {}, { message: "Enter a valid phone number" })
@@ -20,6 +35,10 @@ export class SignupDto {
 
 	@MinLength(6, { message: "Enter a password at least 6 characters long" })
 	password: string
+
+	@ValidateNested()
+	@Type(() => LocationDto)
+	location: LocationDto;
 }
 
 export class LoginDto {

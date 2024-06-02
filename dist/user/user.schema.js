@@ -35,7 +35,7 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "phone", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ enum: [role_enum_1.Role.Admin, role_enum_1.Role.User], default: role_enum_1.Role.User }),
+    (0, mongoose_1.Prop)({ enum: [role_enum_1.Role.Admin, role_enum_1.Role.User, role_enum_1.Role.Errander, role_enum_1.Role.Vendor], default: role_enum_1.Role.User }),
     __metadata("design:type", String)
 ], User.prototype, "role", void 0);
 __decorate([

@@ -1,11 +1,10 @@
-import { createHash } from 'crypto';
-import { generateWalletId } from '../utils/generateWalletId';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Request } from 'express';
-import { sendEmail } from '../utils/sendEmail';
-import { User, UserDocument } from '../user/user.schema';
-import { WalletService } from '../wallet/wallet.service';
+import { createHash } from "crypto";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
+import { Request } from "express";
+import { sendEmail } from "../utils/sendEmail";
+import { User, UserDocument } from "../user/user.schema";
+import { WalletService } from "../wallet/wallet.service";
 // nest.js modules
 import {
   Injectable,
@@ -33,10 +32,14 @@ import {
 export class AuthService {
   constructor(
     @InjectModel(User.name) private readonly User: Model<UserDocument>,
-	private readonly walletService: WalletService
+    private readonly walletService: WalletService
   ) {}
 
   async signup(dto: SignupDto) {
+    if (!dto.location) {
+      throw new BadRequestException('Location is required! Please turn on your location to signup.');
+    }
+
     let user = await this.User.findOne({
       email: dto.email,
     });
@@ -46,13 +49,19 @@ export class AuthService {
         "A user already exists with the entered email",
       ]);
 
-	user = new this.User(dto);
+    user = new this.User(dto);
+
     const savedUser = await user.save();
-	const walletId = await this.walletService.createWallet(savedUser._id.toString());
+
+    const walletId = await this.walletService.createWallet(
+      savedUser._id.toString()
+    );
+
     user.walletId = walletId;
+
     await user.save();
 
-	user.password = undefined;
+    user.password = undefined;
 
     return { user };
   }

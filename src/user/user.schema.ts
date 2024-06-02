@@ -26,7 +26,7 @@ export class User {
 	@Prop({ required: true })
 	phone: string
 
-	@Prop({ enum: [Role.Admin, Role.User], default: Role.User })
+	@Prop({ enum: [Role.Admin, Role.User, Role.Errander, Role.Vendor], default: Role.User })
 	role: Role
 
 	@Prop({ select: false })

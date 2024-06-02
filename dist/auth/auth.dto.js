@@ -11,17 +11,39 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ResetPasswordDto = exports.UpdatePasswordDto = exports.LoginDto = exports.SignupDto = void 0;
 const class_validator_1 = require("class-validator");
+const class_transformer_1 = require("class-transformer");
+class LocationCoordinatesDto {
+}
+__decorate([
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ArrayMinSize)(2, { message: 'Coordinates must have at least 2 numbers' }),
+    (0, class_validator_1.IsNumber)({}, { each: true, message: 'Each coordinate must be a number' }),
+    __metadata("design:type", Array)
+], LocationCoordinatesDto.prototype, "coordinates", void 0);
+class LocationDto {
+}
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsEnum)(['Point'], { message: 'Type must be "Point"' }),
+    __metadata("design:type", String)
+], LocationDto.prototype, "type", void 0);
+__decorate([
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ArrayMinSize)(2, { message: 'Coordinates must have at least 2 numbers' }),
+    (0, class_validator_1.IsNumber)({}, { each: true, message: 'Each coordinate must be a number' }),
+    __metadata("design:type", Array)
+], LocationDto.prototype, "coordinates", void 0);
 class SignupDto {
 }
 exports.SignupDto = SignupDto;
 __decorate([
     (0, class_validator_1.IsString)({
-        message: "Enter a name",
+        message: "Enter your full name",
     }),
     __metadata("design:type", String)
 ], SignupDto.prototype, "name", void 0);
 __decorate([
-    (0, class_validator_1.IsEmail)({}, { message: "Enter a valid email" }),
+    (0, class_validator_1.IsEmail)({}, { message: "Enter a valid email address" }),
     __metadata("design:type", String)
 ], SignupDto.prototype, "email", void 0);
 __decorate([
@@ -32,6 +54,11 @@ __decorate([
     (0, class_validator_1.MinLength)(6, { message: "Enter a password at least 6 characters long" }),
     __metadata("design:type", String)
 ], SignupDto.prototype, "password", void 0);
+__decorate([
+    (0, class_validator_1.ValidateNested)(),
+    (0, class_transformer_1.Type)(() => LocationDto),
+    __metadata("design:type", LocationDto)
+], SignupDto.prototype, "location", void 0);
 class LoginDto {
 }
 exports.LoginDto = LoginDto;

@@ -18,7 +18,7 @@ import { Review, ReviewDocument } from "../review/review.schema";
 // DTOs
 import { CreateUserDto, UpdateUserDto } from "./user.dto";
 import { WalletService } from "../wallet/wallet.service";
-import { generateWalletId } from "../utils/generateWalletId";
+
 
 @Injectable()
 export class UserService {
@@ -35,6 +35,7 @@ export class UserService {
   }
 
   async createUser(dto: CreateUserDto) {
+    console.log(dto, 'create user dto')
     let user = await this.User.findOne({
       email: dto.email,
     });

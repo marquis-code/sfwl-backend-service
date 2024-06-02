@@ -31,6 +31,7 @@ let UserService = class UserService {
         return { users };
     }
     async createUser(dto) {
+        console.log(dto, 'create user dto');
         let user = await this.User.findOne({
             email: dto.email,
         });
