@@ -29,6 +29,19 @@ export class CreateUserDto {
 
 	@IsOptional()
 	@IsString({
+		message: "Enter home address",
+	})
+	homeAddress?: string
+
+	@IsOptional()
+	@IsString({
+		message: "Enter city of residence",
+	})
+	cityOfResidence?: string
+
+
+	@IsOptional()
+	@IsString({
 		message: "Enter a business name",
 	})
 	businessName?: string
@@ -99,4 +112,17 @@ export class UpdateUserDto {
 		message: "Enter a business location",
 	})
 	businessLocation?: string
+
+	@IsOptional()
+	@IsString({
+		message: "Enter home address",
+	})
+	homeAddress?: string
+
+	@IsOptional()
+	@IsString({
+		message: "Enter city of residence",
+	})
+	cityOfResidence?: string
+
 }

@@ -66,6 +66,19 @@ export class SignupDto {
 	})
 	businessLocation?: string
 
+	@IsOptional()
+	@IsString({
+		message: "Enter home address",
+	})
+	homeAddress?: string
+
+	@IsOptional()
+	@IsString({
+		message: "Enter city of residence",
+	})
+	cityOfResidence?: string
+
+
 	@ValidateNested()
 	@Type(() => LocationDto)
 	location: LocationDto;

@@ -38,11 +38,11 @@ export class User {
 	// walletId: Wallet;
 
 	@Prop()
-	erranderDetails?: any;
-  
+	homeAddress?: string;
+
 	@Prop()
-	customerDetails?: any;
-  
+	cityOfResidence?: string;
+	  
 	@Prop()
 	businessName?: string;
 	
