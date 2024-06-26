@@ -78,7 +78,7 @@ export class AuthService {
 
     if (!isMatch) throw new BadRequestException(["Invalid password"]);
 
-    return { token: user.getSignedJwtToken() };
+    return { token: user.getSignedJwtToken(), user };
   }
 
   async updatePassword(dto: UpdatePasswordDto, currentUser: UserDocument) {
