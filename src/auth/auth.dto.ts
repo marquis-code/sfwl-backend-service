@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsEmail, IsMobilePhone, MinLength, IsEnum, IsArray, ArrayMinSize, IsNumber, ValidateNested } from 'class-validator';
+import { IsString, IsNotEmpty, IsEmail,	IsOptional, IsMobilePhone, MinLength, IsEnum, IsArray, ArrayMinSize, IsNumber, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 
 // DTO for the coordinates array
@@ -35,6 +35,36 @@ export class SignupDto {
 
 	@MinLength(6, { message: "Enter a password at least 6 characters long" })
 	password: string
+
+	@IsOptional()
+	@IsString({
+		message: "Enter a business name",
+	})
+	businessName?: string
+
+	@IsOptional()
+	@IsString({
+		message: "Enter a business email",
+	})
+	businessEmail?: string
+
+	@IsOptional()
+	@IsString({
+		message: "Enter a business phone",
+	})
+	businessPhone?: string
+
+	@IsOptional()
+	@IsString({
+		message: "Enter a CAC registration",
+	})
+	cacRegistration?: string
+
+	@IsOptional()
+	@IsString({
+		message: "Enter a business location",
+	})
+	businessLocation?: string
 
 	@ValidateNested()
 	@Type(() => LocationDto)

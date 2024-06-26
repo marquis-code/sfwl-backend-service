@@ -4,6 +4,7 @@ import {
 	IsMobilePhone,
 	IsString,
 	MinLength,
+	IsOptional,
 } from "class-validator"
 
 import { Role } from "../role/role.enum"
@@ -17,7 +18,7 @@ export class CreateUserDto {
 	@IsEmail({}, { message: "Enter a valid email" })
 	email: string
 
-	@MinLength(6, { message: "Enter a password atleast 6 characters long" })
+	@MinLength(6, { message: "Enter a password at least 6 characters long" })
 	password: string
 
 	@IsMobilePhone(null, {}, { message: "Enter a valid phone number" })
@@ -25,6 +26,36 @@ export class CreateUserDto {
 
 	@IsEnum(Role, { message: "Enter a valid role" })
 	role: Role
+
+	@IsOptional()
+	@IsString({
+		message: "Enter a business name",
+	})
+	businessName?: string
+
+	@IsOptional()
+	@IsString({
+		message: "Enter a business email",
+	})
+	businessEmail?: string
+
+	@IsOptional()
+	@IsString({
+		message: "Enter a business phone",
+	})
+	businessPhone?: string
+
+	@IsOptional()
+	@IsString({
+		message: "Enter a CAC registration",
+	})
+	cacRegistration?: string
+
+	@IsOptional()
+	@IsString({
+		message: "Enter a business location",
+	})
+	businessLocation?: string
 }
 
 export class UpdateUserDto {
@@ -38,4 +69,34 @@ export class UpdateUserDto {
 
 	@IsEnum(Role, { each: true, message: "Enter a valid role" })
 	role: Role
+
+	@IsOptional()
+	@IsString({
+		message: "Enter a business name",
+	})
+	businessName?: string
+
+	@IsOptional()
+	@IsString({
+		message: "Enter a business email",
+	})
+	businessEmail?: string
+
+	@IsOptional()
+	@IsString({
+		message: "Enter a business phone",
+	})
+	businessPhone?: string
+
+	@IsOptional()
+	@IsString({
+		message: "Enter a CAC registration",
+	})
+	cacRegistration?: string
+
+	@IsOptional()
+	@IsString({
+		message: "Enter a business location",
+	})
+	businessLocation?: string
 }

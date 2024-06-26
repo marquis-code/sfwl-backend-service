@@ -37,6 +37,27 @@ export class User {
 	// @Prop({ type: Types.ObjectId, ref: "Wallet" })
 	// walletId: Wallet;
 
+	@Prop()
+	erranderDetails?: any;
+  
+	@Prop()
+	customerDetails?: any;
+  
+	@Prop()
+	businessName?: string;
+	
+	@Prop()
+	businessEmail?: string;
+	
+	@Prop()
+	businessPhone?: string;
+
+	@Prop()
+	cacRegistration?: string;
+	
+	@Prop()
+	businessLocation?: string;
+
 	@Prop({ select: false })
 	resetPasswordExpire: number
 
