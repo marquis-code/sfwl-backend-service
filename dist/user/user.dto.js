@@ -26,7 +26,7 @@ __decorate([
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "email", void 0);
 __decorate([
-    (0, class_validator_1.MinLength)(6, { message: "Enter a password atleast 6 characters long" }),
+    (0, class_validator_1.MinLength)(6, { message: "Enter a password at least 6 characters long" }),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "password", void 0);
 __decorate([
@@ -37,6 +37,55 @@ __decorate([
     (0, class_validator_1.IsEnum)(role_enum_1.Role, { message: "Enter a valid role" }),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "role", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)({
+        message: "Enter home address",
+    }),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "homeAddress", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)({
+        message: "Enter city of residence",
+    }),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "cityOfResidence", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)({
+        message: "Enter a business name",
+    }),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "businessName", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)({
+        message: "Enter a business email",
+    }),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "businessEmail", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)({
+        message: "Enter a business phone",
+    }),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "businessPhone", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)({
+        message: "Enter a CAC registration",
+    }),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "cacRegistration", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)({
+        message: "Enter a business location",
+    }),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "businessLocation", void 0);
 class UpdateUserDto {
 }
 exports.UpdateUserDto = UpdateUserDto;
@@ -54,4 +103,53 @@ __decorate([
     (0, class_validator_1.IsEnum)(role_enum_1.Role, { each: true, message: "Enter a valid role" }),
     __metadata("design:type", String)
 ], UpdateUserDto.prototype, "role", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)({
+        message: "Enter a business name",
+    }),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "businessName", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)({
+        message: "Enter a business email",
+    }),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "businessEmail", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)({
+        message: "Enter a business phone",
+    }),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "businessPhone", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)({
+        message: "Enter a CAC registration",
+    }),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "cacRegistration", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)({
+        message: "Enter a business location",
+    }),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "businessLocation", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)({
+        message: "Enter home address",
+    }),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "homeAddress", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)({
+        message: "Enter city of residence",
+    }),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "cityOfResidence", void 0);
 //# sourceMappingURL=user.dto.js.map

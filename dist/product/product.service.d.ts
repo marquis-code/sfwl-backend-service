@@ -1,27 +1,3 @@
-/// <reference types="mongoose/types/aggregate" />
-/// <reference types="mongoose/types/callback" />
-/// <reference types="mongoose/types/collection" />
-/// <reference types="mongoose/types/connection" />
-/// <reference types="mongoose/types/cursor" />
-/// <reference types="mongoose/types/document" />
-/// <reference types="mongoose/types/error" />
-/// <reference types="mongoose/types/expressions" />
-/// <reference types="mongoose/types/helpers" />
-/// <reference types="mongoose/types/middlewares" />
-/// <reference types="mongoose/types/indexes" />
-/// <reference types="mongoose/types/models" />
-/// <reference types="mongoose/types/mongooseoptions" />
-/// <reference types="mongoose/types/pipelinestage" />
-/// <reference types="mongoose/types/populate" />
-/// <reference types="mongoose/types/query" />
-/// <reference types="mongoose/types/schemaoptions" />
-/// <reference types="mongoose/types/schematypes" />
-/// <reference types="mongoose/types/session" />
-/// <reference types="mongoose/types/types" />
-/// <reference types="mongoose/types/utility" />
-/// <reference types="mongoose/types/validation" />
-/// <reference types="mongoose/types/virtuals" />
-/// <reference types="mongoose/types/inferschematype" />
 import { Model, Types } from 'mongoose';
 import { Product, ProductDocument } from "./product.schema";
 import { ReviewDocument } from "../review/review.schema";
@@ -29,11 +5,11 @@ import { CloudinaryService } from "../cloudinary/cloudinary.service";
 import { ProductDto, UpdateProductDto } from "./product.dto";
 import { UserDocument } from '../user/user.schema';
 export declare class ProductService {
-    private readonly Product;
-    private readonly Review;
+    private readonly productModel;
+    private readonly reviewModel;
     private readonly cloudinary;
     private readonly userModel;
-    constructor(Product: Model<ProductDocument>, Review: Model<ReviewDocument>, cloudinary: CloudinaryService, userModel: Model<UserDocument>);
+    constructor(productModel: Model<ProductDocument>, reviewModel: Model<ReviewDocument>, cloudinary: CloudinaryService, userModel: Model<UserDocument>);
     getProducts(): Promise<{
         products: (import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Product> & Product & {
             _id: Types.ObjectId;

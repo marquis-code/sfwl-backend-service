@@ -11,49 +11,54 @@ import { User, UserDocument } from '../user/user.schema';
 export class ProductService {
   constructor(
     @InjectModel(Product.name)
-    private readonly Product: Model<ProductDocument>,
+    private readonly productModel: Model<ProductDocument>,
 
     @InjectModel(Review.name)
-    private readonly Review: Model<ReviewDocument>,
-	  private readonly cloudinary: CloudinaryService,
-    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    private readonly reviewModel: Model<ReviewDocument>,
+
+    private readonly cloudinary: CloudinaryService,
+
+    @InjectModel(User.name) 
+    private readonly userModel: Model<UserDocument>,
   ) {}
 
   async getProducts() {
-    const products = await this.Product.find();
-
+    const products = await this.productModel.find();
     return { products };
   }
 
   async getProduct(id: string) {
-    const product = await this.Product.findById(id).populate("reviews");
+    const product = await this.productModel.findById(id).populate("reviews");
 
-    if (!product)
-      throw new NotFoundException(["No product found with the entered ID"]);
+    if (!product) {
+      throw new NotFoundException("No product found with the entered ID");
+    }
 
     return { product };
   }
 
   async createProduct(dto: ProductDto, user: any, file: any) {
-	const cloudinaryResponse = await this.cloudinary.uploadImage(file)
-	const productPayload = {
-		...dto,
-		createdBy: user._id,
-    cloudinary_id: cloudinaryResponse.public_id,
-    image: cloudinaryResponse.url
-	}
-    const product = await this.Product.create(productPayload);
+    const cloudinaryResponse = await this.cloudinary.uploadImage(file);
+    const productPayload = {
+      ...dto,
+      createdBy: user._id,
+      cloudinary_id: cloudinaryResponse.public_id,
+      image: cloudinaryResponse.url,
+    };
+
+    const product = await this.productModel.create(productPayload);
     return { product };
   }
-  
+
   async updateProduct(id: string, dto: UpdateProductDto, userId: string, file?: any) {
     let updateData = { ...dto };
 
     if (file) {
-      const product = await this.Product.findById(id);
+      const product = await this.productModel.findById(id);
 
-      if (!product)
-        throw new NotFoundException(["No product found with the entered ID"]);
+      if (!product) {
+        throw new NotFoundException("No product found with the entered ID");
+      }
 
       if (product.createdBy.toString() !== userId) {
         throw new ForbiddenException('You can only edit your own products');
@@ -69,26 +74,28 @@ export class ProductService {
       updateData = {
         ...updateData,
         cloudinary_id: cloudinaryResponse.public_id,
-        image: cloudinaryResponse.url
+        image: cloudinaryResponse.url,
       };
     }
 
-    const updatedProduct = await this.Product.findByIdAndUpdate(id, updateData, {
+    const updatedProduct = await this.productModel.findByIdAndUpdate(id, updateData, {
       runValidators: true,
       new: true,
     });
 
-    if (!updatedProduct)
-      throw new NotFoundException(["No product found with the entered ID"]);
+    if (!updatedProduct) {
+      throw new NotFoundException("No product found with the entered ID");
+    }
 
     return { product: updatedProduct };
   }
 
   async deleteProduct(id: string, userId: string) {
-    const product = await this.Product.findByIdAndDelete(id);
+    const product = await this.productModel.findById(id);
 
-    if (!product)
-      throw new NotFoundException(["No product found with the entered ID"]);
+    if (!product) {
+      throw new NotFoundException("No product found with the entered ID");
+    }
 
     const user = await this.userModel.findById(userId);
     if (!user || (user.role !== 'vendor' && user.role !== 'admin')) {
@@ -103,14 +110,14 @@ export class ProductService {
       await this.cloudinary.deleteImage(product.cloudinary_id);
     }
 
-    await this.Review.deleteMany({ product: product._id });
+    await this.productModel.findByIdAndDelete(id);
+    await this.reviewModel.deleteMany({ product: product._id });
 
     return {};
   }
 
   async getVendorProducts(vendorId: string): Promise<Product[]> {
     const objectId = new Types.ObjectId(vendorId);
-    return this.Product.find({ createdBy: objectId }).exec();
+    return this.productModel.find({ createdBy: objectId }).exec();
   }
-
 }

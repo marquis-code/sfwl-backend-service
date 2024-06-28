@@ -21,34 +21,36 @@ const review_schema_1 = require("../review/review.schema");
 const cloudinary_service_1 = require("../cloudinary/cloudinary.service");
 const user_schema_1 = require("../user/user.schema");
 let ProductService = class ProductService {
-    constructor(Product, Review, cloudinary, userModel) {
-        this.Product = Product;
-        this.Review = Review;
+    constructor(productModel, reviewModel, cloudinary, userModel) {
+        this.productModel = productModel;
+        this.reviewModel = reviewModel;
         this.cloudinary = cloudinary;
         this.userModel = userModel;
     }
     async getProducts() {
-        const products = await this.Product.find();
+        const products = await this.productModel.find();
         return { products };
     }
     async getProduct(id) {
-        const product = await this.Product.findById(id).populate("reviews");
-        if (!product)
-            throw new common_1.NotFoundException(["No product found with the entered ID"]);
+        const product = await this.productModel.findById(id).populate("reviews");
+        if (!product) {
+            throw new common_1.NotFoundException("No product found with the entered ID");
+        }
         return { product };
     }
     async createProduct(dto, user, file) {
         const cloudinaryResponse = await this.cloudinary.uploadImage(file);
         const productPayload = Object.assign(Object.assign({}, dto), { createdBy: user._id, cloudinary_id: cloudinaryResponse.public_id, image: cloudinaryResponse.url });
-        const product = await this.Product.create(productPayload);
+        const product = await this.productModel.create(productPayload);
         return { product };
     }
     async updateProduct(id, dto, userId, file) {
         let updateData = Object.assign({}, dto);
         if (file) {
-            const product = await this.Product.findById(id);
-            if (!product)
-                throw new common_1.NotFoundException(["No product found with the entered ID"]);
+            const product = await this.productModel.findById(id);
+            if (!product) {
+                throw new common_1.NotFoundException("No product found with the entered ID");
+            }
             if (product.createdBy.toString() !== userId) {
                 throw new common_1.ForbiddenException('You can only edit your own products');
             }
@@ -58,18 +60,20 @@ let ProductService = class ProductService {
             const cloudinaryResponse = await this.cloudinary.uploadImage(file);
             updateData = Object.assign(Object.assign({}, updateData), { cloudinary_id: cloudinaryResponse.public_id, image: cloudinaryResponse.url });
         }
-        const updatedProduct = await this.Product.findByIdAndUpdate(id, updateData, {
+        const updatedProduct = await this.productModel.findByIdAndUpdate(id, updateData, {
             runValidators: true,
             new: true,
         });
-        if (!updatedProduct)
-            throw new common_1.NotFoundException(["No product found with the entered ID"]);
+        if (!updatedProduct) {
+            throw new common_1.NotFoundException("No product found with the entered ID");
+        }
         return { product: updatedProduct };
     }
     async deleteProduct(id, userId) {
-        const product = await this.Product.findByIdAndDelete(id);
-        if (!product)
-            throw new common_1.NotFoundException(["No product found with the entered ID"]);
+        const product = await this.productModel.findById(id);
+        if (!product) {
+            throw new common_1.NotFoundException("No product found with the entered ID");
+        }
         const user = await this.userModel.findById(userId);
         if (!user || (user.role !== 'vendor' && user.role !== 'admin')) {
             throw new common_1.ForbiddenException('Only vendors and admins can delete products');
@@ -80,12 +84,13 @@ let ProductService = class ProductService {
         if (product.cloudinary_id) {
             await this.cloudinary.deleteImage(product.cloudinary_id);
         }
-        await this.Review.deleteMany({ product: product._id });
+        await this.productModel.findByIdAndDelete(id);
+        await this.reviewModel.deleteMany({ product: product._id });
         return {};
     }
     async getVendorProducts(vendorId) {
         const objectId = new mongoose_2.Types.ObjectId(vendorId);
-        return this.Product.find({ createdBy: objectId }).exec();
+        return this.productModel.find({ createdBy: objectId }).exec();
     }
 };
 exports.ProductService = ProductService;

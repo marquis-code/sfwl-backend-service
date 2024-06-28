@@ -78,6 +78,8 @@ export class AuthService {
 
     if (!isMatch) throw new BadRequestException(["Invalid password"]);
 
+    user.password = undefined;
+
     return { token: user.getSignedJwtToken(), user };
   }
 

@@ -42,7 +42,7 @@ export class User {
 
 	@Prop()
 	cityOfResidence?: string;
-	  
+	  	
 	@Prop()
 	businessName?: string;
 	

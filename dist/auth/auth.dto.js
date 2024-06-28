@@ -55,6 +55,55 @@ __decorate([
     __metadata("design:type", String)
 ], SignupDto.prototype, "password", void 0);
 __decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)({
+        message: "Enter a business name",
+    }),
+    __metadata("design:type", String)
+], SignupDto.prototype, "businessName", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)({
+        message: "Enter a business email",
+    }),
+    __metadata("design:type", String)
+], SignupDto.prototype, "businessEmail", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)({
+        message: "Enter a business phone",
+    }),
+    __metadata("design:type", String)
+], SignupDto.prototype, "businessPhone", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)({
+        message: "Enter a CAC registration",
+    }),
+    __metadata("design:type", String)
+], SignupDto.prototype, "cacRegistration", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)({
+        message: "Enter a business location",
+    }),
+    __metadata("design:type", String)
+], SignupDto.prototype, "businessLocation", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)({
+        message: "Enter home address",
+    }),
+    __metadata("design:type", String)
+], SignupDto.prototype, "homeAddress", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)({
+        message: "Enter city of residence",
+    }),
+    __metadata("design:type", String)
+], SignupDto.prototype, "cityOfResidence", void 0);
+__decorate([
     (0, class_validator_1.ValidateNested)(),
     (0, class_transformer_1.Type)(() => LocationDto),
     __metadata("design:type", LocationDto)

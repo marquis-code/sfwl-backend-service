@@ -53,7 +53,8 @@ let AuthService = class AuthService {
         const isMatch = await user.matchPassword(dto.password);
         if (!isMatch)
             throw new common_1.BadRequestException(["Invalid password"]);
-        return { token: user.getSignedJwtToken() };
+        user.password = undefined;
+        return { token: user.getSignedJwtToken(), user };
     }
     async updatePassword(dto, currentUser) {
         const user = await this.User.findById(currentUser.id).select("+password");

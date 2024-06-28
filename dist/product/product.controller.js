@@ -29,24 +29,41 @@ let ProductController = class ProductController {
         return this.productService.getProducts();
     }
     async createProduct(req, productDto, file) {
-        const user = req.user;
+        console.log('Received create product request');
+        console.log('User:', req.user);
+        console.log('Product DTO:', productDto);
         if (!file) {
+            console.log('No file uploaded');
             throw new common_1.NotFoundException('File is required');
         }
-        return this.productService.createProduct(productDto, user, file);
+        console.log('Uploaded File:', file);
+        try {
+            const response = await this.productService.createProduct(productDto, req.user, file);
+            console.log('Product created successfully:', response);
+            return response;
+        }
+        catch (error) {
+            console.error('Error creating product:', error.message);
+            throw new common_1.BadRequestException('Unable to create product. Please check your input.');
+        }
     }
     getProduct(id) {
+        console.log('Received get product request for ID:', id);
         return this.productService.getProduct(id);
     }
     updateProduct(id, updateProductDto, req, file) {
-        const user = req.user;
-        return this.productService.updateProduct(id, updateProductDto, user._id, file);
+        console.log('Received update product request for ID:', id);
+        console.log('User:', req.user);
+        console.log('Update Product DTO:', updateProductDto);
+        return this.productService.updateProduct(id, updateProductDto, req.user._id, file);
     }
     deleteProduct(id, req) {
-        const user = req.user;
-        return this.productService.deleteProduct(id, user._id);
+        console.log('Received delete product request for ID:', id);
+        console.log('User:', req.user);
+        return this.productService.deleteProduct(id, req.user._id);
     }
     async getProductsByVendor(vendorId) {
+        console.log('Received get products by vendor request for vendor ID:', vendorId);
         return this.productService.getVendorProducts(vendorId);
     }
 };

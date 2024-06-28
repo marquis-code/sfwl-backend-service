@@ -7,6 +7,13 @@ export declare class SignupDto {
     email: string;
     phone: string;
     password: string;
+    businessName?: string;
+    businessEmail?: string;
+    businessPhone?: string;
+    cacRegistration?: string;
+    businessLocation?: string;
+    homeAddress?: string;
+    cityOfResidence?: string;
     location: LocationDto;
 }
 export declare class LoginDto {
