@@ -73,25 +73,10 @@ export class ProductController {
     return this.productService.getProduct(id);
   }
 
-  // @Put("/:id")
-  // @Auth(Role.Vendor, Role.Admin)
-  // @UseInterceptors(FileInterceptor("file"))
-  // updateProduct(
-  //   @Param("id", ValidateMongoId) id: string,
-  //   @Body() updateProductDto: UpdateProductDto,
-  //   @Req() req,
-  //   @UploadedFile() file?: Express.Multer.File,
-  // ) {
-  //   console.log('Received update product request for ID:', id);
-  //   console.log('User:', req.user);
-  //   console.log('Update Product DTO:', updateProductDto);
-
-  //   return this.productService.updateProduct(id, updateProductDto, req.user._id, file);
-  // }
-  @Patch("/:id")
+  @Put("/:id")
   @Auth(Role.Vendor, Role.Admin)
   @UseInterceptors(FileInterceptor("file"))
-  async updateProduct(
+  updateProduct(
     @Param("id", ValidateMongoId) id: string,
     @Body() updateProductDto: UpdateProductDto,
     @Req() req,
@@ -100,18 +85,10 @@ export class ProductController {
     console.log('Received update product request for ID:', id);
     console.log('User:', req.user);
     console.log('Update Product DTO:', updateProductDto);
-  
-    const updatedProduct = await this.productService.updateProduct(id, updateProductDto, req.user._id, file);
-  
-    // Check if the product was updated successfully
-    if (!updatedProduct) {
-      throw new NotFoundException(`Product with ID ${id} not found.`);
-    }
-  
-    return updatedProduct;
+
+    return this.productService.updateProduct(id, updateProductDto, req.user._id, file);
   }
-
-
+  
   @Delete("/:id")
   @Auth(Role.Vendor, Role.Admin)
   deleteProduct(@Param("id", ValidateMongoId) id: string, @Req() req) {

@@ -16,3 +16,6 @@ export declare class UpdateProductDto {
     cloudinary_id?: string;
     image?: string;
 }
+export interface UpdateProductWithCreatedByDto extends UpdateProductDto {
+    createdBy?: string;
+}

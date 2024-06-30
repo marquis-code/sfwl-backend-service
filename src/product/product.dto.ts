@@ -43,3 +43,8 @@ export class UpdateProductDto {
 	cloudinary_id?: string;
 	image?: string;
 }
+
+// Define the new type that extends UpdateProductDto
+export interface UpdateProductWithCreatedByDto extends UpdateProductDto {
+	createdBy?: string;
+  }
