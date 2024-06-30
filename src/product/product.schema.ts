@@ -17,7 +17,26 @@ export enum Category {
 	"snacks",
 	"groceries",
 	"storage and memory",
-}
+	"smartphones",
+	"tablets",
+	"smartwatches",
+	"home appliances",
+	"kitchen appliances",
+	"personal care",
+	"beauty products",
+	"clothing",
+	"shoes",
+	"books",
+	"toys",
+	"sports equipment",
+	"office supplies",
+	"pet supplies",
+	"automotive parts",
+	"musical instruments",
+	"furniture",
+	"garden tools",
+	"health and wellness",
+  }
 
 @Schema({
 	toJSON: { virtuals: true },

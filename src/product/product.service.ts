@@ -10,7 +10,7 @@ import { Review, ReviewDocument } from "../review/review.schema";
 import { CloudinaryService } from "../cloudinary/cloudinary.service";
 import { ProductDto, UpdateProductDto } from "./product.dto";
 import { User, UserDocument } from "../user/user.schema";
-import { shuffleArray } from '../utils/shuffleArray'
+import { shuffleArray } from "../utils/shuffleArray";
 
 @Injectable()
 export class ProductService {
@@ -27,14 +27,13 @@ export class ProductService {
     private readonly userModel: Model<UserDocument>
   ) {}
 
-
   async getProducts() {
     // Populate the createdBy field to get the full user object
-    const products = await this.productModel.find().populate('createdBy');
-  
+    const products = await this.productModel.find().populate("createdBy");
+
     // Shuffle the products array
     const shuffledProducts = shuffleArray(products);
-  
+
     return { products: shuffledProducts };
   }
 
@@ -61,29 +60,28 @@ export class ProductService {
     return { product };
   }
 
-  async updateProduct(id: string, dto: UpdateProductDto, userId: string, file?: any) {
-    console.log(userId, 'usr id here')
+  async updateProduct(
+    id: string,
+    dto: UpdateProductDto,
+    userId: string,
+    file?: any
+  ) {
     let updateData = { ...dto };
 
+    // Find the product by ID
+    const product = await this.productModel.findById(id);
+    if (!product) {
+      throw new NotFoundException("No product found with the entered ID");
+    }
+
+    // Check if the user has permission to edit the product
+    const userIdObj = new Types.ObjectId(userId);
+    if (!product.createdBy.equals(userIdObj)) {
+      throw new ForbiddenException("You can only edit your own products");
+    }
+
     if (file) {
-      const product = await this.productModel.findById(id);
-      console.log(product, 'usr id here')
-      if (!product) {
-        throw new NotFoundException("No product found with the entered ID");
-      }
-
-      // if (product.createdBy.toString() !== userId) {
-      //   throw new ForbiddenException('You can only edit your own products');
-      // }
-
-      const userIdObj = new Types.ObjectId(userId);
-
-      // Check if the user has permission to edit the product
-      if (!product.createdBy.equals(userIdObj)) {
-        throw new ForbiddenException('You can only edit your own products');
-      }
-
-      // Delete old image from Cloudinary
+      // Delete old image from Cloudinary if exists
       if (product.cloudinary_id) {
         await this.cloudinary.deleteImage(product.cloudinary_id);
       }
@@ -97,52 +95,103 @@ export class ProductService {
       };
     }
 
-    const updatedProduct = await this.productModel.findByIdAndUpdate(id, updateData, {
-      runValidators: true,
-      new: true,
-    });
+    // Update the product in the database
+    const updatedProduct = await this.productModel.findByIdAndUpdate(
+      id,
+      updateData,
+      {
+        runValidators: true,
+        new: true,
+      }
+    );
 
     if (!updatedProduct) {
       throw new NotFoundException("No product found with the entered ID");
     }
 
     return { product: updatedProduct };
+
+    // if (file) {
+    //   const product = await this.productModel.findById(id);
+    //   console.log(product, "usr id here");
+    //   if (!product) {
+    //     throw new NotFoundException("No product found with the entered ID");
+    //   }
+
+    //   // if (product.createdBy.toString() !== userId) {
+    //   //   throw new ForbiddenException('You can only edit your own products');
+    //   // }
+
+    //   const userIdObj = new Types.ObjectId(userId);
+
+    //   // Check if the user has permission to edit the product
+    //   if (!product.createdBy.equals(userIdObj)) {
+    //     throw new ForbiddenException("You can only edit your own products");
+    //   }
+
+    //   // Delete old image from Cloudinary
+    //   if (product.cloudinary_id) {
+    //     await this.cloudinary.deleteImage(product.cloudinary_id);
+    //   }
+
+    //   // Upload new image to Cloudinary
+    //   const cloudinaryResponse = await this.cloudinary.uploadImage(file);
+    //   updateData = {
+    //     ...updateData,
+    //     cloudinary_id: cloudinaryResponse.public_id,
+    //     image: cloudinaryResponse.url,
+    //   };
+    // }
+
+    // const updatedProduct = await this.productModel.findByIdAndUpdate(
+    //   id,
+    //   updateData,
+    //   {
+    //     runValidators: true,
+    //     new: true,
+    //   }
+    // );
+
+    // if (!updatedProduct) {
+    //   throw new NotFoundException("No product found with the entered ID");
+    // }
+
+    // return { product: updatedProduct };
   }
 
-async deleteProduct(id: string, userId: string) {
-  console.log(userId, 'userId ggggggg');
-  const product = await this.productModel.findById(id);
-  console.log(product, 'deletersssssss her eooo');
-  if (!product) {
-    throw new NotFoundException("No product found with the entered ID");
+  async deleteProduct(id: string, userId: string) {
+    console.log(userId, "userId ggggggg");
+    const product = await this.productModel.findById(id);
+    console.log(product, "deletersssssss her eooo");
+    if (!product) {
+      throw new NotFoundException("No product found with the entered ID");
+    }
+
+    const user = await this.userModel.findById(userId);
+    console.log(user, "deleter her eooo");
+    if (!user || (user.role !== "vendor" && user.role !== "admin")) {
+      throw new ForbiddenException(
+        "Only vendors and admins can delete products"
+      );
+    }
+
+    const userIdObj = new Types.ObjectId(userId);
+    if (user.role === "vendor" && !product.createdBy.equals(userIdObj)) {
+      throw new ForbiddenException(
+        "Vendors can only delete their own products"
+      );
+    }
+
+    // Delete product image from Cloudinary
+    if (product.cloudinary_id) {
+      await this.cloudinary.deleteImage(product.cloudinary_id);
+    }
+
+    await this.productModel.findByIdAndDelete(id);
+    await this.reviewModel.deleteMany({ product: product._id });
+
+    return {};
   }
-
-  const user = await this.userModel.findById(userId);
-  console.log(user, 'deleter her eooo');
-  if (!user || (user.role !== "vendor" && user.role !== "admin")) {
-    throw new ForbiddenException(
-      "Only vendors and admins can delete products"
-    );
-  }
-
-  const userIdObj = new Types.ObjectId(userId);
-  if (user.role === "vendor" && !product.createdBy.equals(userIdObj)) {
-    throw new ForbiddenException(
-      "Vendors can only delete their own products"
-    );
-  }
-
-  // Delete product image from Cloudinary
-  if (product.cloudinary_id) {
-    await this.cloudinary.deleteImage(product.cloudinary_id);
-  }
-
-  await this.productModel.findByIdAndDelete(id);
-  await this.reviewModel.deleteMany({ product: product._id });
-
-  return {};
-}
-
 
   async getVendorProducts(vendorId: string): Promise<Product[]> {
     const objectId = new Types.ObjectId(vendorId);

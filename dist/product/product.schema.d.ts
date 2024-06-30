@@ -24,6 +24,7 @@
 /// <reference types="mongoose/types/inferschematype" />
 import { HydratedDocument } from "mongoose";
 import { Document, Types } from 'mongoose';
+import { Testimonial } from './testimonial.schema';
 export type ProductDocument = HydratedDocument<Product>;
 export declare enum Category {
     "desktops" = 0,
@@ -36,7 +37,26 @@ export declare enum Category {
     "gaming" = 7,
     "snacks" = 8,
     "groceries" = 9,
-    "storage and memory" = 10
+    "storage and memory" = 10,
+    "smartphones" = 11,
+    "tablets" = 12,
+    "smartwatches" = 13,
+    "home appliances" = 14,
+    "kitchen appliances" = 15,
+    "personal care" = 16,
+    "beauty products" = 17,
+    "clothing" = 18,
+    "shoes" = 19,
+    "books" = 20,
+    "toys" = 21,
+    "sports equipment" = 22,
+    "office supplies" = 23,
+    "pet supplies" = 24,
+    "automotive parts" = 25,
+    "musical instruments" = 26,
+    "furniture" = 27,
+    "garden tools" = 28,
+    "health and wellness" = 29
 }
 export declare class Product {
     name: string;
@@ -46,6 +66,9 @@ export declare class Product {
     category: string;
     averageRating: number;
     image: string;
+    productType: string;
+    testimonials: Testimonial[];
+    sizeList: string[];
     cloudinary_id: string;
     createdAt: Date;
     createdBy: Types.ObjectId;
