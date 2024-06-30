@@ -444,6 +444,8 @@ async updateProduct(
     if (dto.price) product.price = dto.price;
     if (dto.currentInStock) product.currentInStock = dto.currentInStock;
     if (dto.category) product.category = dto.category;
+    if (dto.productType) product.productType = dto.productType;
+    if (dto.sizeList) product.sizeList = dto.sizeList;
 
     if (file) {
       // Delete old image from Cloudinary if exists

@@ -78,7 +78,7 @@ __decorate([
     __metadata("design:type", String)
 ], Product.prototype, "image", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true, enum: ['instant', 'pre-order'], default: 'instant' }),
+    (0, mongoose_1.Prop)({ required: true, enum: ["instant", "pre-order"], default: "instant" }),
     __metadata("design:type", String)
 ], Product.prototype, "productType", void 0);
 __decorate([
@@ -86,7 +86,7 @@ __decorate([
     __metadata("design:type", Array)
 ], Product.prototype, "testimonials", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: [String], default: ['S', 'MD', 'L', 'XL', 'XXL'] }),
+    (0, mongoose_1.Prop)({ type: [String], default: ["S", "MD", "L", "XL", "XXL"] }),
     __metadata("design:type", Array)
 ], Product.prototype, "sizeList", void 0);
 __decorate([
@@ -98,7 +98,7 @@ __decorate([
     __metadata("design:type", Date)
 ], Product.prototype, "createdAt", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: 'User', required: true }),
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "User", required: true }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], Product.prototype, "createdBy", void 0);
 exports.Product = Product = __decorate([

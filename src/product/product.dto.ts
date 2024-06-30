@@ -42,6 +42,8 @@ export class UpdateProductDto {
 	category?: string;
 	cloudinary_id?: string;
 	image?: string;
+	productType?: string;
+	sizeList?: string[]; // Add this line
 }
 
 // Define the new type that extends UpdateProductDto

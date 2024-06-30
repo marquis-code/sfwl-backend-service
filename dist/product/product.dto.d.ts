@@ -15,6 +15,8 @@ export declare class UpdateProductDto {
     category?: string;
     cloudinary_id?: string;
     image?: string;
+    productType?: string;
+    sizeList?: string[];
 }
 export interface UpdateProductWithCreatedByDto extends UpdateProductDto {
     createdBy?: string;

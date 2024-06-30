@@ -66,6 +66,10 @@ let ProductService = class ProductService {
                 product.currentInStock = dto.currentInStock;
             if (dto.category)
                 product.category = dto.category;
+            if (dto.productType)
+                product.productType = dto.productType;
+            if (dto.sizeList)
+                product.sizeList = dto.sizeList;
             if (file) {
                 if (product.cloudinary_id) {
                     await this.cloudinary.deleteImage(product.cloudinary_id);

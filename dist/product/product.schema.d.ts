@@ -22,8 +22,8 @@
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
-import { Document, Types, HydratedDocument } from 'mongoose';
-import { Testimonial } from './testimonial.schema';
+import { Document, Types, HydratedDocument } from "mongoose";
+import { Testimonial } from "./testimonial.schema";
 export type ProductDocument = HydratedDocument<Product>;
 export declare enum Category {
     "desktops" = 0,
