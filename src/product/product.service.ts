@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  InternalServerErrorException
 } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
@@ -60,104 +61,241 @@ export class ProductService {
     return { product };
   }
 
+  // async updateProduct(
+  //   id: string,
+  //   dto: UpdateProductDto,
+  //   userId: string,
+  //   file?: any
+  // ) {
+  //   let updateData = { ...dto };
+
+  //   // Find the product by ID
+  //   const product = await this.productModel.findById(id);
+  //   if (!product) {
+  //     throw new NotFoundException("No product found with the entered ID");
+  //   }
+
+  //   // Check if the user has permission to edit the product
+  //   const userIdObj = new Types.ObjectId(userId);
+  //   if (!product.createdBy.equals(userIdObj)) {
+  //     throw new ForbiddenException("You can only edit your own products");
+  //   }
+
+  //   if (file) {
+  //     // Delete old image from Cloudinary if exists
+  //     if (product.cloudinary_id) {
+  //       await this.cloudinary.deleteImage(product.cloudinary_id);
+  //     }
+
+  //     // Upload new image to Cloudinary
+  //     const cloudinaryResponse = await this.cloudinary.uploadImage(file);
+  //     updateData = {
+  //       ...updateData,
+  //       cloudinary_id: cloudinaryResponse.public_id,
+  //       image: cloudinaryResponse.url,
+  //     };
+  //   }
+
+  //   // Update the product in the database
+  //   const updatedProduct = await this.productModel.findByIdAndUpdate(
+  //     id,
+  //     updateData,
+  //     {
+  //       runValidators: true,
+  //       new: true,
+  //     }
+  //   );
+
+  //   if (!updatedProduct) {
+  //     throw new NotFoundException("No product found with the entered ID");
+  //   }
+
+  //   return { product: updatedProduct };
+  // }
+
+  // async updateProduct(
+  //   id: string,
+  //   dto: UpdateProductDto,
+  //   userId: string,
+  //   file?: any
+  // ) {
+  //   let updateData = { ...dto };
+  
+  //   // Find the product by ID
+  //   const product = await this.productModel.findById(id);
+  //   if (!product) {
+  //     throw new NotFoundException("No product found with the entered ID");
+  //   }
+  
+  //   // Check if the user has permission to edit the product
+  //   const userIdObj = new Types.ObjectId(userId);
+  //   if (!product.createdBy.equals(userIdObj)) {
+  //     throw new ForbiddenException("You can only edit your own products");
+  //   }
+  
+  //   if (file) {
+  //     // Delete old image from Cloudinary if exists
+  //     if (product.cloudinary_id) {
+  //       await this.cloudinary.deleteImage(product.cloudinary_id);
+  //     }
+  
+  //     // Upload new image to Cloudinary
+  //     const cloudinaryResponse = await this.cloudinary.uploadImage(file);
+  //     updateData = {
+  //       ...updateData,
+  //       cloudinary_id: cloudinaryResponse.public_id,
+  //       image: cloudinaryResponse.url,
+  //     };
+  //   }
+  
+  //   // Update the product in the database
+  //   const updatedProduct = await this.productModel.findByIdAndUpdate(
+  //     id,
+  //     updateData,
+  //     {
+  //       runValidators: true,
+  //       new: true,
+  //     }
+  //   );
+  
+  //   if (!updatedProduct) {
+  //     throw new NotFoundException("Failed to update the product. No product found with the entered ID.");
+  //   }
+  
+  //   return { product: updatedProduct };
+  //  }
+  
+
+  // async updateProduct(
+  //   id: string,
+  //   dto: UpdateProductDto,
+  //   userId: string,
+  //   file?: any
+  // ) {
+  //   try {
+  //     let updateData = { ...dto };
+  
+  //     // Find the product by ID
+  //     const product = await this.productModel.findById(id);
+  //     if (!product) {
+  //       throw new NotFoundException("No product found with the entered ID");
+  //     }
+  
+  //     // Check if the user has permission to edit the product
+  //     const userIdObj = new Types.ObjectId(userId);
+  //     if (!product.createdBy.equals(userIdObj)) {
+  //       throw new ForbiddenException("You can only edit your own products");
+  //     }
+  
+  //     if (file) {
+  //       // Delete old image from Cloudinary if exists
+  //       if (product.cloudinary_id) {
+  //         await this.cloudinary.deleteImage(product.cloudinary_id);
+  //       }
+  
+  //       // Upload new image to Cloudinary
+  //       const cloudinaryResponse = await this.cloudinary.uploadImage(file);
+  //       updateData = {
+  //         ...updateData,
+  //         cloudinary_id: cloudinaryResponse.public_id,
+  //         image: cloudinaryResponse.url,
+  //       };
+  //     }
+  
+  //     // Update the product in the database
+  //     const updatedProduct = await this.productModel.findByIdAndUpdate(
+  //       id,
+  //       updateData,
+  //       {
+  //         runValidators: true,
+  //         new: true,
+  //       }
+  //     );
+  
+  //     if (!updatedProduct) {
+  //       throw new NotFoundException("Failed to update the product. No product found with the entered ID.");
+  //     }
+  
+  //     console.log('Updated Product:', updatedProduct);  // Log the updated product
+  
+  //     return { product: updatedProduct };
+  
+  //   } catch (error) {
+  //     if (error instanceof NotFoundException || error instanceof ForbiddenException) {
+  //       throw error;
+  //     }
+  //     console.error('Error updating product:', error);
+  //     throw new InternalServerErrorException("An error occurred while updating the product");
+  //   }
+  // }
+
   async updateProduct(
     id: string,
     dto: UpdateProductDto,
     userId: string,
     file?: any
   ) {
-    let updateData = { ...dto };
-
-    // Find the product by ID
-    const product = await this.productModel.findById(id);
-    if (!product) {
-      throw new NotFoundException("No product found with the entered ID");
-    }
-
-    // Check if the user has permission to edit the product
-    const userIdObj = new Types.ObjectId(userId);
-    if (!product.createdBy.equals(userIdObj)) {
-      throw new ForbiddenException("You can only edit your own products");
-    }
-
-    if (file) {
-      // Delete old image from Cloudinary if exists
-      if (product.cloudinary_id) {
-        await this.cloudinary.deleteImage(product.cloudinary_id);
+    try {
+      let updateData = { ...dto };
+  
+      // Find the product by ID
+      const product = await this.productModel.findById(id);
+      if (!product) {
+        throw new NotFoundException("No product found with the entered ID");
       }
-
-      // Upload new image to Cloudinary
-      const cloudinaryResponse = await this.cloudinary.uploadImage(file);
-      updateData = {
-        ...updateData,
-        cloudinary_id: cloudinaryResponse.public_id,
-        image: cloudinaryResponse.url,
-      };
-    }
-
-    // Update the product in the database
-    const updatedProduct = await this.productModel.findByIdAndUpdate(
-      id,
-      updateData,
-      {
-        runValidators: true,
-        new: true,
+  
+      // Check if the user has permission to edit the product
+      const userIdObj = new Types.ObjectId(userId);
+      if (!product.createdBy.equals(userIdObj)) {
+        throw new ForbiddenException("You can only edit your own products");
       }
-    );
-
-    if (!updatedProduct) {
-      throw new NotFoundException("No product found with the entered ID");
+  
+      if (file) {
+        // Delete old image from Cloudinary if exists
+        if (product.cloudinary_id) {
+          await this.cloudinary.deleteImage(product.cloudinary_id);
+        }
+  
+        // Upload new image to Cloudinary
+        const cloudinaryResponse = await this.cloudinary.uploadImage(file);
+        updateData = {
+          ...updateData,
+          cloudinary_id: cloudinaryResponse.public_id,
+          image: cloudinaryResponse.url,
+        };
+      }
+  
+      // Preserve the createdBy field
+      updateData.createdBy = product.createdBy;
+  
+      // Update the product in the database
+      const updatedProduct = await this.productModel.findByIdAndUpdate(
+        id,
+        updateData,
+        {
+          runValidators: true,
+          new: true,
+        }
+      );
+  
+      if (!updatedProduct) {
+        throw new NotFoundException("Failed to update the product. No product found with the entered ID.");
+      }
+  
+      console.log('Updated Product:', updatedProduct);  // Log the updated product
+  
+      return { product: updatedProduct };
+  
+    } catch (error) {
+      if (error instanceof NotFoundException || error instanceof ForbiddenException) {
+        throw error;
+      }
+      console.error('Error updating product:', error);
+      throw new InternalServerErrorException("An error occurred while updating the product");
     }
-
-    return { product: updatedProduct };
-
-    // if (file) {
-    //   const product = await this.productModel.findById(id);
-    //   console.log(product, "usr id here");
-    //   if (!product) {
-    //     throw new NotFoundException("No product found with the entered ID");
-    //   }
-
-    //   // if (product.createdBy.toString() !== userId) {
-    //   //   throw new ForbiddenException('You can only edit your own products');
-    //   // }
-
-    //   const userIdObj = new Types.ObjectId(userId);
-
-    //   // Check if the user has permission to edit the product
-    //   if (!product.createdBy.equals(userIdObj)) {
-    //     throw new ForbiddenException("You can only edit your own products");
-    //   }
-
-    //   // Delete old image from Cloudinary
-    //   if (product.cloudinary_id) {
-    //     await this.cloudinary.deleteImage(product.cloudinary_id);
-    //   }
-
-    //   // Upload new image to Cloudinary
-    //   const cloudinaryResponse = await this.cloudinary.uploadImage(file);
-    //   updateData = {
-    //     ...updateData,
-    //     cloudinary_id: cloudinaryResponse.public_id,
-    //     image: cloudinaryResponse.url,
-    //   };
-    // }
-
-    // const updatedProduct = await this.productModel.findByIdAndUpdate(
-    //   id,
-    //   updateData,
-    //   {
-    //     runValidators: true,
-    //     new: true,
-    //   }
-    // );
-
-    // if (!updatedProduct) {
-    //   throw new NotFoundException("No product found with the entered ID");
-    // }
-
-    // return { product: updatedProduct };
   }
+  
+  
 
   async deleteProduct(id: string, userId: string) {
     console.log(userId, "userId ggggggg");
@@ -195,6 +333,10 @@ export class ProductService {
 
   async getVendorProducts(vendorId: string): Promise<Product[]> {
     const objectId = new Types.ObjectId(vendorId);
-    return this.productModel.find({ createdBy: objectId }).exec();
+    const products = await this.productModel.find({ createdBy: objectId }).exec();
+  
+    console.log(`Fetched Products for Vendor ID ${vendorId}:`, products);  // Log the fetched products
+  
+    return products;
   }
 }

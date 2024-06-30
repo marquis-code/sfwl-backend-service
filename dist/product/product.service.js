@@ -47,30 +47,41 @@ let ProductService = class ProductService {
         return { product };
     }
     async updateProduct(id, dto, userId, file) {
-        let updateData = Object.assign({}, dto);
-        const product = await this.productModel.findById(id);
-        if (!product) {
-            throw new common_1.NotFoundException("No product found with the entered ID");
-        }
-        const userIdObj = new mongoose_2.Types.ObjectId(userId);
-        if (!product.createdBy.equals(userIdObj)) {
-            throw new common_1.ForbiddenException("You can only edit your own products");
-        }
-        if (file) {
-            if (product.cloudinary_id) {
-                await this.cloudinary.deleteImage(product.cloudinary_id);
+        try {
+            let updateData = Object.assign({}, dto);
+            const product = await this.productModel.findById(id);
+            if (!product) {
+                throw new common_1.NotFoundException("No product found with the entered ID");
             }
-            const cloudinaryResponse = await this.cloudinary.uploadImage(file);
-            updateData = Object.assign(Object.assign({}, updateData), { cloudinary_id: cloudinaryResponse.public_id, image: cloudinaryResponse.url });
+            const userIdObj = new mongoose_2.Types.ObjectId(userId);
+            if (!product.createdBy.equals(userIdObj)) {
+                throw new common_1.ForbiddenException("You can only edit your own products");
+            }
+            if (file) {
+                if (product.cloudinary_id) {
+                    await this.cloudinary.deleteImage(product.cloudinary_id);
+                }
+                const cloudinaryResponse = await this.cloudinary.uploadImage(file);
+                updateData = Object.assign(Object.assign({}, updateData), { cloudinary_id: cloudinaryResponse.public_id, image: cloudinaryResponse.url });
+            }
+            updateData.createdBy = product.createdBy;
+            const updatedProduct = await this.productModel.findByIdAndUpdate(id, updateData, {
+                runValidators: true,
+                new: true,
+            });
+            if (!updatedProduct) {
+                throw new common_1.NotFoundException("Failed to update the product. No product found with the entered ID.");
+            }
+            console.log('Updated Product:', updatedProduct);
+            return { product: updatedProduct };
         }
-        const updatedProduct = await this.productModel.findByIdAndUpdate(id, updateData, {
-            runValidators: true,
-            new: true,
-        });
-        if (!updatedProduct) {
-            throw new common_1.NotFoundException("No product found with the entered ID");
+        catch (error) {
+            if (error instanceof common_1.NotFoundException || error instanceof common_1.ForbiddenException) {
+                throw error;
+            }
+            console.error('Error updating product:', error);
+            throw new common_1.InternalServerErrorException("An error occurred while updating the product");
         }
-        return { product: updatedProduct };
     }
     async deleteProduct(id, userId) {
         console.log(userId, "userId ggggggg");
@@ -97,7 +108,9 @@ let ProductService = class ProductService {
     }
     async getVendorProducts(vendorId) {
         const objectId = new mongoose_2.Types.ObjectId(vendorId);
-        return this.productModel.find({ createdBy: objectId }).exec();
+        const products = await this.productModel.find({ createdBy: objectId }).exec();
+        console.log(`Fetched Products for Vendor ID ${vendorId}:`, products);
+        return products;
     }
 };
 exports.ProductService = ProductService;

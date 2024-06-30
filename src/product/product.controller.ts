@@ -8,6 +8,7 @@ import {
   Delete,
   Put,
   Req,
+  Patch,
   UseInterceptors,
   NotFoundException,
   UploadedFile,
@@ -72,10 +73,25 @@ export class ProductController {
     return this.productService.getProduct(id);
   }
 
-  @Put("/:id")
+  // @Put("/:id")
+  // @Auth(Role.Vendor, Role.Admin)
+  // @UseInterceptors(FileInterceptor("file"))
+  // updateProduct(
+  //   @Param("id", ValidateMongoId) id: string,
+  //   @Body() updateProductDto: UpdateProductDto,
+  //   @Req() req,
+  //   @UploadedFile() file?: Express.Multer.File,
+  // ) {
+  //   console.log('Received update product request for ID:', id);
+  //   console.log('User:', req.user);
+  //   console.log('Update Product DTO:', updateProductDto);
+
+  //   return this.productService.updateProduct(id, updateProductDto, req.user._id, file);
+  // }
+  @Patch("/:id")
   @Auth(Role.Vendor, Role.Admin)
   @UseInterceptors(FileInterceptor("file"))
-  updateProduct(
+  async updateProduct(
     @Param("id", ValidateMongoId) id: string,
     @Body() updateProductDto: UpdateProductDto,
     @Req() req,
@@ -84,9 +100,17 @@ export class ProductController {
     console.log('Received update product request for ID:', id);
     console.log('User:', req.user);
     console.log('Update Product DTO:', updateProductDto);
-
-    return this.productService.updateProduct(id, updateProductDto, req.user._id, file);
+  
+    const updatedProduct = await this.productService.updateProduct(id, updateProductDto, req.user._id, file);
+  
+    // Check if the product was updated successfully
+    if (!updatedProduct) {
+      throw new NotFoundException(`Product with ID ${id} not found.`);
+    }
+  
+    return updatedProduct;
   }
+
 
   @Delete("/:id")
   @Auth(Role.Vendor, Role.Admin)
@@ -97,9 +121,22 @@ export class ProductController {
     return this.productService.deleteProduct(id, req.user._id);
   }
 
-  @Get('/vendor/:vendorId')
-  async getProductsByVendor(@Param('vendorId') vendorId: string) {
-    console.log('Received get products by vendor request for vendor ID:', vendorId);
-    return this.productService.getVendorProducts(vendorId);
+  // @Get('/vendor/:vendorId')
+  // async getProductsByVendor(@Param('vendorId') vendorId: string) {
+  //   console.log('Received get products by vendor request for vendor ID:', vendorId);
+  //   return this.productService.getVendorProducts(vendorId);
+  // }
+  @Get("/vendor/:vendorId")
+  @Auth(Role.Vendor, Role.Admin)
+  async getProductsByVendor(@Param("vendorId", ValidateMongoId) vendorId: string) {
+    console.log(`Fetching products for vendor ID: ${vendorId}`);
+
+    const products = await this.productService.getVendorProducts(vendorId);
+
+    if (!products) {
+      throw new NotFoundException(`No products found for vendor ID ${vendorId}`);
+    }
+
+    return products;
   }
 }

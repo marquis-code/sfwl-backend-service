@@ -51,11 +51,15 @@ let ProductController = class ProductController {
         console.log('Received get product request for ID:', id);
         return this.productService.getProduct(id);
     }
-    updateProduct(id, updateProductDto, req, file) {
+    async updateProduct(id, updateProductDto, req, file) {
         console.log('Received update product request for ID:', id);
         console.log('User:', req.user);
         console.log('Update Product DTO:', updateProductDto);
-        return this.productService.updateProduct(id, updateProductDto, req.user._id, file);
+        const updatedProduct = await this.productService.updateProduct(id, updateProductDto, req.user._id, file);
+        if (!updatedProduct) {
+            throw new common_1.NotFoundException(`Product with ID ${id} not found.`);
+        }
+        return updatedProduct;
     }
     deleteProduct(id, req) {
         console.log('Received delete product request for ID:', id);
@@ -63,8 +67,12 @@ let ProductController = class ProductController {
         return this.productService.deleteProduct(id, req.user._id);
     }
     async getProductsByVendor(vendorId) {
-        console.log('Received get products by vendor request for vendor ID:', vendorId);
-        return this.productService.getVendorProducts(vendorId);
+        console.log(`Fetching products for vendor ID: ${vendorId}`);
+        const products = await this.productService.getVendorProducts(vendorId);
+        if (!products) {
+            throw new common_1.NotFoundException(`No products found for vendor ID ${vendorId}`);
+        }
+        return products;
     }
 };
 exports.ProductController = ProductController;
@@ -93,7 +101,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ProductController.prototype, "getProduct", null);
 __decorate([
-    (0, common_1.Put)("/:id"),
+    (0, common_1.Patch)("/:id"),
     (0, auth_decorator_1.Auth)(role_enum_1.Role.Vendor, role_enum_1.Role.Admin),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file")),
     __param(0, (0, common_1.Param)("id", validate_mongoId_1.ValidateMongoId)),
@@ -102,7 +110,7 @@ __decorate([
     __param(3, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, product_dto_1.UpdateProductDto, Object, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ProductController.prototype, "updateProduct", null);
 __decorate([
     (0, common_1.Delete)("/:id"),
@@ -114,8 +122,9 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ProductController.prototype, "deleteProduct", null);
 __decorate([
-    (0, common_1.Get)('/vendor/:vendorId'),
-    __param(0, (0, common_1.Param)('vendorId')),
+    (0, common_1.Get)("/vendor/:vendorId"),
+    (0, auth_decorator_1.Auth)(role_enum_1.Role.Vendor, role_enum_1.Role.Admin),
+    __param(0, (0, common_1.Param)("vendorId", validate_mongoId_1.ValidateMongoId)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
