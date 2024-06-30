@@ -47,9 +47,8 @@ let ProductService = class ProductService {
         return { product };
     }
     async updateProduct(id, dto, userId, file) {
-        var _a, _b, _c, _d, _e, _f, _g;
         try {
-            const product = await this.productModel.findById({ _id: id });
+            const product = await this.productModel.findById(id);
             if (!product) {
                 throw new common_1.NotFoundException("No product found with the entered ID");
             }
@@ -57,14 +56,16 @@ let ProductService = class ProductService {
             if (!product.createdBy.equals(userIdObj)) {
                 throw new common_1.ForbiddenException("You can only edit your own products");
             }
-            product.name = (_a = dto.name) !== null && _a !== void 0 ? _a : product.name;
-            product.description = (_b = dto.description) !== null && _b !== void 0 ? _b : product.description;
-            product.price = (_c = dto.price) !== null && _c !== void 0 ? _c : product.price;
-            product.currentInStock = (_d = dto.currentInStock) !== null && _d !== void 0 ? _d : product.currentInStock;
-            product.category = (_e = dto.category) !== null && _e !== void 0 ? _e : product.category;
-            product.cloudinary_id = (_f = dto.cloudinary_id) !== null && _f !== void 0 ? _f : product.cloudinary_id;
-            product.image = (_g = dto.image) !== null && _g !== void 0 ? _g : product.image;
-            product.createdBy = product.createdBy;
+            if (dto.name)
+                product.name = dto.name;
+            if (dto.description)
+                product.description = dto.description;
+            if (dto.price)
+                product.price = dto.price;
+            if (dto.currentInStock)
+                product.currentInStock = dto.currentInStock;
+            if (dto.category)
+                product.category = dto.category;
             if (file) {
                 if (product.cloudinary_id) {
                     await this.cloudinary.deleteImage(product.cloudinary_id);
@@ -73,7 +74,8 @@ let ProductService = class ProductService {
                 product.cloudinary_id = cloudinaryResponse.public_id;
                 product.image = cloudinaryResponse.url;
             }
-            const updatedProduct = await product.save();
+            await product.save();
+            const updatedProduct = await this.productModel.findById(id);
             console.log('Updated Product:', updatedProduct);
             return { product: updatedProduct };
         }

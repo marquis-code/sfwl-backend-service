@@ -361,6 +361,64 @@ export class ProductService {
 //   }
 // }
 
+// async updateProduct(
+//   id: string,
+//   dto: UpdateProductDto,
+//   userId: string,
+//   file?: any
+// ) {
+//   try {
+//     // Find the product by ID
+//     const product = await this.productModel.findById({ _id: id});
+//     if (!product) {
+//       throw new NotFoundException("No product found with the entered ID");
+//     }
+
+//     // Check if the user has permission to edit the product
+//     const userIdObj = new Types.ObjectId(userId);
+//     if (!product.createdBy.equals(userIdObj)) {
+//       throw new ForbiddenException("You can only edit your own products");
+//     }
+
+//     // Update product fields
+//     product.name = dto.name ?? product.name;
+//     product.description = dto.description ?? product.description;
+//     product.price = dto.price ?? product.price;
+//     product.currentInStock = dto.currentInStock ?? product.currentInStock;
+//     product.category = dto.category ?? product.category;
+//     product.cloudinary_id = dto.cloudinary_id ?? product.cloudinary_id;
+//     product.image = dto.image ?? product.image;
+//     // Preserve the createdBy field
+//     product.createdBy = product.createdBy;
+
+//     if (file) {
+//       // Delete old image from Cloudinary if exists
+//       if (product.cloudinary_id) {
+//         await this.cloudinary.deleteImage(product.cloudinary_id);
+//       }
+
+//       // Upload new image to Cloudinary
+//       const cloudinaryResponse = await this.cloudinary.uploadImage(file);
+//       product.cloudinary_id = cloudinaryResponse.public_id;
+//       product.image = cloudinaryResponse.url;
+//     }
+
+//     // Save the updated product in the database
+//     const updatedProduct = await product.save();
+
+//     console.log('Updated Product:', updatedProduct);  // Log the updated product
+
+//     return { product: updatedProduct };
+
+//   } catch (error) {
+//     if (error instanceof NotFoundException || error instanceof ForbiddenException) {
+//       throw error;
+//     }
+//     console.error('Error updating product:', error);
+//     throw new InternalServerErrorException("An error occurred while updating the product");
+//   }
+// }
+
 async updateProduct(
   id: string,
   dto: UpdateProductDto,
@@ -369,7 +427,7 @@ async updateProduct(
 ) {
   try {
     // Find the product by ID
-    const product = await this.productModel.findById({ _id: id});
+    const product = await this.productModel.findById(id);
     if (!product) {
       throw new NotFoundException("No product found with the entered ID");
     }
@@ -380,16 +438,12 @@ async updateProduct(
       throw new ForbiddenException("You can only edit your own products");
     }
 
-    // Update product fields
-    product.name = dto.name ?? product.name;
-    product.description = dto.description ?? product.description;
-    product.price = dto.price ?? product.price;
-    product.currentInStock = dto.currentInStock ?? product.currentInStock;
-    product.category = dto.category ?? product.category;
-    product.cloudinary_id = dto.cloudinary_id ?? product.cloudinary_id;
-    product.image = dto.image ?? product.image;
-    // Preserve the createdBy field
-    product.createdBy = product.createdBy;
+    // Update product fields explicitly
+    if (dto.name) product.name = dto.name;
+    if (dto.description) product.description = dto.description;
+    if (dto.price) product.price = dto.price;
+    if (dto.currentInStock) product.currentInStock = dto.currentInStock;
+    if (dto.category) product.category = dto.category;
 
     if (file) {
       // Delete old image from Cloudinary if exists
@@ -404,7 +458,10 @@ async updateProduct(
     }
 
     // Save the updated product in the database
-    const updatedProduct = await product.save();
+    await product.save();
+
+    // Find the updated product to return
+    const updatedProduct = await this.productModel.findById(id);
 
     console.log('Updated Product:', updatedProduct);  // Log the updated product
 
@@ -419,8 +476,6 @@ async updateProduct(
   }
 }
 
-
-  
 
   async deleteProduct(id: string, userId: string) {
     console.log(userId, "userId ggggggg");
