@@ -27,10 +27,6 @@ export class ProductService {
     private readonly userModel: Model<UserDocument>
   ) {}
 
-  // async getProducts() {
-  //   const products = await this.productModel.find();
-  //   return { products };
-  // }
 
   async getProducts() {
     // Populate the createdBy field to get the full user object

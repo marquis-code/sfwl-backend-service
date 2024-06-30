@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
 import { HydratedDocument } from "mongoose"
 import { Document, Types } from 'mongoose';
+import { Testimonial, TestimonialSchema } from './testimonial.schema'; 
 
 export type ProductDocument = HydratedDocument<Product>
 
@@ -44,6 +45,15 @@ export class Product {
 
 	@Prop({required: true})
 	image: string
+
+	@Prop({ required: true, enum: ['instant', 'pre-order'], default: 'instant' })
+	productType: string;
+
+	@Prop({ type: [TestimonialSchema], default: [], required: false })
+	testimonials: Testimonial[];
+
+	@Prop({ type: [String], default: ['S', 'MD', 'L', 'XL', 'XXL'] })
+	sizeList: string[];
 
 	@Prop({ required: true })
 	cloudinary_id: string
