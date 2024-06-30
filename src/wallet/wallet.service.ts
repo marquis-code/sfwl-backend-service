@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel, InjectConnection } from '@nestjs/mongoose';
-import { Model,Connection, ClientSession } from 'mongoose';
+import { Model,Connection, ClientSession, Types } from 'mongoose';
 import { Wallet, WalletDocument } from './wallet.schema';
 import { Order, OrderDocument } from '../order/order.schema';
 
@@ -13,18 +13,10 @@ export class WalletService {
   ) {}
 
 
-  // async createWallet(userId: any): Promise<void> {
-  //   console.log('git it', userId)
-  //   const newWallet = new this.walletModel({ userId, balance: 0 });
-  //  const response = await newWallet.save();
-  //  return response
-  // }
-
-  async createWallet(userId: string): Promise<string> {
-    console.log('Creating wallet for user:', userId);
+  async createWallet(userId: string): Promise<Types.ObjectId> {
     const newWallet = new this.walletModel({ userId, balance: 0 });
     const savedWallet = await newWallet.save();
-    return savedWallet._id.toString(); // Return the wallet ID
+    return savedWallet._id
   }
 
   async creditWallet(userId: string, amount: number): Promise<void> {

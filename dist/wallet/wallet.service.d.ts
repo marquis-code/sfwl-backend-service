@@ -22,7 +22,7 @@
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
-import { Model, Connection } from 'mongoose';
+import { Model, Connection, Types } from 'mongoose';
 import { WalletDocument } from './wallet.schema';
 import { Order, OrderDocument } from '../order/order.schema';
 export declare class WalletService {
@@ -30,7 +30,7 @@ export declare class WalletService {
     private orderModel;
     private readonly connection;
     constructor(walletModel: Model<WalletDocument>, orderModel: Model<OrderDocument>, connection: Connection);
-    createWallet(userId: string): Promise<string>;
+    createWallet(userId: string): Promise<Types.ObjectId>;
     creditWallet(userId: string, amount: number): Promise<void>;
     handleOrderCompletion(orderId: string): Promise<void>;
     acceptOrder(orderId: string, erranderId: string): Promise<void>;

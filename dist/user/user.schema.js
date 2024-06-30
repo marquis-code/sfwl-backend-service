@@ -14,6 +14,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const jsonwebtoken_1 = require("jsonwebtoken");
 const bcryptjs_1 = require("bcryptjs");
 const crypto_1 = require("crypto");
+const mongoose_2 = require("mongoose");
 const role_enum_1 = require("../role/role.enum");
 let User = class User {
 };
@@ -43,9 +44,9 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "resetPasswordToken", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: false }),
-    __metadata("design:type", String)
-], User.prototype, "walletId", void 0);
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "Wallet" }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
+], User.prototype, "wallet", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)

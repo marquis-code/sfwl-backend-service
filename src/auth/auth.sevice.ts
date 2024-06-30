@@ -53,11 +53,11 @@ export class AuthService {
 
     const savedUser = await user.save();
 
-    const walletId = await this.walletService.createWallet(
+    const wallet = await this.walletService.createWallet(
       savedUser._id.toString()
     );
 
-    user.walletId = walletId;
+    user.wallet = wallet;
 
     await user.save();
 

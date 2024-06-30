@@ -25,10 +25,9 @@ let WalletService = class WalletService {
         this.connection = connection;
     }
     async createWallet(userId) {
-        console.log('Creating wallet for user:', userId);
         const newWallet = new this.walletModel({ userId, balance: 0 });
         const savedWallet = await newWallet.save();
-        return savedWallet._id.toString();
+        return savedWallet._id;
     }
     async creditWallet(userId, amount) {
         await this.walletModel.updateOne({ userId }, { $inc: { balance: amount } });

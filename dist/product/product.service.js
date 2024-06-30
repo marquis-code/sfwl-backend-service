@@ -20,6 +20,7 @@ const product_schema_1 = require("./product.schema");
 const review_schema_1 = require("../review/review.schema");
 const cloudinary_service_1 = require("../cloudinary/cloudinary.service");
 const user_schema_1 = require("../user/user.schema");
+const shuffleArray_1 = require("../utils/shuffleArray");
 let ProductService = class ProductService {
     constructor(productModel, reviewModel, cloudinary, userModel) {
         this.productModel = productModel;
@@ -28,8 +29,9 @@ let ProductService = class ProductService {
         this.userModel = userModel;
     }
     async getProducts() {
-        const products = await this.productModel.find();
-        return { products };
+        const products = await this.productModel.find().populate('createdBy');
+        const shuffledProducts = (0, shuffleArray_1.shuffleArray)(products);
+        return { products: shuffledProducts };
     }
     async getProduct(id) {
         const product = await this.productModel.findById(id).populate("reviews");

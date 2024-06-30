@@ -38,8 +38,8 @@ let AuthService = class AuthService {
             ]);
         user = new this.User(dto);
         const savedUser = await user.save();
-        const walletId = await this.walletService.createWallet(savedUser._id.toString());
-        user.walletId = walletId;
+        const wallet = await this.walletService.createWallet(savedUser._id.toString());
+        user.wallet = wallet;
         await user.save();
         user.password = undefined;
         return { user };

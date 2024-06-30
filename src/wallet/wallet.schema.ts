@@ -1,12 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { User } from '../user/user.schema'
+import { Types, Document } from "mongoose";
 
 export type WalletDocument = Wallet & Document;
 
 @Schema()
 export class Wallet {
-  @Prop({ required: true })
-  userId: string;
+  @Prop({ type: Types.ObjectId, ref: "User", required: true })
+  userId: User;
 
   @Prop({ required: true, default: 0 })
   balance: number;

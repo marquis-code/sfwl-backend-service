@@ -4,6 +4,7 @@ import {
   NotFoundException,
   ForbiddenException,
   ConflictException,
+  BadRequestException
 } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 
@@ -25,7 +26,7 @@ export class UserService {
   constructor(
     @InjectModel(User.name) private readonly User: Model<UserDocument>,
     @InjectModel(Review.name) private readonly Review: Model<ReviewDocument>,
-    private walletService: WalletService
+    private readonly walletService: WalletService
   ) {}
 
   async getUsers() {
@@ -35,25 +36,28 @@ export class UserService {
   }
 
   async createUser(dto: CreateUserDto) {
-    console.log(dto, 'create user dto')
-    let user = await this.User.findOne({
-      email: dto.email,
-    });
+    let user = await this.User.findOne({ email: dto.email });
 
-    if (user)
-      throw new ConflictException([
-        "A user already exists with the entered email",
-      ]);
+    if (user) {
+      throw new ConflictException(["A user already exists with the entered email"]);
+    }
 
-    user = await this.User.create(dto);
+    user = new this.User(dto);
+    const savedUser = await user.save();
 
-    user.password = undefined;
+    const wallet = await this.walletService.createWallet(savedUser._id.toString());
+    savedUser.wallet = wallet;
+    await savedUser.save();
 
-    return { user };
+    const populatedUser = await this.User.findById(savedUser._id).populate('wallet').exec();
+
+    populatedUser.password = undefined;
+
+    return { user: savedUser };
   }
 
   async getUser(id: string) {
-    const user = await this.User.findById(id);
+    const user = await this.User.findById(id).populate('wallet').exec();;
 
     if (!user)
       throw new NotFoundException(["No user found with the entered ID"]);

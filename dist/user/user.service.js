@@ -31,20 +31,22 @@ let UserService = class UserService {
         return { users };
     }
     async createUser(dto) {
-        console.log(dto, 'create user dto');
-        let user = await this.User.findOne({
-            email: dto.email,
-        });
-        if (user)
-            throw new common_1.ConflictException([
-                "A user already exists with the entered email",
-            ]);
-        user = await this.User.create(dto);
-        user.password = undefined;
-        return { user };
+        let user = await this.User.findOne({ email: dto.email });
+        if (user) {
+            throw new common_1.ConflictException(["A user already exists with the entered email"]);
+        }
+        user = new this.User(dto);
+        const savedUser = await user.save();
+        const wallet = await this.walletService.createWallet(savedUser._id.toString());
+        savedUser.wallet = wallet;
+        await savedUser.save();
+        const populatedUser = await this.User.findById(savedUser._id).populate('wallet').exec();
+        populatedUser.password = undefined;
+        return { user: savedUser };
     }
     async getUser(id) {
-        const user = await this.User.findById(id);
+        const user = await this.User.findById(id).populate('wallet').exec();
+        ;
         if (!user)
             throw new common_1.NotFoundException(["No user found with the entered ID"]);
         return { user };

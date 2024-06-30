@@ -32,10 +32,12 @@ export class User {
 	@Prop({ select: false })
 	resetPasswordToken: string
 
-	@Prop({ required: false })
-	walletId: string;
+	// @Prop({ required: false })
+	// walletId: { type: mongoose.Schema.Types.ObjectId, ref: 'Wallet' },
 	// @Prop({ type: Types.ObjectId, ref: "Wallet" })
 	// walletId: Wallet;
+	@Prop({ type: Types.ObjectId, ref: "Wallet" })
+    wallet: Types.ObjectId; 
 
 	@Prop()
 	homeAddress?: string;

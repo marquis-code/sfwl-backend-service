@@ -35,13 +35,7 @@ export declare class ProductService {
     private readonly userModel;
     constructor(productModel: Model<ProductDocument>, reviewModel: Model<ReviewDocument>, cloudinary: CloudinaryService, userModel: Model<UserDocument>);
     getProducts(): Promise<{
-        products: (import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Product> & Product & {
-            _id: Types.ObjectId;
-        }> & import("mongoose").Document<unknown, {}, Product> & Product & {
-            _id: Types.ObjectId;
-        } & Required<{
-            _id: Types.ObjectId;
-        }>)[];
+        products: any;
     }>;
     getProduct(id: string): Promise<{
         product: import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Product> & Product & {

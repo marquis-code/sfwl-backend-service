@@ -10,6 +10,7 @@ import { Review, ReviewDocument } from "../review/review.schema";
 import { CloudinaryService } from "../cloudinary/cloudinary.service";
 import { ProductDto, UpdateProductDto } from "./product.dto";
 import { User, UserDocument } from "../user/user.schema";
+import { shuffleArray } from '../utils/shuffleArray'
 
 @Injectable()
 export class ProductService {
@@ -26,9 +27,19 @@ export class ProductService {
     private readonly userModel: Model<UserDocument>
   ) {}
 
+  // async getProducts() {
+  //   const products = await this.productModel.find();
+  //   return { products };
+  // }
+
   async getProducts() {
-    const products = await this.productModel.find();
-    return { products };
+    // Populate the createdBy field to get the full user object
+    const products = await this.productModel.find().populate('createdBy');
+  
+    // Shuffle the products array
+    const shuffledProducts = shuffleArray(products);
+  
+    return { products: shuffledProducts };
   }
 
   async getProduct(id: string) {
@@ -101,7 +112,7 @@ export class ProductService {
 
     return { product: updatedProduct };
   }
-  
+
 async deleteProduct(id: string, userId: string) {
   console.log(userId, 'userId ggggggg');
   const product = await this.productModel.findById(id);

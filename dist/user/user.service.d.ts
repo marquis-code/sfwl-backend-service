@@ -30,7 +30,7 @@ import { WalletService } from "../wallet/wallet.service";
 export declare class UserService {
     private readonly User;
     private readonly Review;
-    private walletService;
+    private readonly walletService;
     constructor(User: Model<UserDocument>, Review: Model<ReviewDocument>, walletService: WalletService);
     getUsers(): Promise<{
         users: (import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, User> & User & {

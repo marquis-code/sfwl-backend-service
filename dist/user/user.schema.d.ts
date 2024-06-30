@@ -33,7 +33,7 @@ export declare class User {
     phone: string;
     role: Role;
     resetPasswordToken: string;
-    walletId: string;
+    wallet: Types.ObjectId;
     homeAddress?: string;
     cityOfResidence?: string;
     businessName?: string;
