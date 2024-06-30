@@ -45,13 +45,16 @@ let ProductService = class ProductService {
         return { product };
     }
     async updateProduct(id, dto, userId, file) {
+        console.log(userId, 'usr id here');
         let updateData = Object.assign({}, dto);
         if (file) {
             const product = await this.productModel.findById(id);
+            console.log(product, 'usr id here');
             if (!product) {
                 throw new common_1.NotFoundException("No product found with the entered ID");
             }
-            if (product.createdBy.toString() !== userId) {
+            const userIdObj = new mongoose_2.Types.ObjectId(userId);
+            if (!product.createdBy.equals(userIdObj)) {
                 throw new common_1.ForbiddenException('You can only edit your own products');
             }
             if (product.cloudinary_id) {
@@ -70,16 +73,20 @@ let ProductService = class ProductService {
         return { product: updatedProduct };
     }
     async deleteProduct(id, userId) {
+        console.log(userId, 'userId ggggggg');
         const product = await this.productModel.findById(id);
+        console.log(product, 'deletersssssss her eooo');
         if (!product) {
             throw new common_1.NotFoundException("No product found with the entered ID");
         }
         const user = await this.userModel.findById(userId);
-        if (!user || (user.role !== 'vendor' && user.role !== 'admin')) {
-            throw new common_1.ForbiddenException('Only vendors and admins can delete products');
+        console.log(user, 'deleter her eooo');
+        if (!user || (user.role !== "vendor" && user.role !== "admin")) {
+            throw new common_1.ForbiddenException("Only vendors and admins can delete products");
         }
-        if (user.role === 'vendor' && product.createdBy.toString() !== userId) {
-            throw new common_1.ForbiddenException('Vendors can only delete their own products');
+        const userIdObj = new mongoose_2.Types.ObjectId(userId);
+        if (user.role === "vendor" && !product.createdBy.equals(userIdObj)) {
+            throw new common_1.ForbiddenException("Vendors can only delete their own products");
         }
         if (product.cloudinary_id) {
             await this.cloudinary.deleteImage(product.cloudinary_id);

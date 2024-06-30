@@ -1,11 +1,15 @@
-import { Injectable, NotFoundException, ForbiddenException } from "@nestjs/common";
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model, Types } from 'mongoose'; 
+import { Model, Types } from "mongoose";
 import { Product, ProductDocument } from "./product.schema";
 import { Review, ReviewDocument } from "../review/review.schema";
 import { CloudinaryService } from "../cloudinary/cloudinary.service";
 import { ProductDto, UpdateProductDto } from "./product.dto";
-import { User, UserDocument } from '../user/user.schema';
+import { User, UserDocument } from "../user/user.schema";
 
 @Injectable()
 export class ProductService {
@@ -18,8 +22,8 @@ export class ProductService {
 
     private readonly cloudinary: CloudinaryService,
 
-    @InjectModel(User.name) 
-    private readonly userModel: Model<UserDocument>,
+    @InjectModel(User.name)
+    private readonly userModel: Model<UserDocument>
   ) {}
 
   async getProducts() {
@@ -51,16 +55,24 @@ export class ProductService {
   }
 
   async updateProduct(id: string, dto: UpdateProductDto, userId: string, file?: any) {
+    console.log(userId, 'usr id here')
     let updateData = { ...dto };
 
     if (file) {
       const product = await this.productModel.findById(id);
-
+      console.log(product, 'usr id here')
       if (!product) {
         throw new NotFoundException("No product found with the entered ID");
       }
 
-      if (product.createdBy.toString() !== userId) {
+      // if (product.createdBy.toString() !== userId) {
+      //   throw new ForbiddenException('You can only edit your own products');
+      // }
+
+      const userIdObj = new Types.ObjectId(userId);
+
+      // Check if the user has permission to edit the product
+      if (!product.createdBy.equals(userIdObj)) {
         throw new ForbiddenException('You can only edit your own products');
       }
 
@@ -89,32 +101,41 @@ export class ProductService {
 
     return { product: updatedProduct };
   }
-
-  async deleteProduct(id: string, userId: string) {
-    const product = await this.productModel.findById(id);
-
-    if (!product) {
-      throw new NotFoundException("No product found with the entered ID");
-    }
-
-    const user = await this.userModel.findById(userId);
-    if (!user || (user.role !== 'vendor' && user.role !== 'admin')) {
-      throw new ForbiddenException('Only vendors and admins can delete products');
-    }
-    if (user.role === 'vendor' && product.createdBy.toString() !== userId) {
-      throw new ForbiddenException('Vendors can only delete their own products');
-    }
-
-    // Delete product image from Cloudinary
-    if (product.cloudinary_id) {
-      await this.cloudinary.deleteImage(product.cloudinary_id);
-    }
-
-    await this.productModel.findByIdAndDelete(id);
-    await this.reviewModel.deleteMany({ product: product._id });
-
-    return {};
+  
+async deleteProduct(id: string, userId: string) {
+  console.log(userId, 'userId ggggggg');
+  const product = await this.productModel.findById(id);
+  console.log(product, 'deletersssssss her eooo');
+  if (!product) {
+    throw new NotFoundException("No product found with the entered ID");
   }
+
+  const user = await this.userModel.findById(userId);
+  console.log(user, 'deleter her eooo');
+  if (!user || (user.role !== "vendor" && user.role !== "admin")) {
+    throw new ForbiddenException(
+      "Only vendors and admins can delete products"
+    );
+  }
+
+  const userIdObj = new Types.ObjectId(userId);
+  if (user.role === "vendor" && !product.createdBy.equals(userIdObj)) {
+    throw new ForbiddenException(
+      "Vendors can only delete their own products"
+    );
+  }
+
+  // Delete product image from Cloudinary
+  if (product.cloudinary_id) {
+    await this.cloudinary.deleteImage(product.cloudinary_id);
+  }
+
+  await this.productModel.findByIdAndDelete(id);
+  await this.reviewModel.deleteMany({ product: product._id });
+
+  return {};
+}
+
 
   async getVendorProducts(vendorId: string): Promise<Product[]> {
     const objectId = new Types.ObjectId(vendorId);
