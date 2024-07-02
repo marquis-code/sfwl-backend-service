@@ -29,8 +29,10 @@ export class Order {
   @Prop({ type: Types.ObjectId, ref: "User", required: true })
   user: Types.ObjectId;
 
-  @Prop({ required: true })
-  erranderId: string;
+  // @Prop({ required: true })
+  // erranderId: string;
+  @Prop({ type: Types.ObjectId, ref: 'Errander', required: false })
+  erranderId?: Types.ObjectId;
 
   @Prop({ required: true, enum: ['pending', 'accepted', 'delivered'], default: 'pending' })
   status: string;

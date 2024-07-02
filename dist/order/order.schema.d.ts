@@ -39,7 +39,7 @@ export declare const OrderItemSchema: import("mongoose").Schema<OrderItem, impor
 export declare class Order {
     items: OrderItem[];
     user: Types.ObjectId;
-    erranderId: string;
+    erranderId?: Types.ObjectId;
     status: string;
     totalPrice: number;
     location: {

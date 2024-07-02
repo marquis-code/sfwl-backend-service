@@ -4,13 +4,29 @@ import {
   IsNumber,
   IsString,
   ValidateNested,
+  IsEnum,
+  IsMongoId,
+  IsOptional,
 } from "class-validator";
 import { Type } from "class-transformer";
 class OrderItemDto {
+  @IsNotEmpty()
+  @IsString()
+  @IsMongoId()
   product: string;
-  quantity: number;
-}
 
+  @IsNotEmpty()
+  @IsNumber()
+  quantity: number;
+
+  @IsNotEmpty()
+  @IsString()
+  vendorId: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  price: number;
+}
 
 class LocationDto {
   @IsString()
@@ -23,26 +39,37 @@ class LocationDto {
   coordinates: number[];
 }
 
-
 export class CreateOrderDto {
   items: OrderItemDto[];
-  user: string;
-  location: {
-      type: 'Point';
-      coordinates: [number, number];
-    };
   // @IsArray()
   // @ValidateNested({ each: true })
   // @Type(() => OrderItemDto)
   // items: OrderItemDto[];
 
-  // @ValidateNested()
-  // @Type(() => LocationDto)
-  // location: LocationDto;
+  @IsNotEmpty()
+  @IsMongoId()
+  user: string;
 
-  // @IsString()
+  location: {
+    type: "Point";
+    coordinates: [number, number];
+  };
+
   // @IsNotEmpty()
-  // user: string;
+  // @IsString()
+  // erranderId: string;
+
+  @IsOptional()
+  @IsMongoId()
+  erranderId?: string;
+
+  @IsNotEmpty()
+  @IsEnum(["pending", "accepted", "delivered"])
+  status: string = "pending";
+
+  @IsNotEmpty()
+  @IsNumber()
+  totalPrice: number;
 }
 
 export class UpdateOrderDto {

@@ -22,6 +22,51 @@ export class OrderService {
     private readonly notificationService: NotificationService
   ) {}
 
+  // async createOrder(dto: CreateOrderDto): Promise<Order> {
+  //   const items = await Promise.all(
+  //     dto.items.map(async (item) => {
+  //       const product = await this.productModel.findById(item.product);
+  //       if (!product)
+  //         throw new NotFoundException(`Product not found: ${item.product}`);
+  //       if (product.currentInStock < item.quantity) {
+  //         throw new BadRequestException(
+  //           `Not enough stock available for product: ${item.product}`
+  //         );
+  //       }
+
+  //       product.currentInStock -= item.quantity;
+  //       await product.save();
+
+  //       return {
+  //         product: product._id,
+  //         quantity: item.quantity,
+  //         price: product.price,
+  //         vendorId: item.vendorId,  // Ensure vendorId is included
+  //       };
+  //     })
+  //   );
+
+  //   const totalPrice = items.reduce(
+  //     (sum, item) => sum + item.price * item.quantity,
+  //     0
+  //   );
+
+  //   const order = new this.orderModel({
+  //     items,
+  //     user: dto.user,
+  //     erranderId: dto.erranderId,  // Ensure erranderId is included
+  //     status: dto.status || 'pending',  // Ensure status defaults to 'pending' if not provided
+  //     totalPrice,
+  //     location: dto.location,
+  //   });
+  //   const savedOrder = await order.save();
+
+  //   //  Notify nearby erranders
+  //   await this.notifyNearbyErranders(savedOrder);
+
+  //   return savedOrder;
+  // }
+
   async createOrder(dto: CreateOrderDto): Promise<Order> {
     const items = await Promise.all(
       dto.items.map(async (item) => {
@@ -33,36 +78,40 @@ export class OrderService {
             `Not enough stock available for product: ${item.product}`
           );
         }
-
+  
         product.currentInStock -= item.quantity;
         await product.save();
-
+  
         return {
           product: product._id,
           quantity: item.quantity,
           price: product.price,
+          vendorId: item.vendorId,  // Ensure vendorId is included
         };
       })
     );
-
+  
     const totalPrice = items.reduce(
       (sum, item) => sum + item.price * item.quantity,
       0
     );
-
+  
     const order = new this.orderModel({
       items,
       user: dto.user,
       totalPrice,
       location: dto.location,
+      status: dto.status || 'pending',  // Ensure status defaults to 'pending' if not provided
+      // erranderId is optional and not set at creation
     });
     const savedOrder = await order.save();
-
+  
     //  Notify nearby erranders
     await this.notifyNearbyErranders(savedOrder);
-
+  
     return savedOrder;
   }
+  
 
   async notifyNearbyErranders(order: any) {
     if (!order.location || !order.location.coordinates) {
@@ -80,6 +129,7 @@ export class OrderService {
         },
       },
     });
+    console.log(erranders, 'found erranders');
 
     if (erranders.length === 0) {
       // If no erranders found nearby, notify all erranders
@@ -106,6 +156,11 @@ export class OrderService {
   async acceptOrder(orderId: string, erranderId: string): Promise<void> {
     const order = await this.orderModel.findById(orderId);
     if (!order) throw new NotFoundException("Order not found");
+
+      // Update the order with the erranderId
+     // Convert erranderId to ObjectId and update the order
+    order.erranderId = new Types.ObjectId(erranderId);
+    await order.save();
 
     // Notify the user who made the order
     const user = await this.userModel.findById(order.user);

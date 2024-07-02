@@ -14,6 +14,27 @@ const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
 class OrderItemDto {
 }
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsMongoId)(),
+    __metadata("design:type", String)
+], OrderItemDto.prototype, "product", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], OrderItemDto.prototype, "quantity", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], OrderItemDto.prototype, "vendorId", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], OrderItemDto.prototype, "price", void 0);
 class LocationDto {
 }
 __decorate([
@@ -28,8 +49,31 @@ __decorate([
     __metadata("design:type", Array)
 ], LocationDto.prototype, "coordinates", void 0);
 class CreateOrderDto {
+    constructor() {
+        this.status = "pending";
+    }
 }
 exports.CreateOrderDto = CreateOrderDto;
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsMongoId)(),
+    __metadata("design:type", String)
+], CreateOrderDto.prototype, "user", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsMongoId)(),
+    __metadata("design:type", String)
+], CreateOrderDto.prototype, "erranderId", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsEnum)(["pending", "accepted", "delivered"]),
+    __metadata("design:type", String)
+], CreateOrderDto.prototype, "status", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], CreateOrderDto.prototype, "totalPrice", void 0);
 class UpdateOrderDto {
 }
 exports.UpdateOrderDto = UpdateOrderDto;

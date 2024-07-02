@@ -41,6 +41,7 @@ let OrderService = class OrderService {
                 product: product._id,
                 quantity: item.quantity,
                 price: product.price,
+                vendorId: item.vendorId,
             };
         }));
         const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -49,6 +50,7 @@ let OrderService = class OrderService {
             user: dto.user,
             totalPrice,
             location: dto.location,
+            status: dto.status || 'pending',
         });
         const savedOrder = await order.save();
         await this.notifyNearbyErranders(savedOrder);
@@ -71,6 +73,7 @@ let OrderService = class OrderService {
                 },
             },
         });
+        console.log(erranders, 'found erranders');
         if (erranders.length === 0) {
             erranders = await this.userModel.find({
                 role: 'errander',
@@ -87,6 +90,8 @@ let OrderService = class OrderService {
         const order = await this.orderModel.findById(orderId);
         if (!order)
             throw new common_1.NotFoundException("Order not found");
+        order.erranderId = new mongoose_2.Types.ObjectId(erranderId);
+        await order.save();
         const user = await this.userModel.findById(order.user);
         if (user) {
             await this.notificationService.sendNotification(user._id, "Order Accepted", `Your order has been accepted by an errander.`, { orderId: order._id });

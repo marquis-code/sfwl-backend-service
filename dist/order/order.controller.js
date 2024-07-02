@@ -68,7 +68,7 @@ __decorate([
 ], OrderController.prototype, "getOrders", null);
 __decorate([
     (0, common_1.Post)(),
-    (0, auth_decorator_1.Auth)(role_enum_1.Role.Admin),
+    (0, auth_decorator_1.Auth)(role_enum_1.Role.Admin, role_enum_1.Role.Vendor, role_enum_1.Role.Errander, role_enum_1.Role.User),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -84,7 +84,7 @@ __decorate([
 ], OrderController.prototype, "deleteOrder", null);
 __decorate([
     (0, common_1.Get)("/user-orders"),
-    (0, auth_decorator_1.Auth)(role_enum_1.Role.Admin, role_enum_1.Role.Vendor),
+    (0, auth_decorator_1.Auth)(role_enum_1.Role.Admin, role_enum_1.Role.Vendor, role_enum_1.Role.User, role_enum_1.Role.Errander),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

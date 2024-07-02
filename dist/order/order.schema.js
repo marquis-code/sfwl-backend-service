@@ -47,8 +47,8 @@ __decorate([
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], Order.prototype, "user", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", String)
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: 'Errander', required: false }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
 ], Order.prototype, "erranderId", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true, enum: ['pending', 'accepted', 'delivered'], default: 'pending' }),

@@ -28,10 +28,10 @@ export class OrderController {
   }
 
   @Post()
-  @Auth(Role.Admin)
+  @Auth(Role.Admin, Role.Vendor, Role.Errander, Role.User)
   async createOrder(@Req() req, @Body() createOrderDto: CreateOrderDto) {
     const orderPayload = {
-      ...createOrderDto,
+      ...createOrderDto,   
       user: req.user._id,
     };
     return this.orderService.createOrder(orderPayload);
@@ -43,7 +43,7 @@ export class OrderController {
   }
 
   @Get("/user-orders")
-  @Auth(Role.Admin, Role.Vendor)
+  @Auth(Role.Admin, Role.Vendor, Role.User, Role.Errander)
   async getUserOrders(@Req() req) {
     const userId = req.user._id;
     return this.orderService.getUserOrders(userId);
