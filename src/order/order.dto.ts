@@ -41,12 +41,9 @@ class LocationDto {
 
 export class CreateOrderDto {
   items: OrderItemDto[];
-  // @IsArray()
-  // @ValidateNested({ each: true })
-  // @Type(() => OrderItemDto)
-  // items: OrderItemDto[];
 
-  @IsNotEmpty()
+  // @IsNotEmpty()
+  @IsOptional()
   @IsMongoId()
   user: string;
 

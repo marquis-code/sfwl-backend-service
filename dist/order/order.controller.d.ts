@@ -21,4 +21,5 @@ export declare class OrderController {
     }>;
     getTransactionsForVendor(vendorId: string): Promise<Order[]>;
     getOrdersForErrander(erranderId: string): Promise<Order[]>;
+    getOrdersByVendor(req: any): Promise<Order[]>;
 }

@@ -48,14 +48,15 @@ export declare enum Category {
     "shoes" = 19,
     "books" = 20,
     "toys" = 21,
-    "sports equipment" = 22,
-    "office supplies" = 23,
-    "pet supplies" = 24,
-    "automotive parts" = 25,
-    "musical instruments" = 26,
-    "furniture" = 27,
-    "garden tools" = 28,
-    "health and wellness" = 29
+    "food" = 22,
+    "sports equipment" = 23,
+    "office supplies" = 24,
+    "pet supplies" = 25,
+    "automotive parts" = 26,
+    "musical instruments" = 27,
+    "furniture" = 28,
+    "garden tools" = 29,
+    "health and wellness" = 30
 }
 export declare class Product {
     name: string;

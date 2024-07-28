@@ -37,14 +37,15 @@ var Category;
     Category[Category["shoes"] = 19] = "shoes";
     Category[Category["books"] = 20] = "books";
     Category[Category["toys"] = 21] = "toys";
-    Category[Category["sports equipment"] = 22] = "sports equipment";
-    Category[Category["office supplies"] = 23] = "office supplies";
-    Category[Category["pet supplies"] = 24] = "pet supplies";
-    Category[Category["automotive parts"] = 25] = "automotive parts";
-    Category[Category["musical instruments"] = 26] = "musical instruments";
-    Category[Category["furniture"] = 27] = "furniture";
-    Category[Category["garden tools"] = 28] = "garden tools";
-    Category[Category["health and wellness"] = 29] = "health and wellness";
+    Category[Category["food"] = 22] = "food";
+    Category[Category["sports equipment"] = 23] = "sports equipment";
+    Category[Category["office supplies"] = 24] = "office supplies";
+    Category[Category["pet supplies"] = 25] = "pet supplies";
+    Category[Category["automotive parts"] = 26] = "automotive parts";
+    Category[Category["musical instruments"] = 27] = "musical instruments";
+    Category[Category["furniture"] = 28] = "furniture";
+    Category[Category["garden tools"] = 29] = "garden tools";
+    Category[Category["health and wellness"] = 30] = "health and wellness";
 })(Category || (exports.Category = Category = {}));
 let Product = class Product {
 };
@@ -78,7 +79,7 @@ __decorate([
     __metadata("design:type", String)
 ], Product.prototype, "image", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true, enum: ["instant", "pre-order"], default: "instant" }),
+    (0, mongoose_1.Prop)({ required: true, enum: ["in-stock", "pre-order"], default: "in-stock" }),
     __metadata("design:type", String)
 ], Product.prototype, "productType", void 0);
 __decorate([

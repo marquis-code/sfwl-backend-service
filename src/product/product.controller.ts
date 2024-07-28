@@ -73,7 +73,7 @@ export class ProductController {
     return this.productService.getProduct(id);
   }
 
-  @Put("/:id")
+  @Put(":id")
   @Auth(Role.Vendor, Role.Admin)
   @UseInterceptors(FileInterceptor("file"))
   updateProduct(

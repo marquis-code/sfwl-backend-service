@@ -79,4 +79,15 @@ export class OrderController {
   async getOrdersForErrander(@Param('erranderId') erranderId: string): Promise<Order[]> {
     return this.walletService.getOrdersForErrander(erranderId);
   }
-}
+
+  // @Get('vendor/:vendorId')
+  // async getOrdersByVendor(@Param('vendorId') vendorId: string): Promise<Order[]> {
+  //   return this.orderService.getOrdersByVendor(vendorId);
+  // }
+  @Get('vendor') //Get all orders associated with a vendor
+  @Auth(Role.Admin, Role.Vendor)
+  async getOrdersByVendor(@Req() req): Promise<Order[]> {
+    const vendorId = req.user._id
+    return this.orderService.getOrdersByVendor(vendorId);
+  }
+}                                                                                                                 

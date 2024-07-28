@@ -58,6 +58,10 @@ let OrderController = class OrderController {
     async getOrdersForErrander(erranderId) {
         return this.walletService.getOrdersForErrander(erranderId);
     }
+    async getOrdersByVendor(req) {
+        const vendorId = req.user._id;
+        return this.orderService.getOrdersByVendor(vendorId);
+    }
 };
 exports.OrderController = OrderController;
 __decorate([
@@ -128,6 +132,14 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], OrderController.prototype, "getOrdersForErrander", null);
+__decorate([
+    (0, common_1.Get)('vendor'),
+    (0, auth_decorator_1.Auth)(role_enum_1.Role.Admin, role_enum_1.Role.Vendor),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], OrderController.prototype, "getOrdersByVendor", null);
 exports.OrderController = OrderController = __decorate([
     (0, common_1.Controller)("orders"),
     __metadata("design:paramtypes", [order_service_1.OrderService,

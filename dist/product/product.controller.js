@@ -97,7 +97,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ProductController.prototype, "getProduct", null);
 __decorate([
-    (0, common_1.Put)("/:id"),
+    (0, common_1.Put)(":id"),
     (0, auth_decorator_1.Auth)(role_enum_1.Role.Vendor, role_enum_1.Role.Admin),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file")),
     __param(0, (0, common_1.Param)("id", validate_mongoId_1.ValidateMongoId)),

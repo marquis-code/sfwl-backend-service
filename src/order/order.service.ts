@@ -10,6 +10,7 @@ import { Product, ProductDocument } from "../product/product.schema";
 import { CreateOrderDto } from "./order.dto";
 import { NotificationService } from "../notification/notification.service";
 import { User, UserDocument } from "../user/user.schema";
+import { OrderGateway } from "../order/order.gateway";
 
 @Injectable()
 export class OrderService {
@@ -19,53 +20,9 @@ export class OrderService {
     private readonly productModel: Model<ProductDocument>,
     @InjectModel(User.name)
     private readonly userModel: Model<UserDocument>,
-    private readonly notificationService: NotificationService
+    private readonly notificationService: NotificationService,
+    private orderGateway: OrderGateway
   ) {}
-
-  // async createOrder(dto: CreateOrderDto): Promise<Order> {
-  //   const items = await Promise.all(
-  //     dto.items.map(async (item) => {
-  //       const product = await this.productModel.findById(item.product);
-  //       if (!product)
-  //         throw new NotFoundException(`Product not found: ${item.product}`);
-  //       if (product.currentInStock < item.quantity) {
-  //         throw new BadRequestException(
-  //           `Not enough stock available for product: ${item.product}`
-  //         );
-  //       }
-
-  //       product.currentInStock -= item.quantity;
-  //       await product.save();
-
-  //       return {
-  //         product: product._id,
-  //         quantity: item.quantity,
-  //         price: product.price,
-  //         vendorId: item.vendorId,  // Ensure vendorId is included
-  //       };
-  //     })
-  //   );
-
-  //   const totalPrice = items.reduce(
-  //     (sum, item) => sum + item.price * item.quantity,
-  //     0
-  //   );
-
-  //   const order = new this.orderModel({
-  //     items,
-  //     user: dto.user,
-  //     erranderId: dto.erranderId,  // Ensure erranderId is included
-  //     status: dto.status || 'pending',  // Ensure status defaults to 'pending' if not provided
-  //     totalPrice,
-  //     location: dto.location,
-  //   });
-  //   const savedOrder = await order.save();
-
-  //   //  Notify nearby erranders
-  //   await this.notifyNearbyErranders(savedOrder);
-
-  //   return savedOrder;
-  // }
 
   async createOrder(dto: CreateOrderDto): Promise<Order> {
     const items = await Promise.all(
@@ -130,6 +87,7 @@ export class OrderService {
       },
     });
     console.log(erranders, 'found erranders');
+    this.orderGateway.notify('erranders-notified', order);
 
     if (erranders.length === 0) {
       // If no erranders found nearby, notify all erranders
@@ -196,5 +154,10 @@ export class OrderService {
   async getUserOrders(userId: string): Promise<Order[]> {
     const objectId = new Types.ObjectId(userId);
     return this.orderModel.find({ user: objectId }).exec();
+  }
+
+  async getOrdersByVendor(vendorId: string): Promise<Order[]> {
+    return this.orderModel.find({ 'items.vendorId': vendorId }).populate('user')  // Populate user details
+    .exec();
   }
 }

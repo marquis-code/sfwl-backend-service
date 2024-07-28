@@ -11,12 +11,13 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const order_controller_1 = require("./order.controller");
 const order_schema_1 = require("./order.schema");
-const order_service_1 = require("./order.service");
+const order_service_1 = require("../order/order.service");
 const user_module_1 = require("../user/user.module");
 const review_module_1 = require("../review/review.module");
 const product_module_1 = require("../product/product.module");
 const notification_module_1 = require("../notification/notification.module");
 const wallet_module_1 = require("../wallet/wallet.module");
+const order_gateway_1 = require("./order.gateway");
 let OrderModule = class OrderModule {
 };
 exports.OrderModule = OrderModule;
@@ -38,7 +39,7 @@ exports.OrderModule = OrderModule = __decorate([
             ]),
         ],
         controllers: [order_controller_1.OrderController],
-        providers: [order_service_1.OrderService],
+        providers: [order_service_1.OrderService, order_gateway_1.OrderGateway],
     })
 ], OrderModule);
 //# sourceMappingURL=orders.module.js.map

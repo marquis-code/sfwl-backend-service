@@ -20,12 +20,14 @@ const order_schema_1 = require("./order.schema");
 const product_schema_1 = require("../product/product.schema");
 const notification_service_1 = require("../notification/notification.service");
 const user_schema_1 = require("../user/user.schema");
+const order_gateway_1 = require("../order/order.gateway");
 let OrderService = class OrderService {
-    constructor(orderModel, productModel, userModel, notificationService) {
+    constructor(orderModel, productModel, userModel, notificationService, orderGateway) {
         this.orderModel = orderModel;
         this.productModel = productModel;
         this.userModel = userModel;
         this.notificationService = notificationService;
+        this.orderGateway = orderGateway;
     }
     async createOrder(dto) {
         const items = await Promise.all(dto.items.map(async (item) => {
@@ -74,6 +76,7 @@ let OrderService = class OrderService {
             },
         });
         console.log(erranders, 'found erranders');
+        this.orderGateway.notify('erranders-notified', order);
         if (erranders.length === 0) {
             erranders = await this.userModel.find({
                 role: 'errander',
@@ -116,6 +119,10 @@ let OrderService = class OrderService {
         const objectId = new mongoose_2.Types.ObjectId(userId);
         return this.orderModel.find({ user: objectId }).exec();
     }
+    async getOrdersByVendor(vendorId) {
+        return this.orderModel.find({ 'items.vendorId': vendorId }).populate('user')
+            .exec();
+    }
 };
 exports.OrderService = OrderService;
 exports.OrderService = OrderService = __decorate([
@@ -126,6 +133,7 @@ exports.OrderService = OrderService = __decorate([
     __metadata("design:paramtypes", [mongoose_2.Model,
         mongoose_2.Model,
         mongoose_2.Model,
-        notification_service_1.NotificationService])
+        notification_service_1.NotificationService,
+        order_gateway_1.OrderGateway])
 ], OrderService);
 //# sourceMappingURL=order.service.js.map

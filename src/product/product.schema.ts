@@ -27,6 +27,7 @@ export enum Category {
   "shoes",
   "books",
   "toys",
+  "food",
   "sports equipment",
   "office supplies",
   "pet supplies",
@@ -64,7 +65,7 @@ export class Product {
   @Prop({ required: true })
   image: string;
 
-  @Prop({ required: true, enum: ["instant", "pre-order"], default: "instant" })
+  @Prop({ required: true, enum: ["in-stock", "pre-order"], default: "in-stock" })
   productType: string;
 
   @Prop({ type: [TestimonialSchema], default: [], required: false })
