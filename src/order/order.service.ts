@@ -157,7 +157,6 @@ export class OrderService {
   }
 
   async getOrdersByVendor(vendorId: string): Promise<Order[]> {
-    return this.orderModel.find({ 'items.vendorId': vendorId }).populate('user')  // Populate user details
-    .exec();
+    return this.orderModel.find({ 'items.vendorId': vendorId }).populate('user').populate('items.product').exec();
   }
 }

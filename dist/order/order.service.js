@@ -120,8 +120,7 @@ let OrderService = class OrderService {
         return this.orderModel.find({ user: objectId }).exec();
     }
     async getOrdersByVendor(vendorId) {
-        return this.orderModel.find({ 'items.vendorId': vendorId }).populate('user')
-            .exec();
+        return this.orderModel.find({ 'items.vendorId': vendorId }).populate('user').populate('items.product').exec();
     }
 };
 exports.OrderService = OrderService;
