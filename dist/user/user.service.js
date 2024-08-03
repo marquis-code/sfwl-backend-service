@@ -20,10 +20,12 @@ const role_enum_1 = require("../role/role.enum");
 const user_schema_1 = require("./user.schema");
 const review_schema_1 = require("../review/review.schema");
 const wallet_service_1 = require("../wallet/wallet.service");
+const product_schema_1 = require("../product/product.schema");
 let UserService = class UserService {
-    constructor(User, Review, walletService) {
+    constructor(User, Review, Product, walletService) {
         this.User = User;
         this.Review = Review;
+        this.Product = Product;
         this.walletService = walletService;
     }
     async getUsers() {
@@ -77,13 +79,25 @@ let UserService = class UserService {
         await this.Review.deleteMany({ user: user._id });
         return {};
     }
+    async getVendorsWithProducts() {
+        const vendors = await this.User.find({ role: role_enum_1.Role.Vendor }).exec();
+        const vendorIds = vendors.map((vendor) => vendor._id);
+        const products = await this.Product.find({ createdBy: { $in: vendorIds } }).exec();
+        const vendorsWithProducts = vendors.map((vendor) => {
+            const vendorProducts = products.filter((product) => product.createdBy.equals(vendor._id));
+            return Object.assign(Object.assign({}, vendor.toObject()), { products: vendorProducts });
+        });
+        return { vendors: vendorsWithProducts };
+    }
 };
 exports.UserService = UserService;
 exports.UserService = UserService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(user_schema_1.User.name)),
     __param(1, (0, mongoose_1.InjectModel)(review_schema_1.Review.name)),
+    __param(2, (0, mongoose_1.InjectModel)(product_schema_1.Product.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model,
         mongoose_2.Model,
         wallet_service_1.WalletService])
 ], UserService);

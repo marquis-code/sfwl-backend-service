@@ -60,6 +60,9 @@ export class User {
 	@Prop()
 	businessLocation?: string;
 
+	@Prop({ type: [{ type: Types.ObjectId, ref: 'Product' }] })
+	products: Types.ObjectId[];
+
 	@Prop({ select: false })
 	resetPasswordExpire: number
 
@@ -89,6 +92,14 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
+
+// Define the virtual field
+UserSchema.virtual('ownedProducts', {
+	ref: 'Product',         // The model to use
+	localField: '_id',      // Find users where `localField`
+	foreignField: 'createdBy', // is equal to `foreignField`
+  });
+
 UserSchema.index({ location: '2dsphere' });
 
 UserSchema.pre("save", async function (next) {

@@ -41,6 +41,7 @@ export declare class User {
     businessPhone?: string;
     cacRegistration?: string;
     businessLocation?: string;
+    products: Types.ObjectId[];
     resetPasswordExpire: number;
     createdAt: Date;
     getSignedJwtToken: Function;

@@ -76,6 +76,10 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "businessLocation", void 0);
 __decorate([
+    (0, mongoose_1.Prop)({ type: [{ type: mongoose_2.Types.ObjectId, ref: 'Product' }] }),
+    __metadata("design:type", Array)
+], User.prototype, "products", void 0);
+__decorate([
     (0, mongoose_1.Prop)({ select: false }),
     __metadata("design:type", Number)
 ], User.prototype, "resetPasswordExpire", void 0);
@@ -101,6 +105,11 @@ exports.User = User = __decorate([
     (0, mongoose_1.Schema)()
 ], User);
 exports.UserSchema = mongoose_1.SchemaFactory.createForClass(User);
+exports.UserSchema.virtual('ownedProducts', {
+    ref: 'Product',
+    localField: '_id',
+    foreignField: 'createdBy',
+});
 exports.UserSchema.index({ location: '2dsphere' });
 exports.UserSchema.pre("save", async function (next) {
     if (!this.isModified("password"))

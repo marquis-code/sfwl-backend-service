@@ -19,6 +19,7 @@ import { Review, ReviewDocument } from "../review/review.schema";
 // DTOs
 import { CreateUserDto, UpdateUserDto } from "./user.dto";
 import { WalletService } from "../wallet/wallet.service";
+import { Product, ProductDocument } from '../product/product.schema';
 
 
 @Injectable()
@@ -26,6 +27,7 @@ export class UserService {
   constructor(
     @InjectModel(User.name) private readonly User: Model<UserDocument>,
     @InjectModel(Review.name) private readonly Review: Model<ReviewDocument>,
+    @InjectModel(Product.name) private readonly Product: Model<ProductDocument>,
     private readonly walletService: WalletService
   ) {}
 
@@ -102,4 +104,28 @@ export class UserService {
 
     return {};
   }
+
+
+  async getVendorsWithProducts() {
+    // Step 1: Get all vendors
+    const vendors = await this.User.find({ role: Role.Vendor }).exec();
+  
+    // Step 2: Get all vendor IDs
+    const vendorIds = vendors.map((vendor) => vendor._id);
+  
+    // Step 3: Find all products that belong to any vendor
+    const products = await this.Product.find({ createdBy: { $in: vendorIds } }).exec();
+  
+    // Step 4: Attach products to each vendor
+    const vendorsWithProducts = vendors.map((vendor) => {
+      const vendorProducts = products.filter((product) => product.createdBy.equals(vendor._id));
+      return {
+        ...vendor.toObject(), // Convert Mongoose document to plain object
+        products: vendorProducts
+      };
+    });
+  
+    return { vendors: vendorsWithProducts };
+  }
+  
 }

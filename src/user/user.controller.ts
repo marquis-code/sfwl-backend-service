@@ -36,6 +36,12 @@ export class UserController {
 		return this.userService.getUsers()
 	}
 
+	@Get('vendors')
+	async getVendorsWithProducts() {
+	  const result = await this.userService.getVendorsWithProducts();
+	  return result;
+	}
+
 	@Post()
 	@Auth(Role.Admin)
 	createUser(@Body() dto: CreateUserDto) {
