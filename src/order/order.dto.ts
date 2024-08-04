@@ -60,6 +60,30 @@ export class CreateOrderDto {
   @IsMongoId()
   erranderId?: string;
 
+  @IsOptional()
+  address: number;
+
+   @IsOptional()
+  phone: number;
+
+  @IsOptional()
+  orderNotes: number;
+
+  @IsOptional()
+  paymentType: number;
+
+  @IsOptional()
+  isNewUser: boolean;
+
+  @IsOptional()
+  isSubscription: boolean;
+
+  @IsOptional()
+  startDate: Date
+
+   @IsOptional()
+  endDate: Date
+
   @IsNotEmpty()
   @IsEnum(["pending", "accepted", "delivered"])
   status: string = "pending";

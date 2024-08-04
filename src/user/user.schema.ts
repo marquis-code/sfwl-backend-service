@@ -40,6 +40,12 @@ export class User {
     wallet: Types.ObjectId; 
 
 	@Prop()
+	accountNumber?: string
+
+	@Prop()
+	bankName?: string
+
+	@Prop()
 	homeAddress?: string;
 
 	@Prop()

@@ -40,6 +40,30 @@ export class Order {
   @Prop({ required: true })
   totalPrice: number;
 
+  @Prop({ required: false })
+  address: number;
+
+  @Prop({ required: false })
+  phone: number;
+
+  @Prop({ required: false })
+  orderNotes: number;
+
+  @Prop({ required: false })
+  paymentType: number;
+
+  @Prop({ required: false, default: false})
+  isNewUser: boolean;
+
+  @Prop({ required: false, default: false})
+  isSubscription: boolean;
+
+  @Prop({ required: false })
+  startDate: Date
+
+  @Prop({ required: false })
+  endDate: Date
+  
   @Prop({ type: { type: String, enum: ['Point'], required: true }, coordinates: { type: [Number], required: true } })
   location: {
     type: 'Point';
