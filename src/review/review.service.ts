@@ -4,6 +4,7 @@ import {
 	BadRequestException,
 	NotFoundException,
 	ForbiddenException,
+	InternalServerErrorException
 } from "@nestjs/common"
 import { InjectModel } from "@nestjs/mongoose"
 
@@ -14,6 +15,7 @@ import { UserDocument } from "../user/user.schema"
 // schema
 import { Product, ProductDocument } from "../product/product.schema"
 import { Review, ReviewDocument } from "./review.schema"
+import { CacheService } from '../cache/cache.service';
 
 // DTOs
 import { CreateReviewDto, UpdateReviewDto } from "./review.dto"
@@ -26,15 +28,46 @@ export class ReviewService {
 
 		@InjectModel(Product.name)
 		private readonly Product: Model<ProductDocument>,
+		private cacheService: CacheService
 	) {}
 
-	async getReviews() {
-		const reviews = await this.Review.find()
-			.populate({ path: "user", select: "id name" })
-			.populate({ path: "product", select: "id name" })
+	// async getReviews() {
+	// 	const reviews = await this.Review.find()
+	// 		.populate({ path: "user", select: "id name" })
+	// 		.populate({ path: "product", select: "id name" })
 
-		return { reviews }
-	}
+	// 	return { reviews }
+	// }
+
+	async getReviews() {
+		try {
+		  // Define a unique cache key for storing and retrieving reviews
+		  const cacheKey = 'reviews';
+	  
+		  // Attempt to retrieve cached reviews from the cache service
+		  const cachedReviews = await this.cacheService.get(cacheKey);
+	  
+		  if (cachedReviews) {
+			// If cached reviews exist, parse the JSON and return it
+			return { reviews: JSON.parse(cachedReviews), fromCache: true };
+		  }
+	  
+		  // If no cached reviews are found, query the database for reviews
+		  const reviews = await this.Review.find()
+			.populate({ path: "user", select: "id name" })
+			.populate({ path: "product", select: "id name" });
+	  
+		  // Cache the retrieved reviews for future use
+		  await this.cacheService.set(cacheKey, JSON.stringify(reviews));
+	  
+		  // Return the reviews retrieved from the database
+		  return { reviews, fromCache: false };
+		} catch (error) {
+		  // Handle any errors that occur during the process
+		  throw new InternalServerErrorException('Something went wrong');
+		}
+	  }
+	  
 
 	async createReview(dto: CreateReviewDto, user: UserDocument) {
 		let review = await this.Review.findOne({

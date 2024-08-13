@@ -47,6 +47,20 @@ __decorate([
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)({
+        message: "Enter home address",
+    }),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "accountNumber", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)({
+        message: "Enter home address",
+    }),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "bankName", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)({
         message: "Enter city of residence",
     }),
     __metadata("design:type", String)

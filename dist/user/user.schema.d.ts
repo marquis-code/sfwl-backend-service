@@ -34,6 +34,8 @@ export declare class User {
     role: Role;
     resetPasswordToken: string;
     wallet: Types.ObjectId;
+    accountNumber?: string;
+    bankName?: string;
     homeAddress?: string;
     cityOfResidence?: string;
     businessName?: string;

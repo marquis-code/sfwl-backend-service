@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
+  InternalServerErrorException
 } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
@@ -11,6 +12,7 @@ import { CreateOrderDto } from "./order.dto";
 import { NotificationService } from "../notification/notification.service";
 import { User, UserDocument } from "../user/user.schema";
 import { OrderGateway } from "../order/order.gateway";
+import { CacheService } from '../cache/cache.service';
 
 @Injectable()
 export class OrderService {
@@ -21,7 +23,8 @@ export class OrderService {
     @InjectModel(User.name)
     private readonly userModel: Model<UserDocument>,
     private readonly notificationService: NotificationService,
-    private orderGateway: OrderGateway
+    private orderGateway: OrderGateway,
+    private cacheService: CacheService 
   ) {}
 
   async createOrder(dto: CreateOrderDto): Promise<Order> {
@@ -132,9 +135,47 @@ export class OrderService {
     }
   }
 
-  async getOrders(): Promise<Order[]> {
-    return this.orderModel.find().populate("items.product").exec();
+  // async getOrders() {
+  //   try {
+  //     const cachedOrders = await this.cacheService.get('orders')
+
+  //     if(cachedOrders){
+  //       return { orders: cachedOrders, fromCache: true }
+  //     }
+  //     const orders = await this.orderModel.find().populate("items.product").exec();
+  //     await this.cacheService.set('products', JSON.stringify(orders))
+
+  //     return {  orders: cachedOrders, fromCache: false };
+
+  //   } catch (error) {
+  //     throw new InternalServerErrorException('Something went wrong');
+  //   }
+  // }
+
+  async getOrders() {
+    try {
+      // Attempt to retrieve cached orders from the cache service
+      const cachedOrders = await this.cacheService.get('orders');
+  
+      if (cachedOrders) {
+        // If cached orders exist, parse the JSON and return it
+        return { orders: JSON.parse(cachedOrders), fromCache: true };
+      }
+  
+      // If no cached orders are found, retrieve orders from the database
+      const orders = await this.orderModel.find().populate("items.product").exec();
+  
+      // Cache the retrieved orders for future use
+      await this.cacheService.set('orders', JSON.stringify(orders));
+  
+      // Return the orders with a flag indicating they are not from cache
+      return { orders, fromCache: false };
+    } catch (error) {
+      // Handle any errors that occur during the process
+      throw new InternalServerErrorException('Something went wrong');
+    }
   }
+  
 
   async deleteOrder(id: string): Promise<void> {
     const order = await this.orderModel.findByIdAndDelete(id);
@@ -151,12 +192,73 @@ export class OrderService {
     );
   }
 
+  // async getUserOrders(userId: string): Promise<Order[]> {
+  //   const objectId = new Types.ObjectId(userId);
+  //   return this.orderModel.find({ user: objectId }).exec();
+  // }
+
   async getUserOrders(userId: string): Promise<Order[]> {
-    const objectId = new Types.ObjectId(userId);
-    return this.orderModel.find({ user: objectId }).exec();
+    try {
+      // Construct a cache key specific to the user's orders
+      const cacheKey = `user_orders_${userId}`;
+      
+      // Attempt to retrieve cached user orders from the cache service
+      const cachedOrders = await this.cacheService.get(cacheKey);
+      
+      if (cachedOrders) {
+        // If cached orders exist, parse the JSON and return it
+        return JSON.parse(cachedOrders);
+      }
+  
+      // If no cached orders are found, retrieve user orders from the database
+      const objectId = new Types.ObjectId(userId);
+      const orders = await this.orderModel.find({ user: objectId }).exec();
+  
+      // Cache the retrieved orders for future use
+      await this.cacheService.set(cacheKey, JSON.stringify(orders));
+  
+      // Return the orders retrieved from the database
+      return orders;
+    } catch (error) {
+      // Handle any errors that occur during the process
+      throw new InternalServerErrorException('Something went wrong');
+    }
   }
+  
+
+  // async getOrdersByVendor(vendorId: string): Promise<Order[]> {
+  //   return this.orderModel.find({ 'items.vendorId': vendorId }).populate('user').populate('items.product').exec();
+  // }
 
   async getOrdersByVendor(vendorId: string): Promise<Order[]> {
-    return this.orderModel.find({ 'items.vendorId': vendorId }).populate('user').populate('items.product').exec();
+    try {
+      // Construct a unique cache key for the vendor's orders
+      const cacheKey = `vendor_orders_${vendorId}`;
+      
+      // Attempt to retrieve cached orders for the vendor
+      const cachedOrders = await this.cacheService.get(cacheKey);
+      
+      if (cachedOrders) {
+        // If cached orders exist, parse the JSON and return it
+        return JSON.parse(cachedOrders);
+      }
+  
+      // If no cached orders are found, query the database for the vendor's orders
+      const orders = await this.orderModel
+        .find({ 'items.vendorId': vendorId })
+        .populate('user')
+        .populate('items.product')
+        .exec();
+  
+      // Cache the retrieved orders for future use
+      await this.cacheService.set(cacheKey, JSON.stringify(orders));
+  
+      // Return the orders retrieved from the database
+      return orders;
+    } catch (error) {
+      // Handle any errors that occur during the process
+      throw new InternalServerErrorException('Something went wrong');
+    }
   }
+  
 }

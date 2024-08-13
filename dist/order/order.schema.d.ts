@@ -42,6 +42,14 @@ export declare class Order {
     erranderId?: Types.ObjectId;
     status: string;
     totalPrice: number;
+    address: number;
+    phone: number;
+    orderNotes: number;
+    paymentType: number;
+    isNewUser: boolean;
+    isSubscription: boolean;
+    startDate: Date;
+    endDate: Date;
     location: {
         type: 'Point';
         coordinates: [number, number];

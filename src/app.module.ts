@@ -25,9 +25,12 @@ import { NotificationModule } from './notification/notification.module';
 import { WalletModule } from "./wallet/wallet.module";
 import { TransactionModule } from './transaction/transaction.module';
 
+import { CacheConfigModule } from './cache/cache.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    CacheConfigModule,
 	 MulterModule.register({
 		storage: multer.memoryStorage(),
 	  }),

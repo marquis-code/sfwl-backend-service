@@ -12,6 +12,14 @@ export declare class CreateOrderDto {
         coordinates: [number, number];
     };
     erranderId?: string;
+    address: number;
+    phone: number;
+    orderNotes: number;
+    paymentType: number;
+    isNewUser: boolean;
+    isSubscription: boolean;
+    startDate: Date;
+    endDate: Date;
     status: string;
     totalPrice: number;
 }

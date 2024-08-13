@@ -59,6 +59,38 @@ __decorate([
     __metadata("design:type", Number)
 ], Order.prototype, "totalPrice", void 0);
 __decorate([
+    (0, mongoose_1.Prop)({ required: false }),
+    __metadata("design:type", Number)
+], Order.prototype, "address", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: false }),
+    __metadata("design:type", Number)
+], Order.prototype, "phone", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: false }),
+    __metadata("design:type", Number)
+], Order.prototype, "orderNotes", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: false }),
+    __metadata("design:type", Number)
+], Order.prototype, "paymentType", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: false, default: false }),
+    __metadata("design:type", Boolean)
+], Order.prototype, "isNewUser", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: false, default: false }),
+    __metadata("design:type", Boolean)
+], Order.prototype, "isSubscription", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: false }),
+    __metadata("design:type", Date)
+], Order.prototype, "startDate", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: false }),
+    __metadata("design:type", Date)
+], Order.prototype, "endDate", void 0);
+__decorate([
     (0, mongoose_1.Prop)({ type: { type: String, enum: ['Point'], required: true }, coordinates: { type: [Number], required: true } }),
     __metadata("design:type", Object)
 ], Order.prototype, "location", void 0);

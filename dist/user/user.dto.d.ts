@@ -6,6 +6,8 @@ export declare class CreateUserDto {
     phone: string;
     role: Role;
     homeAddress?: string;
+    accountNumber?: string;
+    bankName?: string;
     cityOfResidence?: string;
     businessName?: string;
     businessEmail?: string;

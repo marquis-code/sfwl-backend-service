@@ -51,7 +51,7 @@ export declare class UserController {
             _id: import("mongoose").Types.ObjectId;
             __v?: any;
             $locals: Record<string, unknown>;
-            $op: "save" | "validate" | "remove";
+            $op: "remove" | "save" | "validate";
             $where: Record<string, unknown>;
             baseModelName?: string;
             collection: import("mongoose").Collection<import("bson").Document>;
@@ -75,6 +75,8 @@ export declare class UserController {
             role: Role;
             resetPasswordToken: string;
             wallet: import("mongoose").Types.ObjectId;
+            accountNumber?: string;
+            bankName?: string;
             homeAddress?: string;
             cityOfResidence?: string;
             businessName?: string;
