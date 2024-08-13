@@ -32,65 +32,53 @@ export class ProductService {
     private readonly cacheService: CacheService
   ) {}
 
-  // async getProducts() {
-  //   try {
-  //     const cacheProducts = await this.cacheService.get('products')
-  //     if(cacheProducts) {
-  //       // Data found in cache, set fromCache to true
-  //       const shuffledProducts = shuffleArray(cacheProducts);
-  //       return { products: shuffledProducts, fromCache: true }
-  //     }
-
-  //     const products = await this.productModel.find().populate("createdBy");
-  //     // Cache the data for future use
-  //     await this.cacheService.set('products', JSON.stringify(products))
-
-  //     const shuffledProducts = shuffleArray(products);
-
-  //     return { products: shuffledProducts, fromCache: false };
-  //   } catch (err: any) {
-  //     throw new InternalServerErrorException('Something went wrong');
-  //   }
-  // }
-
   async getProducts() {
     try {
-      // Attempt to retrieve cached products from the cache service
-      const cacheProducts = await this.cacheService.get('products');
-      if (cacheProducts) {
-        // Data found in cache, parse the JSON and shuffle the array
-        const parsedProducts = JSON.parse(cacheProducts);
-        const shuffledProducts = shuffleArray(parsedProducts);
-        return { products: shuffledProducts, fromCache: true };
+      const cacheProducts = await this.cacheService.get('products')
+      if(cacheProducts) {
+        // Data found in cache, set fromCache to true
+        const shuffledProducts = shuffleArray(cacheProducts);
+        return { products: shuffledProducts, fromCache: true }
       }
-  
-      // If no cached data is found, retrieve products from the database
+
       const products = await this.productModel.find().populate("createdBy");
-  
-      // Cache the retrieved products for future use
-      await this.cacheService.set('products', JSON.stringify(products));
-  
-      // Shuffle the products array
+      // Cache the data for future use
+      await this.cacheService.set('products', JSON.stringify(products))
+
       const shuffledProducts = shuffleArray(products);
-  
+
       return { products: shuffledProducts, fromCache: false };
     } catch (err: any) {
-      // Handle any errors that occur during the process
       throw new InternalServerErrorException('Something went wrong');
     }
   }
-  
 
   async getProduct(id: string) {
     try {
       // Attempt to retrieve the product from the cache using the product ID as the key
       const cacheProduct = await this.cacheService.get(`product_${id}`);
       if (cacheProduct) {
-        // If found, parse the cached product data and return it
-        return { product: JSON.parse(cacheProduct), fromCache: true };
+        let parsedProduct;
+        // Check if the cached data is already an object
+        if (typeof cacheProduct === 'string') {
+          try {
+            parsedProduct = JSON.parse(cacheProduct);
+          } catch (parseError) {
+            console.error('Error parsing cached product data:', parseError);
+            // Handle parse error, fallback to fetching from DB
+          }
+        } else {
+          // If it's already an object, just assign it directly
+          parsedProduct = cacheProduct;
+        }
+  
+        // If parsing was successful or the data was already an object
+        if (parsedProduct) {
+          return { product: parsedProduct, fromCache: true };
+        }
       }
   
-      // If not found in the cache, fetch the product from the database
+      // If not found in the cache or parsing fails, fetch the product from the database
       const product = await this.productModel.findById(id).populate("reviews");
   
       // If the product is not found, throw a NotFoundException
@@ -104,9 +92,12 @@ export class ProductService {
       // Return the product data with a flag indicating it's not from cache
       return { product, fromCache: false };
     } catch (err: any) {
+      // Log the error for debugging purposes
+      console.error('Error fetching product:', err);
       throw new InternalServerErrorException('Something went wrong');
     }
   }
+  
 
   async createProduct(dto: ProductDto, user: any, file: any) {
     const cloudinaryResponse = await this.cloudinary.uploadImage(file);

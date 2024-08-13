@@ -34,8 +34,7 @@ let ProductService = class ProductService {
         try {
             const cacheProducts = await this.cacheService.get('products');
             if (cacheProducts) {
-                const parsedProducts = JSON.parse(cacheProducts);
-                const shuffledProducts = (0, shuffleArray_1.shuffleArray)(parsedProducts);
+                const shuffledProducts = (0, shuffleArray_1.shuffleArray)(cacheProducts);
                 return { products: shuffledProducts, fromCache: true };
             }
             const products = await this.productModel.find().populate("createdBy");
@@ -51,7 +50,21 @@ let ProductService = class ProductService {
         try {
             const cacheProduct = await this.cacheService.get(`product_${id}`);
             if (cacheProduct) {
-                return { product: JSON.parse(cacheProduct), fromCache: true };
+                let parsedProduct;
+                if (typeof cacheProduct === 'string') {
+                    try {
+                        parsedProduct = JSON.parse(cacheProduct);
+                    }
+                    catch (parseError) {
+                        console.error('Error parsing cached product data:', parseError);
+                    }
+                }
+                else {
+                    parsedProduct = cacheProduct;
+                }
+                if (parsedProduct) {
+                    return { product: parsedProduct, fromCache: true };
+                }
             }
             const product = await this.productModel.findById(id).populate("reviews");
             if (!product) {
@@ -61,6 +74,7 @@ let ProductService = class ProductService {
             return { product, fromCache: false };
         }
         catch (err) {
+            console.error('Error fetching product:', err);
             throw new common_1.InternalServerErrorException('Something went wrong');
         }
     }
