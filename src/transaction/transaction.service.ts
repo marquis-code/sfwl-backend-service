@@ -5,13 +5,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Transaction } from './transaction.schema';
 import { CreateTransactionDto } from './create-transaction.dto';
+import { Cache } from 'cache-manager';
 import { CacheService } from '../cache/cache.service';
 
 @Injectable()
 export class TransactionService {
   constructor(
     @InjectModel(Transaction.name) private readonly transactionModel: Model<Transaction>,
-    private cacheService: CacheService
+    private readonly cacheService: CacheService
   ) {}
 
   async create(createTransactionDto: CreateTransactionDto): Promise<Transaction> {

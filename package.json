@@ -93,5 +93,9 @@
 		],
 		"coverageDirectory": "../coverage",
 		"testEnvironment": "node"
+	},
+	"resolutions": {
+		"cache-manager": "5.6.0"
 	}
+	  
 }

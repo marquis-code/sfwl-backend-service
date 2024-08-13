@@ -29,7 +29,7 @@ export class ProductService {
     @InjectModel(User.name)
     private readonly userModel: Model<UserDocument>,
 
-    private cacheService: CacheService
+    private readonly cacheService: CacheService
   ) {}
 
   // async getProducts() {

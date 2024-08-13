@@ -28,7 +28,7 @@ export class ReviewService {
 
 		@InjectModel(Product.name)
 		private readonly Product: Model<ProductDocument>,
-		private cacheService: CacheService
+		private readonly cacheService: CacheService
 	) {}
 
 	// async getReviews() {

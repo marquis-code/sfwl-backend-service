@@ -24,7 +24,7 @@ export class OrderService {
     private readonly userModel: Model<UserDocument>,
     private readonly notificationService: NotificationService,
     private orderGateway: OrderGateway,
-    private cacheService: CacheService 
+    private readonly cacheService: CacheService 
   ) {}
 
   async createOrder(dto: CreateOrderDto): Promise<Order> {
