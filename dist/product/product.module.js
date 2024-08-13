@@ -16,6 +16,7 @@ const user_module_1 = require("../user/user.module");
 const review_module_1 = require("../review/review.module");
 const cloudinary_module_1 = require("../cloudinary/cloudinary.module");
 const orders_module_1 = require("../order/orders.module");
+const cache_module_1 = require("../cache/cache.module");
 let ProductModule = class ProductModule {
 };
 exports.ProductModule = ProductModule;
@@ -27,6 +28,7 @@ exports.ProductModule = ProductModule = __decorate([
             mongoose_1.MongooseModule.forFeature([
                 { name: product_schema_1.Product.name, schema: product_schema_1.ProductSchema },
             ]),
+            (0, common_1.forwardRef)(() => cache_module_1.CacheConfigModule),
             cloudinary_module_1.CloudinaryModule,
             orders_module_1.OrderModule
         ],

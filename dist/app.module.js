@@ -30,6 +30,7 @@ const notification_service_1 = require("./notification/notification.service");
 const notification_module_1 = require("./notification/notification.module");
 const wallet_module_1 = require("./wallet/wallet.module");
 const transaction_module_1 = require("./transaction/transaction.module");
+const cache_module_1 = require("./cache/cache.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -37,6 +38,7 @@ exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             config_1.ConfigModule.forRoot(),
+            cache_module_1.CacheConfigModule,
             platform_express_1.MulterModule.register({
                 storage: multer.memoryStorage(),
             }),

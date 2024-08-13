@@ -30,13 +30,8 @@ export declare class ReviewController {
     private reviewService;
     constructor(reviewService: ReviewService);
     getReviews(): Promise<{
-        reviews: Omit<Omit<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./review.schema").Review> & import("./review.schema").Review & {
-            _id: import("mongoose").Types.ObjectId;
-        }> & import("mongoose").Document<unknown, {}, import("./review.schema").Review> & import("./review.schema").Review & {
-            _id: import("mongoose").Types.ObjectId;
-        } & Required<{
-            _id: import("mongoose").Types.ObjectId;
-        }>, never>, never>[];
+        reviews: any;
+        fromCache: boolean;
     }>;
     createReview(dto: CreateReviewDto, user: UserDocument): Promise<{
         review: import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./review.schema").Review> & import("./review.schema").Review & {

@@ -18,16 +18,29 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const product_schema_1 = require("../product/product.schema");
 const review_schema_1 = require("./review.schema");
+const cache_service_1 = require("../cache/cache.service");
 let ReviewService = class ReviewService {
-    constructor(Review, Product) {
+    constructor(Review, Product, cacheService) {
         this.Review = Review;
         this.Product = Product;
+        this.cacheService = cacheService;
     }
     async getReviews() {
-        const reviews = await this.Review.find()
-            .populate({ path: "user", select: "id name" })
-            .populate({ path: "product", select: "id name" });
-        return { reviews };
+        try {
+            const cacheKey = 'reviews';
+            const cachedReviews = await this.cacheService.get(cacheKey);
+            if (cachedReviews) {
+                return { reviews: JSON.parse(cachedReviews), fromCache: true };
+            }
+            const reviews = await this.Review.find()
+                .populate({ path: "user", select: "id name" })
+                .populate({ path: "product", select: "id name" });
+            await this.cacheService.set(cacheKey, JSON.stringify(reviews));
+            return { reviews, fromCache: false };
+        }
+        catch (error) {
+            throw new common_1.InternalServerErrorException('Something went wrong');
+        }
     }
     async createReview(dto, user) {
         let review = await this.Review.findOne({
@@ -105,6 +118,7 @@ exports.ReviewService = ReviewService = __decorate([
     __param(0, (0, mongoose_1.InjectModel)(review_schema_1.Review.name)),
     __param(1, (0, mongoose_1.InjectModel)(product_schema_1.Product.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
-        mongoose_2.Model])
+        mongoose_2.Model,
+        cache_service_1.CacheService])
 ], ReviewService);
 //# sourceMappingURL=review.service.js.map

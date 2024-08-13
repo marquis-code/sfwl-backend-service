@@ -25,9 +25,11 @@
 import { Model } from 'mongoose';
 import { Transaction } from './transaction.schema';
 import { CreateTransactionDto } from './create-transaction.dto';
+import { CacheService } from '../cache/cache.service';
 export declare class TransactionService {
     private readonly transactionModel;
-    constructor(transactionModel: Model<Transaction>);
+    private readonly cacheService;
+    constructor(transactionModel: Model<Transaction>, cacheService: CacheService);
     create(createTransactionDto: CreateTransactionDto): Promise<Transaction>;
     findAll(): Promise<Transaction[]>;
     findOne(id: string): Promise<Transaction>;

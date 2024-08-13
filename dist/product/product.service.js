@@ -21,24 +21,48 @@ const review_schema_1 = require("../review/review.schema");
 const cloudinary_service_1 = require("../cloudinary/cloudinary.service");
 const user_schema_1 = require("../user/user.schema");
 const shuffleArray_1 = require("../utils/shuffleArray");
+const cache_service_1 = require("../cache/cache.service");
 let ProductService = class ProductService {
-    constructor(productModel, reviewModel, cloudinary, userModel) {
+    constructor(productModel, reviewModel, cloudinary, userModel, cacheService) {
         this.productModel = productModel;
         this.reviewModel = reviewModel;
         this.cloudinary = cloudinary;
         this.userModel = userModel;
+        this.cacheService = cacheService;
     }
     async getProducts() {
-        const products = await this.productModel.find().populate("createdBy");
-        const shuffledProducts = (0, shuffleArray_1.shuffleArray)(products);
-        return { products: shuffledProducts };
+        try {
+            const cacheProducts = await this.cacheService.get('products');
+            if (cacheProducts) {
+                const parsedProducts = JSON.parse(cacheProducts);
+                const shuffledProducts = (0, shuffleArray_1.shuffleArray)(parsedProducts);
+                return { products: shuffledProducts, fromCache: true };
+            }
+            const products = await this.productModel.find().populate("createdBy");
+            await this.cacheService.set('products', JSON.stringify(products));
+            const shuffledProducts = (0, shuffleArray_1.shuffleArray)(products);
+            return { products: shuffledProducts, fromCache: false };
+        }
+        catch (err) {
+            throw new common_1.InternalServerErrorException('Something went wrong');
+        }
     }
     async getProduct(id) {
-        const product = await this.productModel.findById(id).populate("reviews");
-        if (!product) {
-            throw new common_1.NotFoundException("No product found with the entered ID");
+        try {
+            const cacheProduct = await this.cacheService.get(`product_${id}`);
+            if (cacheProduct) {
+                return { product: JSON.parse(cacheProduct), fromCache: true };
+            }
+            const product = await this.productModel.findById(id).populate("reviews");
+            if (!product) {
+                throw new common_1.NotFoundException("No product found with the entered ID");
+            }
+            await this.cacheService.set(`product_${id}`, JSON.stringify(product));
+            return { product, fromCache: false };
         }
-        return { product };
+        catch (err) {
+            throw new common_1.InternalServerErrorException('Something went wrong');
+        }
     }
     async createProduct(dto, user, file) {
         const cloudinaryResponse = await this.cloudinary.uploadImage(file);
@@ -129,6 +153,7 @@ exports.ProductService = ProductService = __decorate([
     __metadata("design:paramtypes", [mongoose_2.Model,
         mongoose_2.Model,
         cloudinary_service_1.CloudinaryService,
-        mongoose_2.Model])
+        mongoose_2.Model,
+        cache_service_1.CacheService])
 ], ProductService);
 //# sourceMappingURL=product.service.js.map

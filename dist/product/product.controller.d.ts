@@ -31,6 +31,7 @@ export declare class ProductController {
     constructor(productService: ProductService);
     getProducts(): Promise<{
         products: any;
+        fromCache: boolean;
     }>;
     createProduct(req: any, productDto: ProductDto, file: Express.Multer.File): Promise<{
         product: import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./product.schema").Product> & import("./product.schema").Product & {
@@ -42,13 +43,8 @@ export declare class ProductController {
         }>;
     }>;
     getProduct(id: string): Promise<{
-        product: import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./product.schema").Product> & import("./product.schema").Product & {
-            _id: import("mongoose").Types.ObjectId;
-        }> & import("mongoose").Document<unknown, {}, import("./product.schema").Product> & import("./product.schema").Product & {
-            _id: import("mongoose").Types.ObjectId;
-        } & Required<{
-            _id: import("mongoose").Types.ObjectId;
-        }>;
+        product: any;
+        fromCache: boolean;
     }>;
     updateProduct(id: string, updateProductDto: UpdateProductDto, req: any, file?: Express.Multer.File): Promise<{
         product: import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./product.schema").Product> & import("./product.schema").Product & {

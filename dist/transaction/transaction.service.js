@@ -17,19 +17,48 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const transaction_schema_1 = require("./transaction.schema");
+const cache_service_1 = require("../cache/cache.service");
 let TransactionService = class TransactionService {
-    constructor(transactionModel) {
+    constructor(transactionModel, cacheService) {
         this.transactionModel = transactionModel;
+        this.cacheService = cacheService;
     }
     async create(createTransactionDto) {
         const transaction = new this.transactionModel(createTransactionDto);
         return transaction.save();
     }
     async findAll() {
-        return this.transactionModel.find().exec();
+        try {
+            const cacheKey = 'transactions_all';
+            const cachedTransactions = await this.cacheService.get(cacheKey);
+            if (cachedTransactions) {
+                return JSON.parse(cachedTransactions);
+            }
+            const transactions = await this.transactionModel.find().exec();
+            await this.cacheService.set(cacheKey, JSON.stringify(transactions));
+            return transactions;
+        }
+        catch (error) {
+            throw new common_1.InternalServerErrorException('Something went wrong');
+        }
     }
     async findOne(id) {
-        return this.transactionModel.findById(id).exec();
+        try {
+            const cacheKey = `transaction_${id}`;
+            const cachedTransaction = await this.cacheService.get(cacheKey);
+            if (cachedTransaction) {
+                return JSON.parse(cachedTransaction);
+            }
+            const transaction = await this.transactionModel.findById(id).exec();
+            if (!transaction) {
+                throw new common_1.NotFoundException('Transaction not found');
+            }
+            await this.cacheService.set(cacheKey, JSON.stringify(transaction));
+            return transaction;
+        }
+        catch (error) {
+            throw new common_1.InternalServerErrorException('Something went wrong');
+        }
     }
     async updateStatus(reference, status) {
         const transaction = await this.transactionModel.findOne({ reference }).exec();
@@ -44,6 +73,7 @@ exports.TransactionService = TransactionService;
 exports.TransactionService = TransactionService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(transaction_schema_1.Transaction.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        cache_service_1.CacheService])
 ], TransactionService);
 //# sourceMappingURL=transaction.service.js.map

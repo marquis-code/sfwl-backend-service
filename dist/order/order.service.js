@@ -21,13 +21,15 @@ const product_schema_1 = require("../product/product.schema");
 const notification_service_1 = require("../notification/notification.service");
 const user_schema_1 = require("../user/user.schema");
 const order_gateway_1 = require("../order/order.gateway");
+const cache_service_1 = require("../cache/cache.service");
 let OrderService = class OrderService {
-    constructor(orderModel, productModel, userModel, notificationService, orderGateway) {
+    constructor(orderModel, productModel, userModel, notificationService, orderGateway, cacheService) {
         this.orderModel = orderModel;
         this.productModel = productModel;
         this.userModel = userModel;
         this.notificationService = notificationService;
         this.orderGateway = orderGateway;
+        this.cacheService = cacheService;
     }
     async createOrder(dto) {
         const items = await Promise.all(dto.items.map(async (item) => {
@@ -101,7 +103,18 @@ let OrderService = class OrderService {
         }
     }
     async getOrders() {
-        return this.orderModel.find().populate("items.product").exec();
+        try {
+            const cachedOrders = await this.cacheService.get('orders');
+            if (cachedOrders) {
+                return { orders: JSON.parse(cachedOrders), fromCache: true };
+            }
+            const orders = await this.orderModel.find().populate("items.product").exec();
+            await this.cacheService.set('orders', JSON.stringify(orders));
+            return { orders, fromCache: false };
+        }
+        catch (error) {
+            throw new common_1.InternalServerErrorException('Something went wrong');
+        }
     }
     async deleteOrder(id) {
         const order = await this.orderModel.findByIdAndDelete(id);
@@ -116,11 +129,39 @@ let OrderService = class OrderService {
         }));
     }
     async getUserOrders(userId) {
-        const objectId = new mongoose_2.Types.ObjectId(userId);
-        return this.orderModel.find({ user: objectId }).exec();
+        try {
+            const cacheKey = `user_orders_${userId}`;
+            const cachedOrders = await this.cacheService.get(cacheKey);
+            if (cachedOrders) {
+                return JSON.parse(cachedOrders);
+            }
+            const objectId = new mongoose_2.Types.ObjectId(userId);
+            const orders = await this.orderModel.find({ user: objectId }).exec();
+            await this.cacheService.set(cacheKey, JSON.stringify(orders));
+            return orders;
+        }
+        catch (error) {
+            throw new common_1.InternalServerErrorException('Something went wrong');
+        }
     }
     async getOrdersByVendor(vendorId) {
-        return this.orderModel.find({ 'items.vendorId': vendorId }).populate('user').populate('items.product').exec();
+        try {
+            const cacheKey = `vendor_orders_${vendorId}`;
+            const cachedOrders = await this.cacheService.get(cacheKey);
+            if (cachedOrders) {
+                return JSON.parse(cachedOrders);
+            }
+            const orders = await this.orderModel
+                .find({ 'items.vendorId': vendorId })
+                .populate('user')
+                .populate('items.product')
+                .exec();
+            await this.cacheService.set(cacheKey, JSON.stringify(orders));
+            return orders;
+        }
+        catch (error) {
+            throw new common_1.InternalServerErrorException('Something went wrong');
+        }
     }
 };
 exports.OrderService = OrderService;
@@ -133,6 +174,7 @@ exports.OrderService = OrderService = __decorate([
         mongoose_2.Model,
         mongoose_2.Model,
         notification_service_1.NotificationService,
-        order_gateway_1.OrderGateway])
+        order_gateway_1.OrderGateway,
+        cache_service_1.CacheService])
 ], OrderService);
 //# sourceMappingURL=order.service.js.map

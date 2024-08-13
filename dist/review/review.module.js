@@ -14,6 +14,7 @@ const product_module_1 = require("../product/product.module");
 const review_controller_1 = require("./review.controller");
 const review_schema_1 = require("./review.schema");
 const review_service_1 = require("./review.service");
+const cache_module_1 = require("../cache/cache.module");
 let ReviewModule = class ReviewModule {
 };
 exports.ReviewModule = ReviewModule;
@@ -25,6 +26,7 @@ exports.ReviewModule = ReviewModule = __decorate([
             mongoose_1.MongooseModule.forFeature([
                 { name: review_schema_1.Review.name, schema: review_schema_1.ReviewSchema },
             ]),
+            (0, common_1.forwardRef)(() => cache_module_1.CacheConfigModule),
         ],
         exports: [
             mongoose_1.MongooseModule.forFeature([

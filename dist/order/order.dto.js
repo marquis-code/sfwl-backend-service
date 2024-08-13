@@ -12,25 +12,46 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UpdateOrderDto = exports.CreateOrderDto = void 0;
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
+const swagger_1 = require("@nestjs/swagger");
 class OrderItemDto {
 }
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        example: 'Banana bread',
+        description: 'The name of a product',
+        required: true,
+    }),
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsMongoId)(),
     __metadata("design:type", String)
 ], OrderItemDto.prototype, "product", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        example: 40,
+        description: 'The quantity available in stock',
+        required: true,
+    }),
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], OrderItemDto.prototype, "quantity", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        example: '123445643234',
+        description: 'The id of the vendor',
+        required: true,
+    }),
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], OrderItemDto.prototype, "vendorId", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        example: 600,
+        description: 'The price of the product',
+        required: true,
+    }),
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)

@@ -18,6 +18,7 @@ const product_module_1 = require("../product/product.module");
 const notification_module_1 = require("../notification/notification.module");
 const wallet_module_1 = require("../wallet/wallet.module");
 const order_gateway_1 = require("./order.gateway");
+const cache_module_1 = require("../cache/cache.module");
 let OrderModule = class OrderModule {
 };
 exports.OrderModule = OrderModule;
@@ -31,7 +32,8 @@ exports.OrderModule = OrderModule = __decorate([
             (0, common_1.forwardRef)(() => wallet_module_1.WalletModule),
             mongoose_1.MongooseModule.forFeature([
                 { name: order_schema_1.Order.name, schema: order_schema_1.OrderSchema },
-            ])
+            ]),
+            (0, common_1.forwardRef)(() => cache_module_1.CacheConfigModule),
         ],
         exports: [
             mongoose_1.MongooseModule.forFeature([

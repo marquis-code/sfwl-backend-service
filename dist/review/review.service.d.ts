@@ -26,19 +26,16 @@ import { Model, Types } from "mongoose";
 import { UserDocument } from "../user/user.schema";
 import { ProductDocument } from "../product/product.schema";
 import { Review, ReviewDocument } from "./review.schema";
+import { CacheService } from '../cache/cache.service';
 import { CreateReviewDto, UpdateReviewDto } from "./review.dto";
 export declare class ReviewService {
     private readonly Review;
     private readonly Product;
-    constructor(Review: Model<ReviewDocument>, Product: Model<ProductDocument>);
+    private readonly cacheService;
+    constructor(Review: Model<ReviewDocument>, Product: Model<ProductDocument>, cacheService: CacheService);
     getReviews(): Promise<{
-        reviews: Omit<Omit<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Review> & Review & {
-            _id: Types.ObjectId;
-        }> & import("mongoose").Document<unknown, {}, Review> & Review & {
-            _id: Types.ObjectId;
-        } & Required<{
-            _id: Types.ObjectId;
-        }>, never>, never>[];
+        reviews: any;
+        fromCache: boolean;
     }>;
     createReview(dto: CreateReviewDto, user: UserDocument): Promise<{
         review: import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Review> & Review & {

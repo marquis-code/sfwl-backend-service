@@ -9,6 +9,7 @@ import { UserModule } from "../user/user.module"
 import { ReviewModule } from "../review/review.module"
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 import { OrderModule } from "../order/orders.module"
+import { CacheConfigModule } from '../cache/cache.module';
 
 @Module({
 	imports: [
@@ -17,6 +18,7 @@ import { OrderModule } from "../order/orders.module"
 		MongooseModule.forFeature([
 			{ name: Product.name, schema: ProductSchema },
 		]),
+		forwardRef(() => CacheConfigModule), // Import CacheConfigModule
 		CloudinaryModule,
 		OrderModule
 	],

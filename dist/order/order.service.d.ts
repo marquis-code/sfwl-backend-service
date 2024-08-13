@@ -29,17 +29,22 @@ import { CreateOrderDto } from "./order.dto";
 import { NotificationService } from "../notification/notification.service";
 import { UserDocument } from "../user/user.schema";
 import { OrderGateway } from "../order/order.gateway";
+import { CacheService } from '../cache/cache.service';
 export declare class OrderService {
     private readonly orderModel;
     private readonly productModel;
     private readonly userModel;
     private readonly notificationService;
     private orderGateway;
-    constructor(orderModel: Model<OrderDocument>, productModel: Model<ProductDocument>, userModel: Model<UserDocument>, notificationService: NotificationService, orderGateway: OrderGateway);
+    private readonly cacheService;
+    constructor(orderModel: Model<OrderDocument>, productModel: Model<ProductDocument>, userModel: Model<UserDocument>, notificationService: NotificationService, orderGateway: OrderGateway, cacheService: CacheService);
     createOrder(dto: CreateOrderDto): Promise<Order>;
     notifyNearbyErranders(order: any): Promise<void>;
     acceptOrder(orderId: string, erranderId: string): Promise<void>;
-    getOrders(): Promise<Order[]>;
+    getOrders(): Promise<{
+        orders: any;
+        fromCache: boolean;
+    }>;
     deleteOrder(id: string): Promise<void>;
     getUserOrders(userId: string): Promise<Order[]>;
     getOrdersByVendor(vendorId: string): Promise<Order[]>;

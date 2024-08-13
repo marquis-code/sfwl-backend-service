@@ -22,6 +22,4 @@ export class CacheService {
       console.log(e);
     }
   }
-
-  // Add more cache-related operations as needed
 }

@@ -9,6 +9,7 @@ import { ProductModule } from "../product/product.module"
 import { NotificationModule } from '../notification/notification.module'; 
 import { WalletModule } from "../wallet/wallet.module"
 import { OrderGateway } from "./order.gateway"
+import { CacheConfigModule } from '../cache/cache.module';
 //REMEMBER TO INJECT THE NOTIFICATION SERVICE AND USER SERVICE TO AVOID CIRCULAR DEPENDENCY ISSUES
 
 @Module({
@@ -20,7 +21,8 @@ import { OrderGateway } from "./order.gateway"
 		forwardRef(() => WalletModule),
 		MongooseModule.forFeature([
 			{ name: Order.name, schema: OrderSchema },
-		])
+		]),
+		forwardRef(() => CacheConfigModule), // Import CacheConfigModule
 	],
 	exports: [
 		MongooseModule.forFeature([

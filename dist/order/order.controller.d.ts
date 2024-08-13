@@ -6,7 +6,10 @@ export declare class OrderController {
     private readonly orderService;
     private readonly walletService;
     constructor(orderService: OrderService, walletService: WalletService);
-    getOrders(): Promise<Order[]>;
+    getOrders(): Promise<{
+        orders: any;
+        fromCache: boolean;
+    }>;
     createOrder(req: any, createOrderDto: CreateOrderDto): Promise<Order>;
     deleteOrder(id: string): Promise<void>;
     getUserOrders(req: any): Promise<Order[]>;
