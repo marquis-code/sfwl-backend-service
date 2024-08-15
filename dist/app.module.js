@@ -37,16 +37,26 @@ exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            config_1.ConfigModule.forRoot(),
+            config_1.ConfigModule.forRoot({
+                isGlobal: true,
+            }),
             cache_module_1.CacheConfigModule,
             platform_express_1.MulterModule.register({
                 storage: multer.memoryStorage(),
             }),
             cloudinary_module_1.CloudinaryModule,
-            mongoose_1.MongooseModule.forRoot(process.env.MONGO_URI),
+            mongoose_1.MongooseModule.forRootAsync({
+                imports: [config_1.ConfigModule],
+                useFactory: async (configService) => ({
+                    uri: configService.get('MONGO_URI'),
+                    useNewUrlParser: true,
+                    useUnifiedTopology: true,
+                }),
+                inject: [config_1.ConfigService],
+            }),
             throttler_1.ThrottlerModule.forRoot([
                 {
-                    ttl: 100 * 60,
+                    ttl: 60,
                     limit: 100,
                 },
             ]),
@@ -73,7 +83,8 @@ exports.AppModule = AppModule = __decorate([
                 useFactory: cloudinary_config_1.configureCloudinary,
                 inject: [config_1.ConfigService],
             },
-            notification_gateway_1.NotificationGateway, notification_service_1.NotificationService
+            notification_gateway_1.NotificationGateway,
+            notification_service_1.NotificationService,
         ],
     })
 ], AppModule);

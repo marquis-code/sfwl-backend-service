@@ -10,35 +10,46 @@ import { ProductModule } from "./product/product.module";
 import { ReviewModule } from "./review/review.module";
 import { UserModule } from "./user/user.module";
 import { ImageModule } from "./image/image.module";
-import { MulterModule } from '@nestjs/platform-express';
+import { MulterModule } from "@nestjs/platform-express";
 
-import { CloudinaryService } from './cloudinary/cloudinary.service';
-import { configureCloudinary } from './cloudinary.config';
-import { CloudinaryModule } from './cloudinary/cloudinary.module';
-import * as multer from 'multer';
+import { CloudinaryService } from "./cloudinary/cloudinary.service";
+import { configureCloudinary } from "./cloudinary.config";
+import { CloudinaryModule } from "./cloudinary/cloudinary.module";
+import * as multer from "multer";
 
 import { join } from "path";
 import { OrderModule } from "./order/orders.module";
-import { NotificationGateway } from './notification/notification.gateway';
-import { NotificationService } from './notification/notification.service';
-import { NotificationModule } from './notification/notification.module';
+import { NotificationGateway } from "./notification/notification.gateway";
+import { NotificationService } from "./notification/notification.service";
+import { NotificationModule } from "./notification/notification.module";
 import { WalletModule } from "./wallet/wallet.module";
-import { TransactionModule } from './transaction/transaction.module';
+import { TransactionModule } from "./transaction/transaction.module";
 
-import { CacheConfigModule } from './cache/cache.module';
+import { CacheConfigModule } from "./cache/cache.module";
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     CacheConfigModule,
-	 MulterModule.register({
-		storage: multer.memoryStorage(),
-	  }),
+    MulterModule.register({
+      storage: multer.memoryStorage(),
+    }),
     CloudinaryModule,
-    MongooseModule.forRoot(process.env.MONGO_URI),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule], // Ensure ConfigModule is imported here
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGO_URI'),
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      }),
+      inject: [ConfigService],
+    }),
     ThrottlerModule.forRoot([
       {
-        ttl: 100 * 60,
+        // ttl: 100 * 60,
+        ttl: 60,
         limit: 100,
       },
     ]),
@@ -65,7 +76,8 @@ import { CacheConfigModule } from './cache/cache.module';
       useFactory: configureCloudinary,
       inject: [ConfigService],
     },
-    NotificationGateway, NotificationService
+    NotificationGateway,
+    NotificationService,
   ],
 })
 export class AppModule {}
