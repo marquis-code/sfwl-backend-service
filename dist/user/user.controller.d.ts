@@ -69,6 +69,7 @@ export declare class UserController {
                 _id: unknown;
             }>>;
             name: string;
+            referral?: string;
             email: string;
             password: string;
             phone: string;

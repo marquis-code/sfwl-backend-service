@@ -1,6 +1,7 @@
 import { Role } from "../role/role.enum";
 export declare class CreateUserDto {
     name: string;
+    referral: string;
     email: string;
     password: string;
     phone: string;

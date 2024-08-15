@@ -28,6 +28,7 @@ import { Role } from "../role/role.enum";
 export type UserDocument = HydratedDocument<User>;
 export declare class User {
     name: string;
+    referral?: string;
     email: string;
     password: string;
     phone: string;

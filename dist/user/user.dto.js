@@ -22,6 +22,11 @@ __decorate([
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "name", void 0);
 __decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "referral", void 0);
+__decorate([
     (0, class_validator_1.IsEmail)({}, { message: "Enter a valid email" }),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "email", void 0);

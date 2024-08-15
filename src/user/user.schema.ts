@@ -17,6 +17,9 @@ export class User {
 	@Prop({ required: true })
 	name: string
 
+	@Prop()
+	referral?: string
+
 	@Prop({ required: true, unique: true })
 	email: string
 

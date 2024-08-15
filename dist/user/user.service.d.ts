@@ -102,6 +102,7 @@ export declare class UserService {
                 _id: unknown;
             }>>;
             name: string;
+            referral?: string;
             email: string;
             password: string;
             phone: string;

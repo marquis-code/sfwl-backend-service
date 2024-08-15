@@ -15,6 +15,10 @@ export class CreateUserDto {
 	})
 	name: string
 
+	@IsString()
+	@IsOptional()
+	referral: string
+
 	@IsEmail({}, { message: "Enter a valid email" })
 	email: string
 
