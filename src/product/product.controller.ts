@@ -69,7 +69,6 @@ export class ProductController {
 
   @Get("/:id")
   getProduct(@Param("id", ValidateMongoId) id: string) {
-    console.log('Received get product request for ID:', id);
     return this.productService.getProduct(id);
   }
 

@@ -54,6 +54,7 @@ let ProductService = class ProductService {
                 if (typeof cacheProduct === 'string') {
                     try {
                         parsedProduct = JSON.parse(cacheProduct);
+                        console.log(parsedProduct, 'here ooo');
                     }
                     catch (parseError) {
                         console.error('Error parsing cached product data:', parseError);
@@ -74,7 +75,6 @@ let ProductService = class ProductService {
             return { product, fromCache: false };
         }
         catch (err) {
-            console.error('Error fetching product:', err);
             throw new common_1.InternalServerErrorException('Something went wrong');
         }
     }
@@ -118,25 +118,21 @@ let ProductService = class ProductService {
             }
             await product.save();
             const updatedProduct = await this.productModel.findById(id);
-            console.log('Updated Product:', updatedProduct);
             return { product: updatedProduct };
         }
         catch (error) {
             if (error instanceof common_1.NotFoundException || error instanceof common_1.ForbiddenException) {
                 throw error;
             }
-            console.error('Error updating product:', error);
             throw new common_1.InternalServerErrorException("An error occurred while updating the product");
         }
     }
     async deleteProduct(id, userId) {
-        console.log(userId, "userId ggggggg");
         const product = await this.productModel.findById(id);
         if (!product) {
             throw new common_1.NotFoundException("No product found with the entered ID");
         }
         const user = await this.userModel.findById(userId);
-        console.log(user, "deleter her eooo");
         if (!user || (user.role !== "vendor" && user.role !== "admin")) {
             throw new common_1.ForbiddenException("Only vendors and admins can delete products");
         }
@@ -154,7 +150,6 @@ let ProductService = class ProductService {
     async getVendorProducts(vendorId) {
         const objectId = new mongoose_2.Types.ObjectId(vendorId);
         const products = await this.productModel.find({ createdBy: objectId }).exec();
-        console.log(`Fetched Products for Vendor ID ${vendorId}:`, products);
         return products;
     }
 };

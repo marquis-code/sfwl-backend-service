@@ -48,7 +48,6 @@ let ProductController = class ProductController {
         }
     }
     getProduct(id) {
-        console.log('Received get product request for ID:', id);
         return this.productService.getProduct(id);
     }
     updateProduct(id, updateProductDto, req, file) {

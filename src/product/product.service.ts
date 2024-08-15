@@ -63,6 +63,7 @@ export class ProductService {
         if (typeof cacheProduct === 'string') {
           try {
             parsedProduct = JSON.parse(cacheProduct);
+            console.log(parsedProduct, 'here ooo')
           } catch (parseError) {
             console.error('Error parsing cached product data:', parseError);
             // Handle parse error, fallback to fetching from DB
@@ -93,7 +94,6 @@ export class ProductService {
       return { product, fromCache: false };
     } catch (err: any) {
       // Log the error for debugging purposes
-      console.error('Error fetching product:', err);
       throw new InternalServerErrorException('Something went wrong');
     }
   }
@@ -158,29 +158,24 @@ async updateProduct(
     // Find the updated product to return
     const updatedProduct = await this.productModel.findById(id);
 
-    console.log('Updated Product:', updatedProduct);  // Log the updated product
-
     return { product: updatedProduct };
 
   } catch (error) {
     if (error instanceof NotFoundException || error instanceof ForbiddenException) {
       throw error;
     }
-    console.error('Error updating product:', error);
     throw new InternalServerErrorException("An error occurred while updating the product");
   }
 }
 
 
   async deleteProduct(id: string, userId: string) {
-    console.log(userId, "userId ggggggg");
     const product = await this.productModel.findById(id);
     if (!product) {
       throw new NotFoundException("No product found with the entered ID");
     }
 
     const user = await this.userModel.findById(userId);
-    console.log(user, "deleter her eooo");
     if (!user || (user.role !== "vendor" && user.role !== "admin")) {
       throw new ForbiddenException(
         "Only vendors and admins can delete products"
@@ -208,8 +203,6 @@ async updateProduct(
   async getVendorProducts(vendorId: string): Promise<Product[]> {
     const objectId = new Types.ObjectId(vendorId);
     const products = await this.productModel.find({ createdBy: objectId }).exec();
-  
-    console.log(`Fetched Products for Vendor ID ${vendorId}:`, products);  // Log the fetched products
   
     return products;
   }
