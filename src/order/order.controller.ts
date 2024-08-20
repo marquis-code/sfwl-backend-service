@@ -6,7 +6,10 @@ import {
   Param,
   Body,
   Req,
-  Patch
+  Patch,
+  Sse,
+  Query,
+  MessageEvent
 } from "@nestjs/common";
 import { OrderService } from "./order.service";
 import { Auth } from "../auth/auth.decorator";
@@ -14,6 +17,8 @@ import { Role } from "../role/role.enum";
 import { CreateOrderDto } from "./order.dto";
 import { WalletService } from "../wallet/wallet.service";
 import { Order } from "./order.schema";
+import { Observable } from 'rxjs';
+import { map, filter } from 'rxjs/operators';
 
 @Controller("orders")
 export class OrderController {
@@ -35,6 +40,49 @@ export class OrderController {
       user: req.user._id,
     };
     return this.orderService.createOrder(orderPayload);
+  }
+
+  @Sse('events')
+  sendOrderEvents(@Query('location') location: string): Observable<MessageEvent> {
+    const erranderLocation = location.split(',').map(Number) as any;
+
+    return this.orderService.getOrderEvents().pipe(
+      filter(order => this.isErranderWithinRadius(order.location.coordinates, erranderLocation)),
+      map(order => this.createMessageEvent(order)),
+    );
+  }
+
+  private createMessageEvent(data: any): MessageEvent {
+    return new MessageEvent('message', { data });
+  }
+
+  private isErranderWithinRadius(orderLocation: [number, number], erranderLocation: [number, number]): boolean {
+    const [orderLongitude, orderLatitude] = orderLocation;
+    const [erranderLongitude, erranderLatitude] = erranderLocation;
+
+    const distance = this.calculateDistance(orderLongitude, orderLatitude, erranderLongitude, erranderLatitude);
+
+    // 10cm in degrees is approximately 0.000001 (you can adjust this based on your needs)
+    const radius = 20037.5;
+
+    return distance <= radius;
+  }
+
+  private calculateDistance(lon1: number, lat1: number, lon2: number, lat2: number): number {
+    const R = 6371000; // Radius of the Earth in meters
+    const dLat = this.deg2rad(lat2 - lat1);
+    const dLon = this.deg2rad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c; // Distance in meters
+    return distance;
+  }
+
+  private deg2rad(deg: number): number {
+    return deg * (Math.PI / 180);
   }
 
   @Delete(":id")

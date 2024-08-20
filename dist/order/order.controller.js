@@ -19,6 +19,8 @@ const auth_decorator_1 = require("../auth/auth.decorator");
 const role_enum_1 = require("../role/role.enum");
 const order_dto_1 = require("./order.dto");
 const wallet_service_1 = require("../wallet/wallet.service");
+const rxjs_1 = require("rxjs");
+const operators_1 = require("rxjs/operators");
 let OrderController = class OrderController {
     constructor(orderService, walletService) {
         this.orderService = orderService;
@@ -30,6 +32,34 @@ let OrderController = class OrderController {
     async createOrder(req, createOrderDto) {
         const orderPayload = Object.assign(Object.assign({}, createOrderDto), { user: req.user._id });
         return this.orderService.createOrder(orderPayload);
+    }
+    sendOrderEvents(location) {
+        const erranderLocation = location.split(',').map(Number);
+        return this.orderService.getOrderEvents().pipe((0, operators_1.filter)(order => this.isErranderWithinRadius(order.location.coordinates, erranderLocation)), (0, operators_1.map)(order => this.createMessageEvent(order)));
+    }
+    createMessageEvent(data) {
+        return new MessageEvent('message', { data });
+    }
+    isErranderWithinRadius(orderLocation, erranderLocation) {
+        const [orderLongitude, orderLatitude] = orderLocation;
+        const [erranderLongitude, erranderLatitude] = erranderLocation;
+        const distance = this.calculateDistance(orderLongitude, orderLatitude, erranderLongitude, erranderLatitude);
+        const radius = 20037.5;
+        return distance <= radius;
+    }
+    calculateDistance(lon1, lat1, lon2, lat2) {
+        const R = 6371000;
+        const dLat = this.deg2rad(lat2 - lat1);
+        const dLon = this.deg2rad(lon2 - lon1);
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = R * c;
+        return distance;
+    }
+    deg2rad(deg) {
+        return deg * (Math.PI / 180);
     }
     async deleteOrder(id) {
         return this.orderService.deleteOrder(id);
@@ -79,6 +109,13 @@ __decorate([
     __metadata("design:paramtypes", [Object, order_dto_1.CreateOrderDto]),
     __metadata("design:returntype", Promise)
 ], OrderController.prototype, "createOrder", null);
+__decorate([
+    (0, common_1.Sse)('events'),
+    __param(0, (0, common_1.Query)('location')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", rxjs_1.Observable)
+], OrderController.prototype, "sendOrderEvents", null);
 __decorate([
     (0, common_1.Delete)(":id"),
     __param(0, (0, common_1.Param)("id")),

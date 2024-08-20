@@ -22,6 +22,7 @@ const notification_service_1 = require("../notification/notification.service");
 const user_schema_1 = require("../user/user.schema");
 const order_gateway_1 = require("../order/order.gateway");
 const cache_service_1 = require("../cache/cache.service");
+const rxjs_1 = require("rxjs");
 let OrderService = class OrderService {
     constructor(orderModel, productModel, userModel, notificationService, orderGateway, cacheService) {
         this.orderModel = orderModel;
@@ -30,6 +31,13 @@ let OrderService = class OrderService {
         this.notificationService = notificationService;
         this.orderGateway = orderGateway;
         this.cacheService = cacheService;
+        this.orderCreated = new rxjs_1.Subject();
+    }
+    emitOrder(order) {
+        this.orderCreated.next(order);
+    }
+    getOrderEvents() {
+        return this.orderCreated.asObservable();
     }
     async createOrder(dto) {
         const items = await Promise.all(dto.items.map(async (item) => {
@@ -57,6 +65,7 @@ let OrderService = class OrderService {
             status: dto.status || 'pending',
         });
         const savedOrder = await order.save();
+        this.emitOrder(savedOrder);
         await this.notifyNearbyErranders(savedOrder);
         return savedOrder;
     }

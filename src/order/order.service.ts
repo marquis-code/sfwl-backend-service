@@ -13,6 +13,7 @@ import { NotificationService } from "../notification/notification.service";
 import { User, UserDocument } from "../user/user.schema";
 import { OrderGateway } from "../order/order.gateway";
 import { CacheService } from '../cache/cache.service';
+import { Subject } from 'rxjs';
 
 @Injectable()
 export class OrderService {
@@ -26,6 +27,17 @@ export class OrderService {
     private orderGateway: OrderGateway,
     private readonly cacheService: CacheService 
   ) {}
+
+  private orderCreated = new Subject<any>();
+
+  emitOrder(order) {
+    this.orderCreated.next(order);
+  }
+
+  getOrderEvents() {
+    return this.orderCreated.asObservable();
+  }
+
 
   async createOrder(dto: CreateOrderDto): Promise<Order> {
     const items = await Promise.all(
@@ -65,6 +77,7 @@ export class OrderService {
       // erranderId is optional and not set at creation
     });
     const savedOrder = await order.save();
+    this.emitOrder(savedOrder);
   
     //  Notify nearby erranders
     await this.notifyNearbyErranders(savedOrder);
@@ -134,23 +147,6 @@ export class OrderService {
       );
     }
   }
-
-  // async getOrders() {
-  //   try {
-  //     const cachedOrders = await this.cacheService.get('orders')
-
-  //     if(cachedOrders){
-  //       return { orders: cachedOrders, fromCache: true }
-  //     }
-  //     const orders = await this.orderModel.find().populate("items.product").exec();
-  //     await this.cacheService.set('products', JSON.stringify(orders))
-
-  //     return {  orders: cachedOrders, fromCache: false };
-
-  //   } catch (error) {
-  //     throw new InternalServerErrorException('Something went wrong');
-  //   }
-  // }
 
   async getOrders() {
     try {
