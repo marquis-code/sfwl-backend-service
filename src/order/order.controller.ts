@@ -43,14 +43,22 @@ export class OrderController {
   }
 
   @Sse('events')
-  sendOrderEvents(@Query('location') location: string): Observable<MessageEvent> {
-    const erranderLocation = location.split(',').map(Number) as any;
-
+  sendOrderEvents(): Observable<MessageEvent> {
     return this.orderService.getOrderEvents().pipe(
-      filter(order => this.isErranderWithinRadius(order.location.coordinates, erranderLocation)),
-      map(order => this.createMessageEvent(order)),
+      map(order => ({
+        data: order,
+      })),
     );
   }
+  // @Sse('events')
+  // sendOrderEvents(@Query('location') location: string): Observable<MessageEvent> {
+  //   const erranderLocation = location.split(',').map(Number) as any;
+
+  //   return this.orderService.getOrderEvents().pipe(
+  //     filter(order => this.isErranderWithinRadius(order.location.coordinates, erranderLocation)),
+  //     map(order => this.createMessageEvent(order)),
+  //   );
+  // }
 
   private createMessageEvent(data: any): MessageEvent {
     return new MessageEvent('message', { data });

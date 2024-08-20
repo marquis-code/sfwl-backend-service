@@ -33,9 +33,10 @@ let OrderController = class OrderController {
         const orderPayload = Object.assign(Object.assign({}, createOrderDto), { user: req.user._id });
         return this.orderService.createOrder(orderPayload);
     }
-    sendOrderEvents(location) {
-        const erranderLocation = location.split(',').map(Number);
-        return this.orderService.getOrderEvents().pipe((0, operators_1.filter)(order => this.isErranderWithinRadius(order.location.coordinates, erranderLocation)), (0, operators_1.map)(order => this.createMessageEvent(order)));
+    sendOrderEvents() {
+        return this.orderService.getOrderEvents().pipe((0, operators_1.map)(order => ({
+            data: order,
+        })));
     }
     createMessageEvent(data) {
         return new MessageEvent('message', { data });
@@ -111,9 +112,8 @@ __decorate([
 ], OrderController.prototype, "createOrder", null);
 __decorate([
     (0, common_1.Sse)('events'),
-    __param(0, (0, common_1.Query)('location')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", []),
     __metadata("design:returntype", rxjs_1.Observable)
 ], OrderController.prototype, "sendOrderEvents", null);
 __decorate([

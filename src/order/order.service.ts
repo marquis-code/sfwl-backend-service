@@ -17,6 +17,7 @@ import { Subject } from 'rxjs';
 
 @Injectable()
 export class OrderService {
+  private orderCreated = new Subject<Order>();
   constructor(
     @InjectModel(Order.name) private readonly orderModel: Model<OrderDocument>,
     @InjectModel(Product.name)
@@ -28,9 +29,7 @@ export class OrderService {
     private readonly cacheService: CacheService 
   ) {}
 
-  private orderCreated = new Subject<any>();
-
-  emitOrder(order) {
+  emitOrder(order: Order) {
     this.orderCreated.next(order);
   }
 
@@ -90,6 +89,8 @@ export class OrderService {
     if (!order.location || !order.location.coordinates) {
       throw new BadRequestException("Order location is required.");
     }
+
+    console.log('Order location:', order.location.coordinates);
     let erranders = await this.userModel.find({
       role: "errander",
       location: {

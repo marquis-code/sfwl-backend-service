@@ -13,7 +13,7 @@ export declare class OrderController {
         fromCache: boolean;
     }>;
     createOrder(req: any, createOrderDto: CreateOrderDto): Promise<Order>;
-    sendOrderEvents(location: string): Observable<MessageEvent>;
+    sendOrderEvents(): Observable<MessageEvent>;
     private createMessageEvent;
     private isErranderWithinRadius;
     private calculateDistance;

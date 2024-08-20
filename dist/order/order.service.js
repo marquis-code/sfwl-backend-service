@@ -74,6 +74,7 @@ let OrderService = class OrderService {
         if (!order.location || !order.location.coordinates) {
             throw new common_1.BadRequestException("Order location is required.");
         }
+        console.log('Order location:', order.location.coordinates);
         let erranders = await this.userModel.find({
             role: "errander",
             location: {

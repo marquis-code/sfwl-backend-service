@@ -37,10 +37,10 @@ export declare class OrderService {
     private readonly notificationService;
     private orderGateway;
     private readonly cacheService;
-    constructor(orderModel: Model<OrderDocument>, productModel: Model<ProductDocument>, userModel: Model<UserDocument>, notificationService: NotificationService, orderGateway: OrderGateway, cacheService: CacheService);
     private orderCreated;
-    emitOrder(order: any): void;
-    getOrderEvents(): import("rxjs").Observable<any>;
+    constructor(orderModel: Model<OrderDocument>, productModel: Model<ProductDocument>, userModel: Model<UserDocument>, notificationService: NotificationService, orderGateway: OrderGateway, cacheService: CacheService);
+    emitOrder(order: Order): void;
+    getOrderEvents(): import("rxjs").Observable<Order>;
     createOrder(dto: CreateOrderDto): Promise<Order>;
     notifyNearbyErranders(order: any): Promise<void>;
     acceptOrder(orderId: string, erranderId: string): Promise<void>;
