@@ -39,15 +39,22 @@ export class CreateUserDto {
 
 	@IsOptional()
 	@IsString({
-		message: "Enter home address",
+		message: "Enter business account number",
 	})
 	accountNumber?: string
 
 	@IsOptional()
 	@IsString({
-		message: "Enter home address",
+		message: "Enter  bank name",
 	})
 	bankName?: string
+
+
+	@IsOptional()
+	@IsString({
+		message: "Enter account name",
+	})
+	accountName?: string
 
 	@IsOptional()
 	@IsString({

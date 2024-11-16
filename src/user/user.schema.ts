@@ -64,6 +64,9 @@ export class User {
 	businessPhone?: string;
 
 	@Prop()
+	accountName?: string;
+
+	@Prop()
 	cacRegistration?: string;
 	
 	@Prop()
