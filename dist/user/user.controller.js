@@ -27,10 +27,6 @@ let UserController = class UserController {
     getUsers() {
         return this.userService.getUsers();
     }
-    async getVendorsWithProducts() {
-        const result = await this.userService.getVendorsWithProducts();
-        return result;
-    }
     createUser(dto) {
         return this.userService.createUser(dto);
     }
@@ -52,12 +48,6 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "getUsers", null);
-__decorate([
-    (0, common_1.Get)('vendors'),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], UserController.prototype, "getVendorsWithProducts", null);
 __decorate([
     (0, common_1.Post)(),
     (0, auth_decorator_1.Auth)(role_enum_1.Role.Admin),

@@ -1,144 +1,214 @@
-/* eslint-disable @typescript-eslint/ban-types */
-import { Schema, Prop, SchemaFactory } from "@nestjs/mongoose"
-import { HydratedDocument } from "mongoose"
+// // /* eslint-disable @typescript-eslint/ban-types */
+// // import { Schema, Prop, SchemaFactory } from "@nestjs/mongoose"
+// // import { HydratedDocument } from "mongoose"
 
-import { sign } from "jsonwebtoken"
-import { genSalt, hash, compare } from "bcryptjs"
-import { randomBytes, createHash } from "crypto"
-import { Types } from "mongoose";
-import { Wallet } from '../wallet/wallet.schema'
+// // import { sign } from "jsonwebtoken"
+// // import { genSalt, hash, compare } from "bcryptjs"
+// // import { randomBytes, createHash } from "crypto"
+// // import { Types } from "mongoose";
 
-import { Role } from "../role/role.enum"
+// // export type UserDocument = HydratedDocument<User>
 
-export type UserDocument = HydratedDocument<User>
+// // @Schema()
+// // export class User {
+// // 	@Prop({ required: true })
+// // 	name: string
+
+// // 	@Prop({ required: true, unique: true })
+// // 	email: string
+
+// // 	@Prop({ required: true, minlength: 6, select: false })
+// // 	password: string
+
+// // 	@Prop({ required: true })
+// // 	phone: string
+
+// // 	@Prop({ default: [] })
+// // 	activities: string[]; // IDs of activities
+  
+// // 	@Prop({ default: 'basic' })
+// // 	subscriptionPlan: string;
+  
+// // 	@Prop({ type: Date, default: null })
+// // 	subscriptionExpiry: Date;
+// // }
+
+// // export const UserSchema = SchemaFactory.createForClass(User)
+
+// // // Define the virtual field
+// // UserSchema.virtual('ownedProducts', {
+// // 	ref: 'Product',         // The model to use
+// // 	localField: '_id',      // Find users where `localField`
+// // 	foreignField: 'createdBy', // is equal to `foreignField`
+// //   });
+
+// // UserSchema.index({ location: '2dsphere' });
+
+// // UserSchema.pre("save", async function (next) {
+// // 	if (!this.isModified("password")) return next()
+
+// // 	const salt = await genSalt(10)
+// // 	this.password = await hash(this.password, salt)
+// // })
+
+// // UserSchema.methods.getSignedJwtToken = function () {
+// // 	return sign({ id: this.id }, process.env.JWT_SECRET, {
+// // 		expiresIn: process.env.JWT_EXPIRE,
+// // 	})
+// // }
+
+// // UserSchema.methods.matchPassword = async function (enteredPwd: string) {
+// // 	return await compare(enteredPwd, this.password)
+// // }
+
+// // UserSchema.methods.getResetPasswordToken = function () {
+// // 	const token = randomBytes(20).toString("base64url")
+
+// // 	this.resetPasswordToken = createHash("sha256")
+// // 		.update(token)
+// // 		.digest("base64")
+
+// // 	this.resetPasswordExpire = Date.now() + 10 * 60 * 100
+
+// // 	return token
+// // }
+
+// /* eslint-disable @typescript-eslint/ban-types */
+// import { Schema, Prop, SchemaFactory } from "@nestjs/mongoose";
+// import { HydratedDocument } from "mongoose";
+// import { sign } from "jsonwebtoken";
+// import { genSalt, hash, compare } from "bcryptjs";
+// import { randomBytes, createHash } from "crypto";
+
+// export type UserDocument = HydratedDocument<User>;
+
+// @Schema()
+// export class User {
+//   @Prop({ required: true })
+//   name: string;
+
+//   @Prop({ required: true, unique: true })
+//   email: string;
+
+//   @Prop({ required: true, minlength: 6, select: false })
+//   password: string;
+
+//   @Prop({ required: true })
+//   phone: string;
+
+//   @Prop({ default: [] })
+//   activities: string[]; // IDs of activities
+
+//   @Prop({ default: 'basic' })
+//   subscriptionPlan: string;
+
+//   @Prop({ type: Date, default: null })
+//   subscriptionExpiry: Date;
+// }
+
+// export const UserSchema = SchemaFactory.createForClass(User);
+
+// UserSchema.index({ location: '2dsphere' });
+
+// UserSchema.pre("save", async function (next) {
+//   if (!this.isModified("password")) return next();
+
+//   const salt = await genSalt(10);
+//   this.password = await hash(this.password, salt);
+// });
+
+// UserSchema.methods.getSignedJwtToken = function () {
+//   return sign({ id: this.id }, process.env.JWT_SECRET, {
+//     expiresIn: process.env.JWT_EXPIRE,
+//   });
+// };
+
+// UserSchema.methods.matchPassword = async function (enteredPwd: string) {
+//   return await compare(enteredPwd, this.password);
+// };
+
+// UserSchema.methods.getResetPasswordToken = function () {
+//   const token = randomBytes(20).toString("base64url");
+
+//   this.resetPasswordToken = createHash("sha256")
+//     .update(token)
+//     .digest("base64");
+
+//   this.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // Adjusted for clarity
+
+//   return token;
+// };
+
+
+import { Schema, Prop, SchemaFactory } from "@nestjs/mongoose";
+import { HydratedDocument } from "mongoose";
+import { sign } from "jsonwebtoken";
+import { genSalt, hash, compare } from "bcryptjs";
+import { randomBytes, createHash } from "crypto";
+
+export type UserDocument = HydratedDocument<User> & {
+  matchPassword: (password: string) => Promise<boolean>;
+  getSignedJwtToken: () => string;
+  getResetPasswordToken: () => string;
+};
 
 @Schema()
 export class User {
-	@Prop({ required: true })
-	name: string
+  @Prop({ required: true })
+  name: string;
 
-	@Prop()
-	referral?: string
+  @Prop({ required: true, unique: true })
+  email: string;
 
-	@Prop({ required: true, unique: true })
-	email: string
+  @Prop({ required: true, minlength: 6, select: false })
+  password: string;
 
-	@Prop({ required: true, minlength: 6, select: false })
-	password: string
+  @Prop({ required: true })
+  phone: string;
 
-	@Prop({ required: true })
-	phone: string
+  @Prop({ default: [] })
+  activities: string[]; // IDs of activities
 
-	@Prop({ enum: [Role.Admin, Role.User, Role.Errander, Role.Vendor], default: Role.User })
-	role: Role
+  @Prop({ default: "basic" })
+  subscriptionPlan: string;
 
-	@Prop({ select: false })
-	resetPasswordToken: string
+  @Prop({ type: Date, default: null })
+  subscriptionExpiry: Date;
 
-	// @Prop({ required: false })
-	// walletId: { type: mongoose.Schema.Types.ObjectId, ref: 'Wallet' },
-	// @Prop({ type: Types.ObjectId, ref: "Wallet" })
-	// walletId: Wallet;
-	@Prop({ type: Types.ObjectId, ref: "Wallet" })
-    wallet: Types.ObjectId; 
+  @Prop()
+  resetPasswordToken?: string;
 
-	@Prop()
-	accountNumber?: string
-
-	@Prop()
-	bankName?: string
-
-	@Prop()
-	homeAddress?: string;
-
-	@Prop()
-	cityOfResidence?: string;
-	  	
-	@Prop()
-	businessName?: string;
-	
-	@Prop()
-	businessEmail?: string;
-	
-	@Prop()
-	businessPhone?: string;
-
-	@Prop()
-	accountName?: string;
-
-	@Prop()
-	cacRegistration?: string;
-	
-	@Prop()
-	businessLocation?: string;
-
-	@Prop({ type: [{ type: Types.ObjectId, ref: 'Product' }] })
-	products: Types.ObjectId[];
-
-	@Prop({ select: false })
-	resetPasswordExpire: number
-
-	@Prop({ default: Date.now })
-	createdAt: Date
-
-	getSignedJwtToken: Function
-	matchPassword: Function
-	getResetPasswordToken: Function
-
-
-	@Prop({
-		type: {
-		  type: String,
-		  enum: ['Point'],
-		  required: true,
-		},
-		coordinates: {
-		  type: [Number],
-		  required: true,
-		},
-	  })
-	  location: {
-		type: string;
-        coordinates: number[];
-	  };
+  @Prop({ type: Date })
+  resetPasswordExpire?: Date;
 }
 
-export const UserSchema = SchemaFactory.createForClass(User)
+export const UserSchema = SchemaFactory.createForClass(User);
 
-// Define the virtual field
-UserSchema.virtual('ownedProducts', {
-	ref: 'Product',         // The model to use
-	localField: '_id',      // Find users where `localField`
-	foreignField: 'createdBy', // is equal to `foreignField`
-  });
-
-UserSchema.index({ location: '2dsphere' });
-
-UserSchema.pre("save", async function (next) {
-	if (!this.isModified("password")) return next()
-
-	const salt = await genSalt(10)
-	this.password = await hash(this.password, salt)
-})
+UserSchema.methods.matchPassword = async function (enteredPassword: string) {
+  return await compare(enteredPassword, this.password);
+};
 
 UserSchema.methods.getSignedJwtToken = function () {
-	return sign({ id: this.id }, process.env.JWT_SECRET, {
-		expiresIn: process.env.JWT_EXPIRE,
-	})
-}
-
-UserSchema.methods.matchPassword = async function (enteredPwd: string) {
-	return await compare(enteredPwd, this.password)
-}
+  return sign({ id: this.id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRE,
+  });
+};
 
 UserSchema.methods.getResetPasswordToken = function () {
-	const token = randomBytes(20).toString("base64url")
+  const token = randomBytes(20).toString("base64url");
 
-	this.resetPasswordToken = createHash("sha256")
-		.update(token)
-		.digest("base64")
+  this.resetPasswordToken = createHash("sha256").update(token).digest("hex");
 
-	this.resetPasswordExpire = Date.now() + 10 * 60 * 100
+  this.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // 10 minutes
 
-	return token
-}
+  return token;
+};
+
+UserSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+
+  const salt = await genSalt(10);
+  this.password = await hash(this.password, salt);
+
+  next();
+});

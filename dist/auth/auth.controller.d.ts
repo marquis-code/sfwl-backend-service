@@ -31,34 +31,38 @@ export declare class AuthController {
     private authService;
     constructor(authService: AuthService);
     signup(dto: SignupDto): Promise<{
-        user: import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("../user/user.schema").User> & import("../user/user.schema").User & {
+        user: import("mongoose").Document<unknown, {}, UserDocument> & import("mongoose").Document<unknown, {}, import("../user/user.schema").User> & import("../user/user.schema").User & {
             _id: import("mongoose").Types.ObjectId;
-        }> & import("mongoose").Document<unknown, {}, import("../user/user.schema").User> & import("../user/user.schema").User & {
-            _id: import("mongoose").Types.ObjectId;
+        } & {
+            matchPassword: (password: string) => Promise<boolean>;
+            getSignedJwtToken: () => string;
+            getResetPasswordToken: () => string;
         } & Required<{
             _id: import("mongoose").Types.ObjectId;
         }>;
     }>;
     login(dto: LoginDto): Promise<{
-        token: any;
-        user: import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("../user/user.schema").User> & import("../user/user.schema").User & {
+        token: string;
+        user: import("mongoose").Document<unknown, {}, UserDocument> & import("mongoose").Document<unknown, {}, import("../user/user.schema").User> & import("../user/user.schema").User & {
             _id: import("mongoose").Types.ObjectId;
-        }> & import("mongoose").Document<unknown, {}, import("../user/user.schema").User> & import("../user/user.schema").User & {
-            _id: import("mongoose").Types.ObjectId;
+        } & {
+            matchPassword: (password: string) => Promise<boolean>;
+            getSignedJwtToken: () => string;
+            getResetPasswordToken: () => string;
         } & Required<{
             _id: import("mongoose").Types.ObjectId;
         }>;
     }>;
     getCurrentUser(user: UserDocument): {
-        user: import("mongoose").Document<unknown, {}, import("../user/user.schema").User> & import("../user/user.schema").User & {
-            _id: import("mongoose").Types.ObjectId;
-        };
+        user: UserDocument;
     };
     updatePassword(dto: UpdatePasswordDto, user: UserDocument): Promise<{
-        user: import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("../user/user.schema").User> & import("../user/user.schema").User & {
+        user: import("mongoose").Document<unknown, {}, UserDocument> & import("mongoose").Document<unknown, {}, import("../user/user.schema").User> & import("../user/user.schema").User & {
             _id: import("mongoose").Types.ObjectId;
-        }> & import("mongoose").Document<unknown, {}, import("../user/user.schema").User> & import("../user/user.schema").User & {
-            _id: import("mongoose").Types.ObjectId;
+        } & {
+            matchPassword: (password: string) => Promise<boolean>;
+            getSignedJwtToken: () => string;
+            getResetPasswordToken: () => string;
         } & Required<{
             _id: import("mongoose").Types.ObjectId;
         }>;
@@ -67,10 +71,12 @@ export declare class AuthController {
         message: string;
     }>;
     resetPassword(dto: ResetPasswordDto, token: string): Promise<{
-        user: import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("../user/user.schema").User> & import("../user/user.schema").User & {
+        user: import("mongoose").Document<unknown, {}, UserDocument> & import("mongoose").Document<unknown, {}, import("../user/user.schema").User> & import("../user/user.schema").User & {
             _id: import("mongoose").Types.ObjectId;
-        }> & import("mongoose").Document<unknown, {}, import("../user/user.schema").User> & import("../user/user.schema").User & {
-            _id: import("mongoose").Types.ObjectId;
+        } & {
+            matchPassword: (password: string) => Promise<boolean>;
+            getSignedJwtToken: () => string;
+            getResetPasswordToken: () => string;
         } & Required<{
             _id: import("mongoose").Types.ObjectId;
         }>;

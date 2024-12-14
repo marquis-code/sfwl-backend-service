@@ -1,13 +1,11 @@
 import {
 	IsEmail,
-	IsEnum,
 	IsMobilePhone,
 	IsString,
 	MinLength,
 	IsOptional,
 } from "class-validator"
 
-import { Role } from "../role/role.enum"
 
 export class CreateUserDto {
 	@IsString({
@@ -15,9 +13,6 @@ export class CreateUserDto {
 	})
 	name: string
 
-	@IsString()
-	@IsOptional()
-	referral: string
 
 	@IsEmail({}, { message: "Enter a valid email" })
 	email: string
@@ -28,70 +23,21 @@ export class CreateUserDto {
 	@IsMobilePhone(null, {}, { message: "Enter a valid phone number" })
 	phone: string
 
-	@IsEnum(Role, { message: "Enter a valid role" })
-	role: Role
+
+	@IsOptional()
+	activities?: []
 
 	@IsOptional()
 	@IsString({
-		message: "Enter home address",
+		message: "",
 	})
-	homeAddress?: string
+	subscriptionPlan?: string
 
 	@IsOptional()
 	@IsString({
-		message: "Enter business account number",
+		message: "",
 	})
-	accountNumber?: string
-
-	@IsOptional()
-	@IsString({
-		message: "Enter  bank name",
-	})
-	bankName?: string
-
-
-	@IsOptional()
-	@IsString({
-		message: "Enter account name",
-	})
-	accountName?: string
-
-	@IsOptional()
-	@IsString({
-		message: "Enter city of residence",
-	})
-	cityOfResidence?: string
-
-
-	@IsOptional()
-	@IsString({
-		message: "Enter a business name",
-	})
-	businessName?: string
-
-	@IsOptional()
-	@IsString({
-		message: "Enter a business email",
-	})
-	businessEmail?: string
-
-	@IsOptional()
-	@IsString({
-		message: "Enter a business phone",
-	})
-	businessPhone?: string
-
-	@IsOptional()
-	@IsString({
-		message: "Enter a CAC registration",
-	})
-	cacRegistration?: string
-
-	@IsOptional()
-	@IsString({
-		message: "Enter a business location",
-	})
-	businessLocation?: string
+	subscriptionExpiry?: string
 }
 
 export class UpdateUserDto {
@@ -100,52 +46,30 @@ export class UpdateUserDto {
 	})
 	name: string
 
+
+	@IsEmail({}, { message: "Enter a valid email" })
+	email: string
+
+	@MinLength(6, { message: "Enter a password at least 6 characters long" })
+	password: string
+
 	@IsMobilePhone(null, {}, { message: "Enter a valid phone number" })
 	phone: string
 
-	@IsEnum(Role, { each: true, message: "Enter a valid role" })
-	role: Role
+
+	@IsOptional()
+	activities?: []
 
 	@IsOptional()
 	@IsString({
-		message: "Enter a business name",
+		message: "",
 	})
-	businessName?: string
+	subscriptionPlan?: string
 
 	@IsOptional()
 	@IsString({
-		message: "Enter a business email",
+		message: "",
 	})
-	businessEmail?: string
-
-	@IsOptional()
-	@IsString({
-		message: "Enter a business phone",
-	})
-	businessPhone?: string
-
-	@IsOptional()
-	@IsString({
-		message: "Enter a CAC registration",
-	})
-	cacRegistration?: string
-
-	@IsOptional()
-	@IsString({
-		message: "Enter a business location",
-	})
-	businessLocation?: string
-
-	@IsOptional()
-	@IsString({
-		message: "Enter home address",
-	})
-	homeAddress?: string
-
-	@IsOptional()
-	@IsString({
-		message: "Enter city of residence",
-	})
-	cityOfResidence?: string
+	subscriptionExpiry?: string
 
 }

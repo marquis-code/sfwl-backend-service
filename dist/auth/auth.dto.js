@@ -11,103 +11,41 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ResetPasswordDto = exports.UpdatePasswordDto = exports.LoginDto = exports.SignupDto = void 0;
 const class_validator_1 = require("class-validator");
-const class_transformer_1 = require("class-transformer");
-class LocationCoordinatesDto {
-}
-__decorate([
-    (0, class_validator_1.IsArray)(),
-    (0, class_validator_1.ArrayMinSize)(2, { message: 'Coordinates must have at least 2 numbers' }),
-    (0, class_validator_1.IsNumber)({}, { each: true, message: 'Each coordinate must be a number' }),
-    __metadata("design:type", Array)
-], LocationCoordinatesDto.prototype, "coordinates", void 0);
-class LocationDto {
-}
-__decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsEnum)(['Point'], { message: 'Type must be "Point"' }),
-    __metadata("design:type", String)
-], LocationDto.prototype, "type", void 0);
-__decorate([
-    (0, class_validator_1.IsArray)(),
-    (0, class_validator_1.ArrayMinSize)(2, { message: 'Coordinates must have at least 2 numbers' }),
-    (0, class_validator_1.IsNumber)({}, { each: true, message: 'Each coordinate must be a number' }),
-    __metadata("design:type", Array)
-], LocationDto.prototype, "coordinates", void 0);
 class SignupDto {
 }
 exports.SignupDto = SignupDto;
 __decorate([
-    (0, class_validator_1.IsString)({
-        message: "Enter your full name",
-    }),
+    (0, class_validator_1.IsString)({ message: 'Enter your full name' }),
     __metadata("design:type", String)
 ], SignupDto.prototype, "name", void 0);
 __decorate([
-    (0, class_validator_1.IsEmail)({}, { message: "Enter a valid email address" }),
+    (0, class_validator_1.IsEmail)({}, { message: 'Enter a valid email address' }),
     __metadata("design:type", String)
 ], SignupDto.prototype, "email", void 0);
 __decorate([
-    (0, class_validator_1.IsMobilePhone)(null, {}, { message: "Enter a valid phone number" }),
+    (0, class_validator_1.IsMobilePhone)(null, {}, { message: 'Enter a valid phone number' }),
     __metadata("design:type", String)
 ], SignupDto.prototype, "phone", void 0);
 __decorate([
-    (0, class_validator_1.MinLength)(6, { message: "Enter a password at least 6 characters long" }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MinLength)(6, { message: 'Enter a password at least 6 characters long' }),
     __metadata("design:type", String)
 ], SignupDto.prototype, "password", void 0);
 __decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)({
-        message: "Enter a business name",
-    }),
-    __metadata("design:type", String)
-], SignupDto.prototype, "businessName", void 0);
+    (0, class_validator_1.IsArray)({ message: 'Activities must be an array' }),
+    (0, class_validator_1.ArrayMinSize)(1, { message: 'Activities must have at least one item' }),
+    (0, class_validator_1.IsString)({ each: true, message: 'Each activity must be a string' }),
+    __metadata("design:type", Array)
+], SignupDto.prototype, "activities", void 0);
 __decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)({
-        message: "Enter a business email",
-    }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)({ message: 'Subscription plan is required' }),
     __metadata("design:type", String)
-], SignupDto.prototype, "businessEmail", void 0);
+], SignupDto.prototype, "subscriptionPlan", void 0);
 __decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)({
-        message: "Enter a business phone",
-    }),
-    __metadata("design:type", String)
-], SignupDto.prototype, "businessPhone", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)({
-        message: "Enter a CAC registration",
-    }),
-    __metadata("design:type", String)
-], SignupDto.prototype, "cacRegistration", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)({
-        message: "Enter a business location",
-    }),
-    __metadata("design:type", String)
-], SignupDto.prototype, "businessLocation", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)({
-        message: "Enter home address",
-    }),
-    __metadata("design:type", String)
-], SignupDto.prototype, "homeAddress", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)({
-        message: "Enter city of residence",
-    }),
-    __metadata("design:type", String)
-], SignupDto.prototype, "cityOfResidence", void 0);
-__decorate([
-    (0, class_validator_1.ValidateNested)(),
-    (0, class_transformer_1.Type)(() => LocationDto),
-    __metadata("design:type", LocationDto)
-], SignupDto.prototype, "location", void 0);
+    (0, class_validator_1.IsDate)({ message: 'Subscription expiry must be a valid date' }),
+    __metadata("design:type", Date)
+], SignupDto.prototype, "subscriptionExpiry", void 0);
 class LoginDto {
 }
 exports.LoginDto = LoginDto;

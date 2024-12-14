@@ -1,30 +1,18 @@
-import { Role } from "../role/role.enum";
 export declare class CreateUserDto {
     name: string;
-    referral: string;
     email: string;
     password: string;
     phone: string;
-    role: Role;
-    homeAddress?: string;
-    accountNumber?: string;
-    bankName?: string;
-    cityOfResidence?: string;
-    businessName?: string;
-    businessEmail?: string;
-    businessPhone?: string;
-    cacRegistration?: string;
-    businessLocation?: string;
+    activities?: [];
+    subscriptionPlan?: string;
+    subscriptionExpiry?: string;
 }
 export declare class UpdateUserDto {
     name: string;
+    email: string;
+    password: string;
     phone: string;
-    role: Role;
-    businessName?: string;
-    businessEmail?: string;
-    businessPhone?: string;
-    cacRegistration?: string;
-    businessLocation?: string;
-    homeAddress?: string;
-    cityOfResidence?: string;
+    activities?: [];
+    subscriptionPlan?: string;
+    subscriptionExpiry?: string;
 }

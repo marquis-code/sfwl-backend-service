@@ -9,23 +9,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserModule = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
-const review_module_1 = require("../review/review.module");
 const user_controller_1 = require("./user.controller");
 const user_service_1 = require("./user.service");
 const user_schema_1 = require("./user.schema");
-const product_schema_1 = require("../product/product.schema");
-const wallet_module_1 = require("../wallet/wallet.module");
 let UserModule = class UserModule {
 };
 exports.UserModule = UserModule;
 exports.UserModule = UserModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            (0, common_1.forwardRef)(() => review_module_1.ReviewModule),
-            wallet_module_1.WalletModule,
             mongoose_1.MongooseModule.forFeature([
                 { name: user_schema_1.User.name, schema: user_schema_1.UserSchema },
-                { name: product_schema_1.Product.name, schema: product_schema_1.ProductSchema }
             ]),
         ],
         exports: [

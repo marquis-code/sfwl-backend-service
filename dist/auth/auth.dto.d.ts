@@ -1,20 +1,11 @@
-declare class LocationDto {
-    type: string;
-    coordinates: number[];
-}
 export declare class SignupDto {
     name: string;
     email: string;
     phone: string;
     password: string;
-    businessName?: string;
-    businessEmail?: string;
-    businessPhone?: string;
-    cacRegistration?: string;
-    businessLocation?: string;
-    homeAddress?: string;
-    cityOfResidence?: string;
-    location: LocationDto;
+    activities: string[];
+    subscriptionPlan: string;
+    subscriptionExpiry: Date;
 }
 export declare class LoginDto {
     email: string;
@@ -27,4 +18,3 @@ export declare class UpdatePasswordDto {
 export declare class ResetPasswordDto {
     password: string;
 }
-export {};

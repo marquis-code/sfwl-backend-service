@@ -16,17 +16,10 @@ exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-const role_enum_1 = require("../role/role.enum");
 const user_schema_1 = require("./user.schema");
-const review_schema_1 = require("../review/review.schema");
-const wallet_service_1 = require("../wallet/wallet.service");
-const product_schema_1 = require("../product/product.schema");
 let UserService = class UserService {
-    constructor(User, Review, Product, walletService) {
+    constructor(User) {
         this.User = User;
-        this.Review = Review;
-        this.Product = Product;
-        this.walletService = walletService;
     }
     async getUsers() {
         const users = await this.User.find();
@@ -39,8 +32,6 @@ let UserService = class UserService {
         }
         user = new this.User(dto);
         const savedUser = await user.save();
-        const wallet = await this.walletService.createWallet(savedUser._id.toString());
-        savedUser.wallet = wallet;
         await savedUser.save();
         const populatedUser = await this.User.findById(savedUser._id).populate('wallet').exec();
         populatedUser.password = undefined;
@@ -63,7 +54,6 @@ let UserService = class UserService {
             ]);
         user.name = dto.name;
         user.phone = dto.phone;
-        user.role = currentUser.role === role_enum_1.Role.Admin ? dto.role : user.role;
         await user.save();
         return { user };
     }
@@ -76,29 +66,13 @@ let UserService = class UserService {
                 "The current user can't access this resource",
             ]);
         await user.deleteOne();
-        await this.Review.deleteMany({ user: user._id });
         return {};
-    }
-    async getVendorsWithProducts() {
-        const vendors = await this.User.find({ role: role_enum_1.Role.Vendor }).exec();
-        const vendorIds = vendors.map((vendor) => vendor._id);
-        const products = await this.Product.find({ createdBy: { $in: vendorIds } }).exec();
-        const vendorsWithProducts = vendors.map((vendor) => {
-            const vendorProducts = products.filter((product) => product.createdBy.equals(vendor._id));
-            return Object.assign(Object.assign({}, vendor.toObject()), { products: vendorProducts });
-        });
-        return { vendors: vendorsWithProducts };
     }
 };
 exports.UserService = UserService;
 exports.UserService = UserService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(user_schema_1.User.name)),
-    __param(1, (0, mongoose_1.InjectModel)(review_schema_1.Review.name)),
-    __param(2, (0, mongoose_1.InjectModel)(product_schema_1.Product.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model,
-        mongoose_2.Model,
-        mongoose_2.Model,
-        wallet_service_1.WalletService])
+    __metadata("design:paramtypes", [mongoose_2.Model])
 ], UserService);
 //# sourceMappingURL=user.service.js.map

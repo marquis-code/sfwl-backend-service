@@ -6,8 +6,6 @@ import { ThrottlerModule, ThrottlerGuard } from "@nestjs/throttler";
 import { ServeStaticModule } from "@nestjs/serve-static";
 
 import { AuthMoudle } from "./auth/auth.module";
-import { ProductModule } from "./product/product.module";
-import { ReviewModule } from "./review/review.module";
 import { UserModule } from "./user/user.module";
 import { ImageModule } from "./image/image.module";
 import { MulterModule } from "@nestjs/platform-express";
@@ -18,12 +16,6 @@ import { CloudinaryModule } from "./cloudinary/cloudinary.module";
 import * as multer from "multer";
 
 import { join } from "path";
-import { OrderModule } from "./order/orders.module";
-import { NotificationGateway } from "./notification/notification.gateway";
-import { NotificationService } from "./notification/notification.service";
-import { NotificationModule } from "./notification/notification.module";
-import { WalletModule } from "./wallet/wallet.module";
-import { TransactionModule } from "./transaction/transaction.module";
 
 import { CacheConfigModule } from "./cache/cache.module";
 
@@ -60,13 +52,7 @@ import { CacheConfigModule } from "./cache/cache.module";
     }),
     ImageModule,
     UserModule,
-    AuthMoudle,
-    ProductModule,
-    ReviewModule,
-    OrderModule,
-    NotificationModule,
-    WalletModule,
-    TransactionModule,
+    AuthMoudle
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },
@@ -75,9 +61,7 @@ import { CacheConfigModule } from "./cache/cache.module";
       provide: "Cloudinary",
       useFactory: configureCloudinary,
       inject: [ConfigService],
-    },
-    NotificationGateway,
-    NotificationService,
+    }
   ],
 })
 export class AppModule {}

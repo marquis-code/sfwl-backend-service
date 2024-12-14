@@ -1,7 +1,6 @@
 import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { UserModule } from "./user/user.module";
-import { ProductModule } from "./product/product.module";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { CorsOptions } from "@nestjs/common/interfaces/external/cors-options.interface";
 import { AppModule } from "./app.module";
@@ -18,7 +17,7 @@ async function bootstrap() {
     .addTag("API")
     .build();
   const document = SwaggerModule.createDocument(app, options, {
-    include: [UserModule, ProductModule],
+    include: [UserModule],
   });
   SwaggerModule.setup("api", app, document);
 

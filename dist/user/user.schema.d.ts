@@ -23,40 +23,24 @@
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
 import { HydratedDocument } from "mongoose";
-import { Types } from "mongoose";
-import { Role } from "../role/role.enum";
-export type UserDocument = HydratedDocument<User>;
+export type UserDocument = HydratedDocument<User> & {
+    matchPassword: (password: string) => Promise<boolean>;
+    getSignedJwtToken: () => string;
+    getResetPasswordToken: () => string;
+};
 export declare class User {
     name: string;
-    referral?: string;
     email: string;
     password: string;
     phone: string;
-    role: Role;
-    resetPasswordToken: string;
-    wallet: Types.ObjectId;
-    accountNumber?: string;
-    bankName?: string;
-    homeAddress?: string;
-    cityOfResidence?: string;
-    businessName?: string;
-    businessEmail?: string;
-    businessPhone?: string;
-    cacRegistration?: string;
-    businessLocation?: string;
-    products: Types.ObjectId[];
-    resetPasswordExpire: number;
-    createdAt: Date;
-    getSignedJwtToken: Function;
-    matchPassword: Function;
-    getResetPasswordToken: Function;
-    location: {
-        type: string;
-        coordinates: number[];
-    };
+    activities: string[];
+    subscriptionPlan: string;
+    subscriptionExpiry: Date;
+    resetPasswordToken?: string;
+    resetPasswordExpire?: Date;
 }
 export declare const UserSchema: import("mongoose").Schema<User, import("mongoose").Model<User, any, any, any, import("mongoose").Document<unknown, any, User> & User & {
-    _id: Types.ObjectId;
+    _id: import("mongoose").Types.ObjectId;
 }, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, User, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<User>> & import("mongoose").FlatRecord<User> & {
-    _id: Types.ObjectId;
+    _id: import("mongoose").Types.ObjectId;
 }>;
