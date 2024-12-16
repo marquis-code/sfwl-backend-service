@@ -167,13 +167,13 @@ export class User {
   phone: string;
 
   @Prop({ default: [] })
-  activities: string[]; // IDs of activities
+  activities?: string[]; // IDs of activities
 
   @Prop({ default: "basic" })
-  subscriptionPlan: string;
+  subscriptionPlan?: string;
 
   @Prop({ type: Date, default: null })
-  subscriptionExpiry: Date;
+  subscriptionExpiry?: Date;
 
   @Prop()
   resetPasswordToken?: string;
