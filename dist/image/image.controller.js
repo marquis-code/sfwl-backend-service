@@ -15,8 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ImageController = void 0;
 const common_1 = require("@nestjs/common");
 const multer_1 = require("multer");
-const role_enum_1 = require("../role/role.enum");
-const auth_decorator_1 = require("../auth/auth.decorator");
 const platform_express_1 = require("@nestjs/platform-express");
 const common_2 = require("@nestjs/common/");
 const randomString_1 = require("../utils/randomString");
@@ -31,7 +29,6 @@ let ImageController = class ImageController {
 exports.ImageController = ImageController;
 __decorate([
     (0, common_1.Post)(),
-    (0, auth_decorator_1.Auth)(role_enum_1.Role.Admin),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("image", {
         storage: (0, multer_1.diskStorage)({
             destination: "./uploads",

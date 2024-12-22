@@ -9,7 +9,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
-const core_1 = require("@nestjs/core");
 const mongoose_1 = require("@nestjs/mongoose");
 const throttler_1 = require("@nestjs/throttler");
 const serve_static_1 = require("@nestjs/serve-static");
@@ -20,6 +19,8 @@ const platform_express_1 = require("@nestjs/platform-express");
 const cloudinary_service_1 = require("./cloudinary/cloudinary.service");
 const cloudinary_config_1 = require("./cloudinary.config");
 const cloudinary_module_1 = require("./cloudinary/cloudinary.module");
+const upload_module_1 = require("./upload/upload.module");
+const activity_module_1 = require("./activity/activity.module");
 const multer = require("multer");
 const path_1 = require("path");
 const cache_module_1 = require("./cache/cache.module");
@@ -59,10 +60,11 @@ exports.AppModule = AppModule = __decorate([
             }),
             image_module_1.ImageModule,
             user_module_1.UserModule,
-            auth_module_1.AuthMoudle
+            auth_module_1.AuthMoudle,
+            upload_module_1.UploadModule,
+            activity_module_1.ActivityModule
         ],
         providers: [
-            { provide: core_1.APP_GUARD, useClass: throttler_1.ThrottlerGuard },
             cloudinary_service_1.CloudinaryService,
             {
                 provide: "Cloudinary",

@@ -13,6 +13,8 @@ import { MulterModule } from "@nestjs/platform-express";
 import { CloudinaryService } from "./cloudinary/cloudinary.service";
 import { configureCloudinary } from "./cloudinary.config";
 import { CloudinaryModule } from "./cloudinary/cloudinary.module";
+import { UploadModule } from './upload/upload.module';
+import { ActivityModule } from './activity/activity.module';
 import * as multer from "multer";
 
 import { join } from "path";
@@ -52,10 +54,12 @@ import { CacheConfigModule } from "./cache/cache.module";
     }),
     ImageModule,
     UserModule,
-    AuthMoudle
+    AuthMoudle,
+    UploadModule,
+    ActivityModule
   ],
   providers: [
-    { provide: APP_GUARD, useClass: ThrottlerGuard },
+    // { provide: APP_GUARD, useClass: ThrottlerGuard },
     CloudinaryService,
     {
       provide: "Cloudinary",

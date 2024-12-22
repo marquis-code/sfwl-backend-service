@@ -22,25 +22,21 @@
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
-import { HydratedDocument } from "mongoose";
-export type UserDocument = HydratedDocument<User> & {
-    matchPassword: (password: string) => Promise<boolean>;
-    getSignedJwtToken: () => string;
-    getResetPasswordToken: () => string;
-};
-export declare class User {
-    name: string;
-    email: string;
-    password: string;
-    phone: string;
-    activities?: string[];
-    subscriptionPlan?: string;
-    subscriptionExpiry?: Date;
-    resetPasswordToken?: string;
-    resetPasswordExpire?: Date;
+import { Document } from 'mongoose';
+export type ActivityDocument = Activity & Document;
+export declare class Activity {
+    date: string;
+    activity: {
+        name: string;
+        image: string;
+    }[];
+    meals: {
+        name: string;
+        image: string;
+    }[];
 }
-export declare const UserSchema: import("mongoose").Schema<User, import("mongoose").Model<User, any, any, any, import("mongoose").Document<unknown, any, User> & User & {
+export declare const ActivitySchema: import("mongoose").Schema<Activity, import("mongoose").Model<Activity, any, any, any, Document<unknown, any, Activity> & Activity & {
     _id: import("mongoose").Types.ObjectId;
-}, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, User, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<User>> & import("mongoose").FlatRecord<User> & {
+}, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Activity, Document<unknown, {}, import("mongoose").FlatRecord<Activity>> & import("mongoose").FlatRecord<Activity> & {
     _id: import("mongoose").Types.ObjectId;
 }>;

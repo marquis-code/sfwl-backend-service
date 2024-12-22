@@ -23,7 +23,7 @@ import { extname } from "path"
 @Controller("images")
 export class ImageController {
 	@Post()
-	@Auth(Role.Admin)
+	// @Auth(Role.Admin)
 	@UseInterceptors(
 		FileInterceptor("image", {
 			storage: diskStorage({
