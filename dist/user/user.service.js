@@ -25,16 +25,18 @@ let UserService = class UserService {
         const users = await this.User.find();
         return { users };
     }
-    async createUser(dto) {
-        let user = await this.User.findOne({ email: dto.email });
-        if (user) {
+    async createUser(createUserDto) {
+        let existingUser = await this.User.findOne({ email: createUserDto.email });
+        if (existingUser) {
             throw new common_1.ConflictException(["A user already exists with the entered email"]);
         }
-        user = new this.User(dto);
+        const currentDate = new Date();
+        const subscriptionExpiry = new Date(currentDate.setDate(currentDate.getDate() + 60));
+        const user = new this.User(Object.assign(Object.assign({}, createUserDto), { activities: createUserDto.activities || [], subscriptionExpiry }));
         const savedUser = await user.save();
-        await savedUser.save();
-        const populatedUser = await this.User.findById(savedUser._id).populate('wallet').exec();
-        populatedUser.password = undefined;
+        if (savedUser) {
+            savedUser.password = undefined;
+        }
         return { user: savedUser };
     }
     async getUser(id) {

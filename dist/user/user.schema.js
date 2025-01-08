@@ -9,11 +9,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserSchema = exports.User = void 0;
+exports.UserSchema = exports.User = exports.UserRole = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
+const mongoose_2 = require("mongoose");
 const jsonwebtoken_1 = require("jsonwebtoken");
 const bcryptjs_1 = require("bcryptjs");
 const crypto_1 = require("crypto");
+const enums_1 = require("../shared/enums");
+var UserRole;
+(function (UserRole) {
+    UserRole["ADMIN"] = "admin";
+    UserRole["USER"] = "user";
+})(UserRole || (exports.UserRole = UserRole = {}));
 let User = class User {
 };
 exports.User = User;
@@ -34,11 +41,15 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "phone", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ default: [] }),
+    (0, mongoose_1.Prop)([{ type: mongoose_2.Types.ObjectId, ref: 'Activity' }]),
     __metadata("design:type", Array)
 ], User.prototype, "activities", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ default: "basic" }),
+    (0, mongoose_1.Prop)({
+        type: String,
+        enum: enums_1.SubscriptionPlan,
+        default: enums_1.SubscriptionPlan.BASIC,
+    }),
     __metadata("design:type", String)
 ], User.prototype, "subscriptionPlan", void 0);
 __decorate([
@@ -53,10 +64,23 @@ __decorate([
     (0, mongoose_1.Prop)({ type: Date }),
     __metadata("design:type", Date)
 ], User.prototype, "resetPasswordExpire", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({
+        type: String,
+        enum: UserRole,
+        default: UserRole.USER,
+    }),
+    __metadata("design:type", String)
+], User.prototype, "role", void 0);
 exports.User = User = __decorate([
     (0, mongoose_1.Schema)()
 ], User);
 exports.UserSchema = mongoose_1.SchemaFactory.createForClass(User);
+exports.UserSchema.virtual('activityDetails', {
+    ref: 'Activity',
+    localField: '_id',
+    foreignField: 'user',
+});
 exports.UserSchema.methods.matchPassword = async function (enteredPassword) {
     return await (0, bcryptjs_1.compare)(enteredPassword, this.password);
 };

@@ -12,6 +12,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const activity_service_1 = require("./activity.service");
 const activity_controller_1 = require("./activity.controller");
 const activity_schema_1 = require("./schemas/activity.schema");
+const user_module_1 = require("../user/user.module");
 let ActivityModule = class ActivityModule {
 };
 exports.ActivityModule = ActivityModule;
@@ -19,6 +20,7 @@ exports.ActivityModule = ActivityModule = __decorate([
     (0, common_1.Module)({
         imports: [
             mongoose_1.MongooseModule.forFeature([{ name: activity_schema_1.Activity.name, schema: activity_schema_1.ActivitySchema }]),
+            user_module_1.UserModule
         ],
         controllers: [activity_controller_1.ActivityController],
         providers: [activity_service_1.ActivityService],

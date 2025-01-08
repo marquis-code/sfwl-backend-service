@@ -31,15 +31,7 @@ export declare class AuthController {
     private authService;
     constructor(authService: AuthService);
     signup(dto: SignupDto): Promise<{
-        user: import("mongoose").Document<unknown, {}, UserDocument> & import("mongoose").Document<unknown, {}, import("../user/user.schema").User> & import("../user/user.schema").User & {
-            _id: import("mongoose").Types.ObjectId;
-        } & {
-            matchPassword: (password: string) => Promise<boolean>;
-            getSignedJwtToken: () => string;
-            getResetPasswordToken: () => string;
-        } & Required<{
-            _id: import("mongoose").Types.ObjectId;
-        }>;
+        user: import("../user/user.schema").User;
     }>;
     login(dto: LoginDto): Promise<{
         token: string;

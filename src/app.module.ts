@@ -59,7 +59,7 @@ import { CacheConfigModule } from "./cache/cache.module";
     ActivityModule
   ],
   providers: [
-    // { provide: APP_GUARD, useClass: ThrottlerGuard },
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
     CloudinaryService,
     {
       provide: "Cloudinary",

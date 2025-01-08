@@ -22,25 +22,32 @@
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
+import { Types } from "mongoose";
 import { HydratedDocument } from "mongoose";
+import { SubscriptionPlan } from "../shared/enums";
 export type UserDocument = HydratedDocument<User> & {
     matchPassword: (password: string) => Promise<boolean>;
     getSignedJwtToken: () => string;
     getResetPasswordToken: () => string;
 };
+export declare enum UserRole {
+    ADMIN = "admin",
+    USER = "user"
+}
 export declare class User {
     name: string;
     email: string;
     password: string;
     phone: string;
-    activities?: string[];
-    subscriptionPlan?: string;
+    activities?: Types.ObjectId[];
+    subscriptionPlan: SubscriptionPlan;
     subscriptionExpiry?: Date;
     resetPasswordToken?: string;
     resetPasswordExpire?: Date;
+    role: UserRole;
 }
 export declare const UserSchema: import("mongoose").Schema<User, import("mongoose").Model<User, any, any, any, import("mongoose").Document<unknown, any, User> & User & {
-    _id: import("mongoose").Types.ObjectId;
+    _id: Types.ObjectId;
 }, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, User, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<User>> & import("mongoose").FlatRecord<User> & {
-    _id: import("mongoose").Types.ObjectId;
+    _id: Types.ObjectId;
 }>;

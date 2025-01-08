@@ -1,15 +1,22 @@
 import { Schema, Prop, SchemaFactory } from "@nestjs/mongoose";
-import { Document, Types } from 'mongoose';
+import { Types } from "mongoose";
 import { HydratedDocument } from "mongoose";
 import { sign } from "jsonwebtoken";
 import { genSalt, hash, compare } from "bcryptjs";
 import { randomBytes, createHash } from "crypto";
+import { SubscriptionPlan } from "../shared/enums";
 
 export type UserDocument = HydratedDocument<User> & {
   matchPassword: (password: string) => Promise<boolean>;
   getSignedJwtToken: () => string;
   getResetPasswordToken: () => string;
 };
+
+export enum UserRole {
+  ADMIN = "admin",
+  USER = "user",
+}
+
 
 @Schema()
 export class User {
@@ -26,10 +33,14 @@ export class User {
   phone: string;
 
   @Prop([{ type: Types.ObjectId, ref: 'Activity' }]) // Activities reference
-  activities: Types.ObjectId[];
+  activities?: Types.ObjectId[];
 
-  @Prop({ default: "basic" })
-  subscriptionPlan?: string;
+  @Prop({
+    type: String,
+    enum: SubscriptionPlan,
+    default: SubscriptionPlan.BASIC,
+  })
+  subscriptionPlan: SubscriptionPlan;
 
   @Prop({ type: Date, default: null })
   subscriptionExpiry?: Date;
@@ -39,12 +50,19 @@ export class User {
 
   @Prop({ type: Date })
   resetPasswordExpire?: Date;
+
+  @Prop({
+    type: String,
+    enum: UserRole,
+    default: UserRole.USER,
+  })
+  role: UserRole;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
 
-// Add a virtual field to populate activities
-UserSchema.virtual('activities', {
+// Rename the virtual field to avoid conflict
+UserSchema.virtual('activityDetails', {
   ref: 'Activity',
   localField: '_id',
   foreignField: 'user',

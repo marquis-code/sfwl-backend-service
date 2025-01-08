@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ResetPasswordDto = exports.UpdatePasswordDto = exports.LoginDto = exports.SignupDto = void 0;
 const class_validator_1 = require("class-validator");
+const enums_1 = require("../shared/enums");
 class SignupDto {
 }
 exports.SignupDto = SignupDto;
@@ -32,6 +33,7 @@ __decorate([
     __metadata("design:type", String)
 ], SignupDto.prototype, "password", void 0);
 __decorate([
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsArray)({ message: 'Activities must be an array' }),
     (0, class_validator_1.ArrayMinSize)(1, { message: 'Activities must have at least one item' }),
     (0, class_validator_1.IsString)({ each: true, message: 'Each activity must be a string' }),
@@ -40,9 +42,11 @@ __decorate([
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)({ message: 'Subscription plan is required' }),
+    (0, class_validator_1.IsEnum)(enums_1.SubscriptionPlan, { message: "Subscription plan must be either 'basic' or 'premium'" }),
     __metadata("design:type", String)
 ], SignupDto.prototype, "subscriptionPlan", void 0);
 __decorate([
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsDate)({ message: 'Subscription expiry must be a valid date' }),
     __metadata("design:type", Date)
 ], SignupDto.prototype, "subscriptionExpiry", void 0);

@@ -30,22 +30,31 @@ export class UserService {
     return { users };
   }
 
-  async createUser(dto: CreateUserDto) {
-    let user = await this.User.findOne({ email: dto.email });
-
-    if (user) {
+  async createUser(createUserDto: CreateUserDto): Promise<{ user: User }> {
+    // Check if a user already exists with the provided email
+    let existingUser = await this.User.findOne({ email: createUserDto.email });
+  
+    if (existingUser) {
       throw new ConflictException(["A user already exists with the entered email"]);
     }
-
-    user = new this.User(dto);
+  
+    const currentDate = new Date();
+  
+    // Set subscription expiry to 60 days from now regardless of the subscription plan
+    const subscriptionExpiry = new Date(currentDate.setDate(currentDate.getDate() + 60));
+  
+    const user = new this.User({
+      ...createUserDto,
+      activities: createUserDto.activities || [], // Default to an empty array if not provided
+      subscriptionExpiry, // Set calculated expiry date
+    });
+  
     const savedUser = await user.save();
-
-    await savedUser.save();
-
-    const populatedUser = await this.User.findById(savedUser._id).populate('wallet').exec();
-
-    populatedUser.password = undefined;
-
+  
+    if (savedUser) {
+      savedUser.password = undefined; // Remove password before returning the user
+    }
+  
     return { user: savedUser };
   }
 
@@ -92,5 +101,4 @@ export class UserService {
 
     return {};
   }
-
 }

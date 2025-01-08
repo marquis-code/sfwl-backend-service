@@ -19,18 +19,14 @@ const mongoose_2 = require("mongoose");
 const sendEmail_1 = require("../utils/sendEmail");
 const user_schema_1 = require("../user/user.schema");
 const common_1 = require("@nestjs/common");
+const user_service_1 = require("../user/user.service");
 let AuthService = class AuthService {
-    constructor(User) {
+    constructor(User, userService) {
         this.User = User;
+        this.userService = userService;
     }
     async signup(dto) {
-        const existingUser = await this.User.findOne({ email: dto.email });
-        if (existingUser)
-            throw new common_1.ConflictException("A user already exists with the entered email");
-        const user = new this.User(dto);
-        await user.save();
-        user.password = undefined;
-        return { user };
+        return await this.userService.createUser(dto);
     }
     async login(dto) {
         const user = await this.User.findOne({ email: dto.email }).select("+password");
@@ -101,6 +97,7 @@ exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(user_schema_1.User.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        user_service_1.UserService])
 ], AuthService);
 //# sourceMappingURL=auth.sevice.js.map

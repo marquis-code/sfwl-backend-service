@@ -11,6 +11,7 @@ import {
   ConflictException,
   InternalServerErrorException,
 } from "@nestjs/common";
+import { UserService } from "../user/user.service"; // Import UserService
 import {
   SignupDto,
   LoginDto,
@@ -21,23 +22,33 @@ import {
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(User.name) private readonly User: Model<UserDocument>
+    @InjectModel(User.name) private readonly User: Model<UserDocument>,
+    private readonly userService: UserService // Inject UserService
   ) {}
 
   async signup(dto: SignupDto) {
-    const existingUser = await this.User.findOne({ email: dto.email });
-
-    if (existingUser)
-      throw new ConflictException("A user already exists with the entered email");
-
-    const user = new this.User(dto);
-
-    await user.save();
-
-    user.password = undefined;
-
-    return { user };
+    return await this.userService.createUser(dto);
+  
+    // const existingUser = await this.User.findOne({ email: dto.email });
+  
+    // if (existingUser) {
+    //   throw new ConflictException("A user already exists with the entered email");
+    // }
+  
+    // const user = new this.User(dto);
+  
+    //   const today = new Date();
+    //   const expiryDate = new Date(today);
+    //   expiryDate.setDate(today.getDate() + 60); // Add 60 days
+    //   user.subscriptionExpiry = expiryDate;
+  
+    // await user.save();
+  
+    // user.password = undefined;
+  
+    // return { user };
   }
+  
 
   async login(dto: LoginDto) {
     const user = await this.User.findOne({ email: dto.email }).select("+password");

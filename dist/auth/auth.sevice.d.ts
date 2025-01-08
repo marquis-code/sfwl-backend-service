@@ -25,20 +25,14 @@
 import { Model } from "mongoose";
 import { Request } from "express";
 import { User, UserDocument } from "../user/user.schema";
+import { UserService } from "../user/user.service";
 import { SignupDto, LoginDto, UpdatePasswordDto, ResetPasswordDto } from "./auth.dto";
 export declare class AuthService {
     private readonly User;
-    constructor(User: Model<UserDocument>);
+    private readonly userService;
+    constructor(User: Model<UserDocument>, userService: UserService);
     signup(dto: SignupDto): Promise<{
-        user: import("mongoose").Document<unknown, {}, UserDocument> & import("mongoose").Document<unknown, {}, User> & User & {
-            _id: import("mongoose").Types.ObjectId;
-        } & {
-            matchPassword: (password: string) => Promise<boolean>;
-            getSignedJwtToken: () => string;
-            getResetPasswordToken: () => string;
-        } & Required<{
-            _id: import("mongoose").Types.ObjectId;
-        }>;
+        user: User;
     }>;
     login(dto: LoginDto): Promise<{
         token: string;

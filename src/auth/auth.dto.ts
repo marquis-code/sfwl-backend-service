@@ -7,8 +7,11 @@ import {
 	IsEnum,
 	IsArray,
 	ArrayMinSize,
-	IsDate
+	IsDate,
+	IsOptional
   } from 'class-validator';
+
+  import { SubscriptionPlan } from "../shared/enums";
   
   
   export class SignupDto {
@@ -25,15 +28,18 @@ import {
 	@MinLength(6, { message: 'Enter a password at least 6 characters long' })
 	password: string;
   
+	@IsOptional()
 	@IsArray({ message: 'Activities must be an array' })
 	@ArrayMinSize(1, { message: 'Activities must have at least one item' })
 	@IsString({ each: true, message: 'Each activity must be a string' })
 	activities: string[];
-  
+
 	@IsString()
 	@IsNotEmpty({ message: 'Subscription plan is required' })
-	subscriptionPlan: string;
+	@IsEnum(SubscriptionPlan, { message: "Subscription plan must be either 'basic' or 'premium'" })
+	subscriptionPlan: SubscriptionPlan;
   
+	@IsOptional()
 	@IsDate({ message: 'Subscription expiry must be a valid date' })
 	subscriptionExpiry: Date;
   }

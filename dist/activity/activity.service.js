@@ -21,34 +21,43 @@ let ActivityService = class ActivityService {
     constructor(activityModel) {
         this.activityModel = activityModel;
     }
-    async create(createActivityDto) {
-        const createdActivity = new this.activityModel(createActivityDto);
+    async create(createActivityDto, userId) {
+        const createdActivity = new this.activityModel(Object.assign(Object.assign({}, createActivityDto), { user: userId }));
         return createdActivity.save();
     }
-    async findAll() {
-        return this.activityModel.find().exec();
+    async findAll(userId) {
+        return this.activityModel.find({ user: userId }).exec();
     }
-    async findOne(id) {
-        const activity = await this.activityModel.findById(id).exec();
+    async findOne(id, userId) {
+        const activity = await this.activityModel
+            .findOne({ _id: id, user: userId })
+            .exec();
         if (!activity) {
             throw new common_1.NotFoundException(`Activity with ID ${id} not found`);
         }
         return activity;
     }
-    async update(id, updateActivityDto) {
+    async update(id, updateActivityDto, userId) {
         const updatedActivity = await this.activityModel
-            .findByIdAndUpdate(id, updateActivityDto, { new: true })
+            .findOneAndUpdate({ _id: id, user: userId }, updateActivityDto, {
+            new: true,
+        })
             .exec();
         if (!updatedActivity) {
             throw new common_1.NotFoundException(`Activity with ID ${id} not found`);
         }
         return updatedActivity;
     }
-    async delete(id) {
-        const result = await this.activityModel.findByIdAndDelete(id).exec();
+    async delete(id, userId) {
+        const result = await this.activityModel
+            .findOneAndDelete({ _id: id, user: userId })
+            .exec();
         if (!result) {
             throw new common_1.NotFoundException(`Activity with ID ${id} not found`);
         }
+    }
+    async findByUserId(userId) {
+        return this.activityModel.find({ user: userId }).exec();
     }
 };
 exports.ActivityService = ActivityService;

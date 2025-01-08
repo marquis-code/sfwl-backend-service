@@ -1,10 +1,11 @@
+import { SubscriptionPlan } from "../shared/enums";
 export declare class SignupDto {
     name: string;
     email: string;
     phone: string;
     password: string;
     activities: string[];
-    subscriptionPlan: string;
+    subscriptionPlan: SubscriptionPlan;
     subscriptionExpiry: Date;
 }
 export declare class LoginDto {

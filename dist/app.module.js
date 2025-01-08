@@ -9,6 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
+const core_1 = require("@nestjs/core");
 const mongoose_1 = require("@nestjs/mongoose");
 const throttler_1 = require("@nestjs/throttler");
 const serve_static_1 = require("@nestjs/serve-static");
@@ -65,6 +66,7 @@ exports.AppModule = AppModule = __decorate([
             activity_module_1.ActivityModule
         ],
         providers: [
+            { provide: core_1.APP_GUARD, useClass: throttler_1.ThrottlerGuard },
             cloudinary_service_1.CloudinaryService,
             {
                 provide: "Cloudinary",

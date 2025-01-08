@@ -23,6 +23,7 @@ exports.UserModule = UserModule = __decorate([
             ]),
         ],
         exports: [
+            user_service_1.UserService,
             mongoose_1.MongooseModule.forFeature([{ name: user_schema_1.User.name, schema: user_schema_1.UserSchema }]),
         ],
         controllers: [user_controller_1.UserController],

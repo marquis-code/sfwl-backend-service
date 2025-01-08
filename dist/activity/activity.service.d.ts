@@ -29,9 +29,10 @@ import { UpdateActivityDto } from './dto/update-activity.dto';
 export declare class ActivityService {
     private activityModel;
     constructor(activityModel: Model<ActivityDocument>);
-    create(createActivityDto: CreateActivityDto): Promise<Activity>;
-    findAll(): Promise<Activity[]>;
-    findOne(id: string): Promise<Activity>;
-    update(id: string, updateActivityDto: UpdateActivityDto): Promise<Activity>;
-    delete(id: string): Promise<void>;
+    create(createActivityDto: CreateActivityDto, userId: string): Promise<Activity>;
+    findAll(userId: string): Promise<Activity[]>;
+    findOne(id: string, userId: string): Promise<Activity>;
+    update(id: string, updateActivityDto: UpdateActivityDto, userId: string): Promise<Activity>;
+    delete(id: string, userId: string): Promise<void>;
+    findByUserId(userId: string): Promise<Activity[]>;
 }
