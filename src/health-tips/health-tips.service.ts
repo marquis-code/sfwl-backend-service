@@ -2,27 +2,27 @@ import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { HealthTip, HealthTipDocument } from './schemas/health-tip.schema';
-import { CreateHealthTipDto } from './dtos/create-health-tip.dto';
-import { UpdateHealthTipDto } from './dtos/update-health-tip.dto';
+import { HealthTips, HealthTipsDocument } from './schemas/health-tips.schema';
+import { CreateHealthTipDto } from './dtos/create-health-tips.dto';
+import { UpdateHealthTipDto } from './dtos/update-health-tips.dto';
 
 @Injectable()
 export class HealthTipsService implements OnModuleInit {
   constructor(
-    @InjectModel(HealthTip.name)
-    private healthTipModel: Model<HealthTipDocument>,
+    @InjectModel(HealthTips.name)
+    private healthTipModel: Model<HealthTipsDocument>,
   ) {}
 
-  async create(createHealthTipDto: CreateHealthTipDto): Promise<HealthTip> {
+  async create(createHealthTipDto: CreateHealthTipDto): Promise<HealthTips> {
     const healthTip = new this.healthTipModel(createHealthTipDto);
     return healthTip.save();
   }
 
-  async findAll(): Promise<HealthTip[]> {
+  async findAll(): Promise<HealthTips[]> {
     return this.healthTipModel.find().exec();
   }
 
-  async findOne(id: string): Promise<HealthTip> {
+  async findOne(id: string): Promise<HealthTips> {
     const healthTip = await this.healthTipModel.findById(id).exec();
     if (!healthTip) {
       throw new NotFoundException(`Health Tip with ID ${id} not found`);
@@ -33,7 +33,7 @@ export class HealthTipsService implements OnModuleInit {
   async update(
     id: string,
     updateHealthTipDto: UpdateHealthTipDto,
-  ): Promise<HealthTip> {
+  ): Promise<HealthTips> {
     const updatedHealthTip = await this.healthTipModel
       .findByIdAndUpdate(id, updateHealthTipDto, { new: true })
       .exec();
@@ -50,7 +50,7 @@ export class HealthTipsService implements OnModuleInit {
     }
   }
 
-  async findByDate(date: string): Promise<HealthTip[]> {
+  async findByDate(date: string): Promise<HealthTips[]> {
     return this.healthTipModel.find({ scheduleDate: date }).exec();
   }
 

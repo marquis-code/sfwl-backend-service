@@ -28,4 +28,4 @@ __decorate([
     (0, class_validator_1.IsISO8601)(),
     __metadata("design:type", String)
 ], CreateHealthTipDto.prototype, "scheduleDate", void 0);
-//# sourceMappingURL=create-health-tip.dto.js.map
+//# sourceMappingURL=create-health-tips.dto.js.map

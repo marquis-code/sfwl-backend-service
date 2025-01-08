@@ -25,6 +25,7 @@ const activity_module_1 = require("./activity/activity.module");
 const multer = require("multer");
 const path_1 = require("path");
 const cache_module_1 = require("./cache/cache.module");
+const health_tips_module_1 = require("./health-tips/health-tips.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -63,7 +64,8 @@ exports.AppModule = AppModule = __decorate([
             user_module_1.UserModule,
             auth_module_1.AuthMoudle,
             upload_module_1.UploadModule,
-            activity_module_1.ActivityModule
+            activity_module_1.ActivityModule,
+            health_tips_module_1.HealthTipsModule
         ],
         providers: [
             { provide: core_1.APP_GUARD, useClass: throttler_1.ThrottlerGuard },

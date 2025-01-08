@@ -24,18 +24,18 @@
 /// <reference types="mongoose/types/inferschematype" />
 import { OnModuleInit } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { HealthTip, HealthTipDocument } from './schemas/health-tip.schema';
-import { CreateHealthTipDto } from './dtos/create-health-tip.dto';
-import { UpdateHealthTipDto } from './dtos/update-health-tip.dto';
+import { HealthTips, HealthTipsDocument } from './schemas/health-tips.schema';
+import { CreateHealthTipDto } from './dtos/create-health-tips.dto';
+import { UpdateHealthTipDto } from './dtos/update-health-tips.dto';
 export declare class HealthTipsService implements OnModuleInit {
     private healthTipModel;
-    constructor(healthTipModel: Model<HealthTipDocument>);
-    create(createHealthTipDto: CreateHealthTipDto): Promise<HealthTip>;
-    findAll(): Promise<HealthTip[]>;
-    findOne(id: string): Promise<HealthTip>;
-    update(id: string, updateHealthTipDto: UpdateHealthTipDto): Promise<HealthTip>;
+    constructor(healthTipModel: Model<HealthTipsDocument>);
+    create(createHealthTipDto: CreateHealthTipDto): Promise<HealthTips>;
+    findAll(): Promise<HealthTips[]>;
+    findOne(id: string): Promise<HealthTips>;
+    update(id: string, updateHealthTipDto: UpdateHealthTipDto): Promise<HealthTips>;
     delete(id: string): Promise<void>;
-    findByDate(date: string): Promise<HealthTip[]>;
+    findByDate(date: string): Promise<HealthTips[]>;
     processTodayHealthTips(): Promise<void>;
     onModuleInit(): Promise<void>;
 }

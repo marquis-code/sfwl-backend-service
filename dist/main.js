@@ -5,6 +5,8 @@ const core_1 = require("@nestjs/core");
 const user_module_1 = require("./user/user.module");
 const swagger_1 = require("@nestjs/swagger");
 const app_module_1 = require("./app.module");
+const activity_module_1 = require("./activity/activity.module");
+const health_tips_module_1 = require("./health-tips/health-tips.module");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule, { cors: true });
     app.setGlobalPrefix("/api/v1").useGlobalPipes(new common_1.ValidationPipe());
@@ -15,7 +17,7 @@ async function bootstrap() {
         .addTag("API")
         .build();
     const document = swagger_1.SwaggerModule.createDocument(app, options, {
-        include: [user_module_1.UserModule],
+        include: [user_module_1.UserModule, activity_module_1.ActivityModule, health_tips_module_1.HealthTipsModule],
     });
     swagger_1.SwaggerModule.setup("api", app, document);
     const corsOptions = {

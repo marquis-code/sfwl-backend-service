@@ -23,14 +23,14 @@
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
 import { Document } from 'mongoose';
-export type HealthTipDocument = HealthTip & Document;
-export declare class HealthTip {
+export type HealthTipsDocument = HealthTips & Document;
+export declare class HealthTips {
     title: string;
     description: string;
     scheduleDate: string;
 }
-export declare const HealthTipSchema: import("mongoose").Schema<HealthTip, import("mongoose").Model<HealthTip, any, any, any, Document<unknown, any, HealthTip> & HealthTip & {
+export declare const HealthTipSchema: import("mongoose").Schema<HealthTips, import("mongoose").Model<HealthTips, any, any, any, Document<unknown, any, HealthTips> & HealthTips & {
     _id: import("mongoose").Types.ObjectId;
-}, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, HealthTip, Document<unknown, {}, import("mongoose").FlatRecord<HealthTip>> & import("mongoose").FlatRecord<HealthTip> & {
+}, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, HealthTips, Document<unknown, {}, import("mongoose").FlatRecord<HealthTips>> & import("mongoose").FlatRecord<HealthTips> & {
     _id: import("mongoose").Types.ObjectId;
 }>;

@@ -9,25 +9,25 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HealthTipSchema = exports.HealthTip = void 0;
+exports.HealthTipSchema = exports.HealthTips = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
-let HealthTip = class HealthTip {
+let HealthTips = class HealthTips {
 };
-exports.HealthTip = HealthTip;
+exports.HealthTips = HealthTips;
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
-], HealthTip.prototype, "title", void 0);
+], HealthTips.prototype, "title", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
-], HealthTip.prototype, "description", void 0);
+], HealthTips.prototype, "description", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
-], HealthTip.prototype, "scheduleDate", void 0);
-exports.HealthTip = HealthTip = __decorate([
+], HealthTips.prototype, "scheduleDate", void 0);
+exports.HealthTips = HealthTips = __decorate([
     (0, mongoose_1.Schema)()
-], HealthTip);
-exports.HealthTipSchema = mongoose_1.SchemaFactory.createForClass(HealthTip);
-//# sourceMappingURL=health-tip.schema.js.map
+], HealthTips);
+exports.HealthTipSchema = mongoose_1.SchemaFactory.createForClass(HealthTips);
+//# sourceMappingURL=health-tips.schema.js.map

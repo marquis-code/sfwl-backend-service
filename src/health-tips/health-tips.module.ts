@@ -2,11 +2,11 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { HealthTipsService } from './health-tips.service';
 import { HealthTipsController } from './health-tips.controller';
-import { HealthTip, HealthTipSchema } from './schemas/health-tip.schema';
+import { HealthTips, HealthTipSchema } from './schemas/health-tips.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: HealthTip.name, schema: HealthTipSchema }]),
+    MongooseModule.forFeature([{ name: HealthTips.name, schema: HealthTipSchema }]),
   ],
   controllers: [HealthTipsController],
   providers: [HealthTipsService],

@@ -20,6 +20,7 @@ import * as multer from "multer";
 import { join } from "path";
 
 import { CacheConfigModule } from "./cache/cache.module";
+import { HealthTipsModule } from "./health-tips/health-tips.module";
 
 @Module({
   imports: [
@@ -56,7 +57,8 @@ import { CacheConfigModule } from "./cache/cache.module";
     UserModule,
     AuthMoudle,
     UploadModule,
-    ActivityModule
+    ActivityModule,
+    HealthTipsModule
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

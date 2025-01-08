@@ -4,6 +4,8 @@ import { UserModule } from "./user/user.module";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { CorsOptions } from "@nestjs/common/interfaces/external/cors-options.interface";
 import { AppModule } from "./app.module";
+import { ActivityModule } from "./activity/activity.module";
+import { HealthTipsModule } from "./health-tips/health-tips.module";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
@@ -17,7 +19,7 @@ async function bootstrap() {
     .addTag("API")
     .build();
   const document = SwaggerModule.createDocument(app, options, {
-    include: [UserModule],
+    include: [UserModule, ActivityModule, HealthTipsModule],
   });
   SwaggerModule.setup("api", app, document);
 

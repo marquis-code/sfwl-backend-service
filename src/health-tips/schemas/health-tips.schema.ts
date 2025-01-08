@@ -1,10 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export type HealthTipDocument = HealthTip & Document;
+export type HealthTipsDocument = HealthTips & Document;
 
 @Schema()
-export class HealthTip {
+export class HealthTips {
   @Prop({ required: true })
   title: string;
 
@@ -15,4 +15,4 @@ export class HealthTip {
   scheduleDate: string; // ISO Date string format (e.g., '2024-12-21')
 }
 
-export const HealthTipSchema = SchemaFactory.createForClass(HealthTip);
+export const HealthTipSchema = SchemaFactory.createForClass(HealthTips);

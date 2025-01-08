@@ -15,14 +15,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.HealthTipsController = void 0;
 const common_1 = require("@nestjs/common");
 const health_tips_service_1 = require("./health-tips.service");
-const create_health_tip_dto_1 = require("./dtos/create-health-tip.dto");
-const update_health_tip_dto_1 = require("./dtos/update-health-tip.dto");
+const create_health_tips_dto_1 = require("./dtos/create-health-tips.dto");
+const update_health_tips_dto_1 = require("./dtos/update-health-tips.dto");
 let HealthTipsController = class HealthTipsController {
     constructor(healthTipsService) {
         this.healthTipsService = healthTipsService;
     }
-    async create(createHealthTipDto) {
+    async createHealthTip(createHealthTipDto, req) {
         try {
+            console.log(req.user, 'user here');
             const healthTip = await this.healthTipsService.create(createHealthTipDto);
             return { success: true, data: healthTip };
         }
@@ -53,10 +54,11 @@ exports.HealthTipsController = HealthTipsController;
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_health_tip_dto_1.CreateHealthTipDto]),
+    __metadata("design:paramtypes", [create_health_tips_dto_1.CreateHealthTipDto, Object]),
     __metadata("design:returntype", Promise)
-], HealthTipsController.prototype, "create", null);
+], HealthTipsController.prototype, "createHealthTip", null);
 __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),
@@ -82,7 +84,7 @@ __decorate([
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_health_tip_dto_1.UpdateHealthTipDto]),
+    __metadata("design:paramtypes", [String, update_health_tips_dto_1.UpdateHealthTipDto]),
     __metadata("design:returntype", Promise)
 ], HealthTipsController.prototype, "update", null);
 __decorate([

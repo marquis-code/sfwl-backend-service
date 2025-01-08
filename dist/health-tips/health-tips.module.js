@@ -11,14 +11,14 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const health_tips_service_1 = require("./health-tips.service");
 const health_tips_controller_1 = require("./health-tips.controller");
-const health_tip_schema_1 = require("./schemas/health-tip.schema");
+const health_tips_schema_1 = require("./schemas/health-tips.schema");
 let HealthTipsModule = class HealthTipsModule {
 };
 exports.HealthTipsModule = HealthTipsModule;
 exports.HealthTipsModule = HealthTipsModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            mongoose_1.MongooseModule.forFeature([{ name: health_tip_schema_1.HealthTip.name, schema: health_tip_schema_1.HealthTipSchema }]),
+            mongoose_1.MongooseModule.forFeature([{ name: health_tips_schema_1.HealthTips.name, schema: health_tips_schema_1.HealthTipSchema }]),
         ],
         controllers: [health_tips_controller_1.HealthTipsController],
         providers: [health_tips_service_1.HealthTipsService],
