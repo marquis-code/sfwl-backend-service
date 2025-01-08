@@ -26,9 +26,11 @@ import { Model } from 'mongoose';
 import { Activity, ActivityDocument } from './schemas/activity.schema';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
+import { User } from 'src/user/user.schema';
 export declare class ActivityService {
     private activityModel;
-    constructor(activityModel: Model<ActivityDocument>);
+    private readonly userModel;
+    constructor(activityModel: Model<ActivityDocument>, userModel: Model<User>);
     create(createActivityDto: CreateActivityDto, userId: string): Promise<Activity>;
     findAll(userId: string): Promise<Activity[]>;
     findOne(id: string, userId: string): Promise<Activity>;

@@ -13,13 +13,17 @@ const activity_service_1 = require("./activity.service");
 const activity_controller_1 = require("./activity.controller");
 const activity_schema_1 = require("./schemas/activity.schema");
 const user_module_1 = require("../user/user.module");
+const user_schema_1 = require("../user/user.schema");
 let ActivityModule = class ActivityModule {
 };
 exports.ActivityModule = ActivityModule;
 exports.ActivityModule = ActivityModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            mongoose_1.MongooseModule.forFeature([{ name: activity_schema_1.Activity.name, schema: activity_schema_1.ActivitySchema }]),
+            mongoose_1.MongooseModule.forFeature([
+                { name: activity_schema_1.Activity.name, schema: activity_schema_1.ActivitySchema },
+                { name: user_schema_1.User.name, schema: user_schema_1.UserSchema },
+            ]),
             user_module_1.UserModule
         ],
         controllers: [activity_controller_1.ActivityController],

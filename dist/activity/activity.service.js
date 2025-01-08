@@ -17,13 +17,19 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const activity_schema_1 = require("./schemas/activity.schema");
+const user_schema_1 = require("../user/user.schema");
 let ActivityService = class ActivityService {
-    constructor(activityModel) {
+    constructor(activityModel, userModel) {
         this.activityModel = activityModel;
+        this.userModel = userModel;
     }
     async create(createActivityDto, userId) {
         const createdActivity = new this.activityModel(Object.assign(Object.assign({}, createActivityDto), { user: userId }));
-        return createdActivity.save();
+        const savedActivity = await createdActivity.save();
+        await this.userModel.findByIdAndUpdate(userId, {
+            $push: { activities: savedActivity._id },
+        });
+        return savedActivity;
     }
     async findAll(userId) {
         return this.activityModel.find({ user: userId }).exec();
@@ -64,6 +70,8 @@ exports.ActivityService = ActivityService;
 exports.ActivityService = ActivityService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(activity_schema_1.Activity.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __param(1, (0, mongoose_1.InjectModel)(user_schema_1.User.name)),
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model])
 ], ActivityService);
 //# sourceMappingURL=activity.service.js.map

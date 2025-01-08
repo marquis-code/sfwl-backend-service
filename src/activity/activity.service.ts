@@ -4,11 +4,13 @@ import { Model } from 'mongoose';
 import { Activity, ActivityDocument } from './schemas/activity.schema';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
+import { User } from 'src/user/user.schema';
 
 @Injectable()
 export class ActivityService {
   constructor(
     @InjectModel(Activity.name) private activityModel: Model<ActivityDocument>,
+    @InjectModel(User.name) private readonly userModel: Model<User>
   ) {}
 
   async create(
@@ -19,7 +21,15 @@ export class ActivityService {
       ...createActivityDto,
       user: userId, // Associate the activity with the logged-in user
     });
-    return createdActivity.save();
+ 
+    const savedActivity = await createdActivity.save();
+
+    // Populate the user's activities array
+    await this.userModel.findByIdAndUpdate(userId, {
+      $push: { activities: savedActivity._id },
+    });
+
+    return savedActivity;
   }
 
   async findAll(userId: string): Promise<Activity[]> {
