@@ -45,6 +45,8 @@ export declare class User {
     resetPasswordToken?: string;
     resetPasswordExpire?: Date;
     role: UserRole;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 export declare const UserSchema: import("mongoose").Schema<User, import("mongoose").Model<User, any, any, any, import("mongoose").Document<unknown, any, User> & User & {
     _id: Types.ObjectId;

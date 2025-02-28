@@ -41,7 +41,7 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "phone", void 0);
 __decorate([
-    (0, mongoose_1.Prop)([{ type: mongoose_2.Types.ObjectId, ref: 'Activity' }]),
+    (0, mongoose_1.Prop)([{ type: mongoose_2.Types.ObjectId, ref: "Activity" }]),
     __metadata("design:type", Array)
 ], User.prototype, "activities", void 0);
 __decorate([
@@ -73,13 +73,13 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "role", void 0);
 exports.User = User = __decorate([
-    (0, mongoose_1.Schema)()
+    (0, mongoose_1.Schema)({ timestamps: true })
 ], User);
 exports.UserSchema = mongoose_1.SchemaFactory.createForClass(User);
-exports.UserSchema.virtual('activityDetails', {
-    ref: 'Activity',
-    localField: '_id',
-    foreignField: 'user',
+exports.UserSchema.virtual("activityDetails", {
+    ref: "Activity",
+    localField: "_id",
+    foreignField: "user",
 });
 exports.UserSchema.methods.matchPassword = async function (enteredPassword) {
     return await (0, bcryptjs_1.compare)(enteredPassword, this.password);

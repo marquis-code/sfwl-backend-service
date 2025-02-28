@@ -17,8 +17,7 @@
 //   USER = "user",
 // }
 
-
-// @Schema()
+// @Schema({ timestamps: true }) // Enable timestamps
 // export class User {
 //   @Prop({ required: true })
 //   name: string;
@@ -32,7 +31,7 @@
 //   @Prop({ required: true })
 //   phone: string;
 
-//   @Prop([{ type: Types.ObjectId, ref: 'Activity' }]) // Activities reference
+//   @Prop([{ type: Types.ObjectId, ref: "Activity" }]) // Activities reference
 //   activities?: Types.ObjectId[];
 
 //   @Prop({
@@ -57,15 +56,19 @@
 //     default: UserRole.USER,
 //   })
 //   role: UserRole;
+
+//   // Automatically added by `timestamps`
+//   createdAt?: Date;
+//   updatedAt?: Date;
 // }
 
 // export const UserSchema = SchemaFactory.createForClass(User);
 
 // // Rename the virtual field to avoid conflict
-// UserSchema.virtual('activityDetails', {
-//   ref: 'Activity',
-//   localField: '_id',
-//   foreignField: 'user',
+// UserSchema.virtual("activityDetails", {
+//   ref: "Activity",
+//   localField: "_id",
+//   foreignField: "user",
 // });
 
 // UserSchema.methods.matchPassword = async function (enteredPassword: string) {
@@ -133,6 +136,9 @@ export class User {
   @Prop([{ type: Types.ObjectId, ref: "Activity" }]) // Activities reference
   activities?: Types.ObjectId[];
 
+  @Prop([{ type: Types.ObjectId, ref: "Appointnment" }]) // Appointnment reference
+  appointnments?: Types.ObjectId[];
+
   @Prop({
     type: String,
     enum: SubscriptionPlan,
@@ -155,6 +161,25 @@ export class User {
     default: UserRole.USER,
   })
   role: UserRole;
+
+  @Prop({ type: Number, required: false }) // Optional
+  currentWeight?: number;
+
+  @Prop({ type: Number, required: false }) // Optional
+  targetWeight?: number;
+
+  @Prop({ type: Number, required: false }) // Optional
+  bmi?: number;
+
+  @Prop({
+    type: String,
+    enum: ["sedentary", "light", "moderate", "active", "very active"],
+    required: false,
+  }) // Optional
+  activityLevel?: string;
+
+  @Prop({ type: Date, default: null }) // To track when stats were last updated
+  statsLastUpdated?: Date;
 
   // Automatically added by `timestamps`
   createdAt?: Date;

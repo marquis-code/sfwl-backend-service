@@ -8,7 +8,7 @@ const app_module_1 = require("./app.module");
 const activity_module_1 = require("./activity/activity.module");
 const health_tips_module_1 = require("./health-tips/health-tips.module");
 async function bootstrap() {
-    const app = await core_1.NestFactory.create(app_module_1.AppModule, { cors: true });
+    const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.setGlobalPrefix("/api/v1").useGlobalPipes(new common_1.ValidationPipe());
     const options = new swagger_1.DocumentBuilder()
         .setTitle("API")
@@ -21,9 +21,17 @@ async function bootstrap() {
     });
     swagger_1.SwaggerModule.setup("api", app, document);
     const corsOptions = {
-        origin: '*',
-        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-        allowedHeaders: 'Content-Type, Accept, Authorization',
+        origin: (origin, callback) => {
+            const whitelist = ['https://www.sfwl.org', 'http://localhost:3000'];
+            if (!origin || whitelist.includes(origin)) {
+                callback(null, true);
+            }
+            else {
+                callback(new Error('Not allowed by CORS'));
+            }
+        },
+        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+        allowedHeaders: "Content-Type, Accept, Authorization",
         credentials: true,
     };
     app.enableCors(corsOptions);

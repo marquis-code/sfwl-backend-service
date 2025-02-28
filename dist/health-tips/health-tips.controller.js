@@ -23,7 +23,6 @@ let HealthTipsController = class HealthTipsController {
     }
     async createHealthTip(createHealthTipDto, req) {
         try {
-            console.log(req.user, 'user here');
             const healthTip = await this.healthTipsService.create(createHealthTipDto);
             return { success: true, data: healthTip };
         }
