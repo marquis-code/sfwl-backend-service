@@ -22,27 +22,18 @@
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
-import { Document, Types } from 'mongoose';
-export type ActivityDocument = Activity & Document;
-export declare class Activity {
-    date: string;
-    activity: {
-        name: string;
-        image: string;
-    }[];
-    meals: {
-        name: string;
-        image: string;
-    }[];
-    user: Types.ObjectId;
-    comments?: {
-        admin: string;
-        comment: string;
-        date: Date;
-    }[];
+import { Types } from "mongoose";
+export type AppointmentDocument = Appointment & Document;
+export declare class Appointment {
+    userId: Types.ObjectId;
+    doctorId: Types.ObjectId;
+    service: string;
+    appointmentDate: Date;
+    status: string;
+    notes?: string;
 }
-export declare const ActivitySchema: import("mongoose").Schema<Activity, import("mongoose").Model<Activity, any, any, any, Document<unknown, any, Activity> & Activity & {
+export declare const AppointmentSchema: import("mongoose").Schema<Appointment, import("mongoose").Model<Appointment, any, any, any, import("mongoose").Document<unknown, any, Appointment> & Appointment & {
     _id: Types.ObjectId;
-}, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Activity, Document<unknown, {}, import("mongoose").FlatRecord<Activity>> & import("mongoose").FlatRecord<Activity> & {
+}, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Appointment, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<Appointment>> & import("mongoose").FlatRecord<Appointment> & {
     _id: Types.ObjectId;
 }>;

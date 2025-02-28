@@ -22,27 +22,15 @@
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
-import { Document, Types } from 'mongoose';
-export type ActivityDocument = Activity & Document;
-export declare class Activity {
-    date: string;
-    activity: {
-        name: string;
-        image: string;
-    }[];
-    meals: {
-        name: string;
-        image: string;
-    }[];
-    user: Types.ObjectId;
-    comments?: {
-        admin: string;
-        comment: string;
-        date: Date;
-    }[];
+import { Model } from "mongoose";
+import { Appointment, AppointmentDocument } from "./appointment.schema";
+import { CreateAppointmentDto } from "./dto/create-appointment.dto";
+export declare class AppointmentService {
+    private appointmentModel;
+    constructor(appointmentModel: Model<AppointmentDocument>);
+    create(createAppointmentDto: CreateAppointmentDto): Promise<Appointment>;
+    findAll(): Promise<Appointment[]>;
+    findOne(id: string): Promise<Appointment>;
+    updateStatus(id: string, status: string): Promise<Appointment>;
+    remove(id: string): Promise<void>;
 }
-export declare const ActivitySchema: import("mongoose").Schema<Activity, import("mongoose").Model<Activity, any, any, any, Document<unknown, any, Activity> & Activity & {
-    _id: Types.ObjectId;
-}, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Activity, Document<unknown, {}, import("mongoose").FlatRecord<Activity>> & import("mongoose").FlatRecord<Activity> & {
-    _id: Types.ObjectId;
-}>;

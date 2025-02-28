@@ -40,11 +40,17 @@ export declare class User {
     password: string;
     phone: string;
     activities?: Types.ObjectId[];
+    appointnments?: Types.ObjectId[];
     subscriptionPlan: SubscriptionPlan;
     subscriptionExpiry?: Date;
     resetPasswordToken?: string;
     resetPasswordExpire?: Date;
     role: UserRole;
+    currentWeight?: number;
+    targetWeight?: number;
+    bmi?: number;
+    activityLevel?: string;
+    statsLastUpdated?: Date;
     createdAt?: Date;
     updatedAt?: Date;
 }

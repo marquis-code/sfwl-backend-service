@@ -41,6 +41,16 @@ __decorate([
     (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: 'User', required: true }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], Activity.prototype, "user", void 0);
+__decorate([
+    (0, mongoose_1.Prop)([
+        {
+            admin: { type: String, required: true },
+            comment: { type: String, required: true },
+            date: { type: Date, default: Date.now },
+        },
+    ]),
+    __metadata("design:type", Array)
+], Activity.prototype, "comments", void 0);
 exports.Activity = Activity = __decorate([
     (0, mongoose_1.Schema)()
 ], Activity);

@@ -45,6 +45,10 @@ __decorate([
     __metadata("design:type", Array)
 ], User.prototype, "activities", void 0);
 __decorate([
+    (0, mongoose_1.Prop)([{ type: mongoose_2.Types.ObjectId, ref: "Appointnment" }]),
+    __metadata("design:type", Array)
+], User.prototype, "appointnments", void 0);
+__decorate([
     (0, mongoose_1.Prop)({
         type: String,
         enum: enums_1.SubscriptionPlan,
@@ -72,6 +76,30 @@ __decorate([
     }),
     __metadata("design:type", String)
 ], User.prototype, "role", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: Number, required: false }),
+    __metadata("design:type", Number)
+], User.prototype, "currentWeight", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: Number, required: false }),
+    __metadata("design:type", Number)
+], User.prototype, "targetWeight", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: Number, required: false }),
+    __metadata("design:type", Number)
+], User.prototype, "bmi", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({
+        type: String,
+        enum: ["sedentary", "light", "moderate", "active", "very active"],
+        required: false,
+    }),
+    __metadata("design:type", String)
+], User.prototype, "activityLevel", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: Date, default: null }),
+    __metadata("design:type", Date)
+], User.prototype, "statsLastUpdated", void 0);
 exports.User = User = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], User);
