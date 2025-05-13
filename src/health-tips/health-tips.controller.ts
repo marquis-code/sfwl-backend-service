@@ -18,37 +18,9 @@ import {
   @Controller('health-tips')
   export class HealthTipsController {
     constructor(private readonly healthTipsService: HealthTipsService) {}
-  
-    // @Post()
-    // async createHealthTip(@Body() createHealthTipDto: CreateHealthTipDto, @Req() req) {
-    //   console.log(req, 'user here')
-    //   if (!req.user || req.user.role !== 'admin') {
-    //     throw new HttpException(
-    //       'You are not authorized to perform this action',
-    //       HttpStatus.FORBIDDEN
-    //     );
-    //   }
-    
-    //   try {
-    //     const healthTip = await this.healthTipsService.create(createHealthTipDto);
-    //     return { success: true, data: healthTip };
-    //   } catch (error) {
-    //     throw new HttpException(
-    //       'Error creating health tip',
-    //       HttpStatus.INTERNAL_SERVER_ERROR
-    //     );
-    //   }
-    // }
 
 @Post()
 async createHealthTip(@Body() createHealthTipDto: CreateHealthTipDto, @Req() req) {
-  // if (!req.user || req.user.role !== 'admin') {
-  //   console.log(req.user, 'user here'); // Log the user object instead of the entire request
-  //   throw new HttpException(
-  //     'You are not authorized to perform this action',
-  //     HttpStatus.FORBIDDEN
-  //   );
-  // }
 
   try {
     // console.log(req.user, 'user here'); // Log the user object instead of the entire request
